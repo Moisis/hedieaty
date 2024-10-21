@@ -1,0 +1,22 @@
+flutter_native_splash:
+  color: "#F8F6FD" # You can keep the background color if you'd like.
+  image: assets/images/landing.png # This is your new splash image.
+
+  # Optional dark mode configuration (if desired, uncomment and adjust accordingly)
+  #color_dark: "#042a49"
+  #image_dark: assets/images/landing-dark.png # You can set a dark mode version of the splash screen image here if you have one.
+
+  android_12:
+    image: assets/images/landing.png # Ensure that the Android 12 splash screen uses the same image.
+    #color: "#42a5f5" # Keep the background color for Android 12 splash screen.
+    #icon_background_color: "#111111" # Adjust if necessary.
+
+    # Dark mode for Android 12 (optional)
+    #image_dark: assets/images/landing-dark.png
+    #color_dark: "#042a49"
+    #icon_background_color_dark: "#eeeeee"
+
+  # You can also set platform-specific images if needed
+  #image_android: assets/images/landing-android.png
+  #image_ios: assets/images/landing-ios.png
+  #image_web: assets/images/landing-web.png
