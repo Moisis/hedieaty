@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hedieaty/pages/HomePage.dart';
-import 'package:hedieaty/pages/SplashScreen.dart';
+import 'package:hedieaty/pages/Landing/SplashScreen.dart';
+import 'package:hedieaty/pages/Landing/intro_page.dart';
+
+import 'components/AppColors.dart';
 
 
 void main() {
@@ -19,14 +22,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Hedieaty',
       theme: ThemeData(
-        useMaterial3: true,
+        primaryColor: AppColors.primary,
+        // accentColor: AppColors.accent,
+        scaffoldBackgroundColor: AppColors.background,
+        textTheme: const TextTheme(
+          bodyLarge:  AppColors.textPrimary_h1,
+          bodyMedium: AppColors.textSecondary_h1,
+        ),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: AppColors.primary,
+          textTheme: ButtonTextTheme.primary,
+        ),
+
       ),
       home :  SplashScreen(),
       // initialRoute:  '/splash_page',
       routes: {
         '/splash_page': (context) =>   SplashScreen(),
+        '/intro_page': (context) =>   IntroPage(),
         '/home_page': (context) =>  Homepage(),
         // '/info_page': (context) => const InfoPage(),
         // '/rules_page': (context) =>  CopyrightPage(),

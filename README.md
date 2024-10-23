@@ -1,16 +1,34 @@
-# hedieaty
+# Hedieaty
 
-A new Flutter project.
+Gift Management App 
 
-## Getting Started
+## Description 
 
-This project is a starting point for a Flutter application.
+Hedieaty is a gift management app that allows 
+users to create and manage gift lists for their friends and family. Users can create gift lists for different occasions, 
+add gift ideas, and track the status of each gift.
 
-A few resources to get you started if this is your first Flutter project:
+## Demo
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+
+- Create gift lists for different occasions
+- Add gift ideas to each gift list
+- Add friends and family members to each gift list
+
+##  Screenshots
+
+
+## Dependencies
+
+## Acknowledgements
+
+## Tests
+
+```
+
+
+
+
