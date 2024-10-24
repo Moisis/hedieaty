@@ -25,4 +25,12 @@ class AppColors {
     fontFamily: 'Roboto',
   );
 
+  static const TextStyle textbadger = TextStyle(
+    color: Color(0xffffffff),
+    fontFamily: 'Roboto',
+    fontSize: 16 ,
+  );
+
+
+
 }

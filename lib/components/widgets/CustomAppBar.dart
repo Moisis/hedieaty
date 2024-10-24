@@ -23,8 +23,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: isSearchClicked
-          ? const Icon(Icons.arrow_back_sharp, color: AppColors.white)
+          ? IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.white),
+          onPressed: () {
+            searchController.clear();
+            onSearchChanged('');
+            onSearchIconPressed();
+          }
+      )
           : Image.asset("assets/images/intro_gift(No_bg).png"),
+
       backgroundColor: AppColors.primary,
       title: AnimatedContainer(
         duration: animationDuration,
@@ -50,7 +57,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: <Widget>[
         IconButton(
           icon: Icon(
-            isSearchClicked ? Icons.close : Icons.search,
+            !isSearchClicked ? Icons.search : null ,
             color: AppColors.white,
           ),
           onPressed: onSearchIconPressed,

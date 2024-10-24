@@ -8,9 +8,11 @@ import 'components/AppColors.dart';
 
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp( MyApp());
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // runApp( MyApp());
+
+  runApp(MyApp());
 }
 
 
@@ -37,8 +39,11 @@ class MyApp extends StatelessWidget {
         ),
 
       ),
-      home :  SplashScreen(),
+
+      // Todo uncomment screen home :  SplashScreen(),
+      // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
+      initialRoute:  '/home_page',
       routes: {
         '/splash_page': (context) =>   SplashScreen(),
         '/intro_page': (context) =>   IntroPage(),
