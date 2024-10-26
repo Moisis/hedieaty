@@ -1,15 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:hedieaty/components/widgets/CustomAppBar.dart';
 
-class Profilepage extends StatefulWidget {
-  const Profilepage({super.key});
+import '../components/widgets/BottomNavBar.dart';
+import '../utils/navigationHelper.dart';
+
+class ProfilePage extends StatefulWidget {
+
+
 
   @override
-  State<Profilepage> createState() => _ProfilepageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilepageState extends State<Profilepage> {
+class _ProfilePageState extends State<ProfilePage> {
+
+  late var _index = 4;
+
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar:  CustomAppBar(
+        isSearchClicked: false,
+        searchController: TextEditingController(),
+        animationDuration: Duration(milliseconds: 300),
+        onSearchChanged: (value) {
+
+        },
+        onSearchIconPressed: () {
+          setState(() {
+
+          });
+        },
+        onSettingsIconPressed: () {
+          // Handle settings button press
+        },
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Text(
+              'Profile Page',
+              style: TextStyle(fontSize: 24),
+            ),
+          ],
+        ),
+      ),
+
+      bottomNavigationBar: Bottomnavbar(
+        currentIndex: _index,
+        onIndexChanged: (index) {
+          setState(() {
+            _index = index;
+            navigateToPage(context , _index);
+          });
+        },
+      ),
+    );
   }
 }

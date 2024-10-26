@@ -1,8 +1,15 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+
+
+
+import 'package:hedieaty/pages/GiftListPage.dart';
 import 'package:hedieaty/pages/HomePage.dart';
 import 'package:hedieaty/pages/Landing/SplashScreen.dart';
 import 'package:hedieaty/pages/Landing/intro_page.dart';
+import 'package:hedieaty/pages/MyPledgedGiftsPage.dart';
+import 'package:hedieaty/pages/NotificationsPage.dart';
+import 'package:hedieaty/pages/ProfilePage.dart';
 
 import 'components/AppColors.dart';
 
@@ -37,9 +44,7 @@ class MyApp extends StatelessWidget {
           buttonColor: AppColors.primary,
           textTheme: ButtonTextTheme.primary,
         ),
-
       ),
-
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
@@ -48,6 +53,10 @@ class MyApp extends StatelessWidget {
         '/splash_page': (context) =>   SplashScreen(),
         '/intro_page': (context) =>   IntroPage(),
         '/home_page': (context) =>  Homepage(),
+        '/GiftList': (context) =>  GiftListPage(),
+        '/pledgedGifts': (context) =>  PledgedGiftsPage(),
+        '/profile_page': (context) =>  ProfilePage(),
+        '/notification_page': (context) =>  NotificationsPage(),
         // '/info_page': (context) => const InfoPage(),
         // '/rules_page': (context) =>  CopyrightPage(),
         // '/stats_page': (context) => const StatsPage(),

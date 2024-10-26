@@ -4,16 +4,16 @@ import '../components/widgets/BottomNavBar.dart';
 import '../components/widgets/CustomAppBar.dart';
 import '../utils/navigationHelper.dart';
 
-
-class GiftListPage extends StatefulWidget {
-  const GiftListPage({super.key});
+class NotificationsPage extends StatefulWidget {
+  const NotificationsPage({super.key});
 
   @override
-  State<GiftListPage> createState() => _GiftListPageState();
+  State<NotificationsPage> createState() => _NotificationsPageState();
 }
 
-class _GiftListPageState extends State<GiftListPage> {
-  late var _index = 3;
+class _NotificationsPageState extends State<NotificationsPage> {
+
+  late var _index = 0;
 
 
   @override
@@ -40,7 +40,7 @@ class _GiftListPageState extends State<GiftListPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const <Widget>[
             Text(
-              'Gift List Page',
+              'Notifcation Page',
               style: TextStyle(fontSize: 24),
             ),
           ],

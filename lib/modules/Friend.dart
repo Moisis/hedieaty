@@ -1,11 +1,11 @@
 // Contact data model
-class Contact {
+class Friend {
   final String name;
   final String phoneNumber;
   final String profileImageUrl;
   final int events;
 
-  Contact({
+  Friend({
     required this.name,
     required this.phoneNumber,
     required this.profileImageUrl,

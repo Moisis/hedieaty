@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../modules/Contact.dart';
-import 'ContactCard.dart';
+import 'package:hedieaty/components/AppColors.dart';
+import '../../modules/Friend.dart';
+import 'FriendCard.dart';
 
-class ContactList extends StatelessWidget {
-  final List<Contact> contacts;
+
+
+class FriendList extends StatelessWidget {
+  final List<Friend> friends;
   final String searchQuery;
 
-  ContactList({required this.contacts, required this.searchQuery});
+  FriendList({required this.friends, required this.searchQuery});
 
 
-  List<Contact> searchContacts(List<Contact> contacts, String searchQuery) {
+  List<Friend> searchContacts(List<Friend> contacts, String searchQuery) {
     final query = searchQuery.trim().toLowerCase(); // Trim spaces and convert to lowercase
 
     if (query.isEmpty) return contacts; // If the query is empty, return all contacts
@@ -38,23 +41,31 @@ class ContactList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final filteredFriends = searchContacts(friends, searchQuery);
 
-    final filteredContacts = searchContacts(contacts, searchQuery);
-
-    return ListView.builder(
-      itemCount: filteredContacts.length *1,
-      itemBuilder: (context, index) {
-        final contact = filteredContacts[0];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3.0),
-          child: ContactCard(
+    if (filteredFriends.isEmpty) {
+      return const Center(
+        child: Text('No contacts found', style: AppColors.textPrimary_h2,),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: filteredFriends.length,
+        itemBuilder: (context, index) {
+          final contact = filteredFriends[index];
+          return FriendCard(
             name: contact.name,
             phoneNumber: contact.phoneNumber,
             profileImageUrl: contact.profileImageUrl,
             events: contact.events,
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    }
   }
+
+
+
+
 }
+
+
