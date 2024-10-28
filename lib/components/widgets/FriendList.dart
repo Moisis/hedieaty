@@ -53,10 +53,12 @@ class FriendList extends StatelessWidget {
         itemBuilder: (context, index) {
           final contact = filteredFriends[index];
           return FriendCard(
-            name: contact.name,
-            phoneNumber: contact.phoneNumber,
-            profileImageUrl: contact.profileImageUrl,
-            events: contact.events,
+            fr: Friend(name: contact.name,
+                phoneNumber: contact.phoneNumber,
+                profileImageUrl:  contact.profileImageUrl,
+                events: contact.events,
+                giftList: contact.giftList)
+
           );
         },
       );

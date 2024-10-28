@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:hedieaty/pages/FriendPage.dart';
+import '../../modules/Friend.dart';
 import '../AppColors.dart';
 
 class FriendCard extends StatelessWidget {
-  final String name;
-  final String phoneNumber;
-  final String profileImageUrl;
-  final int events;
+  // final String name;
+  // final String phoneNumber;
+  // final String profileImageUrl;
+  // final int events;
+
+  final Friend fr;
 
   FriendCard({
-    required this.name,
-    required this.phoneNumber,
-    required this.profileImageUrl,
-    required this.events,
+    required this.fr,
   });
 
   @override
@@ -27,39 +28,45 @@ class FriendCard extends StatelessWidget {
         leading: CircleAvatar(
           radius: 25,
           backgroundColor: Colors.grey.shade200, // Placeholder background color
-          child: ClipOval(
-            child: Image.network(
-              profileImageUrl,
-              fit: BoxFit.cover,
-              width: 50,
-              height: 50,
-              errorBuilder: (context, error, stackTrace) {
-                // Provide a fallback image if the network image fails to load
-                return Image.asset(
-                  'assets/images/default_profile.png', // Ensure you have this asset in your project
-                  fit: BoxFit.cover,
-                  width: 50,
-                  height: 50,
-                );
-              },
+          child: Hero(
+            tag: fr.name,
+            child: ClipOval(
+              child: Image.network(
+                fr.profileImageUrl,
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+                errorBuilder: (context, error, stackTrace) {
+                  // Provide a fallback image if the network image fails to load
+                  return Image.asset(
+                    'assets/images/default_profile.png', // Ensure you have this asset in your project
+                    fit: BoxFit.cover,
+                    width: 50,
+                    height: 50,
+                  );
+                },
+              ),
             ),
           ),
         ),
         title: Text(
-          name,
+          fr.name,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),
-        subtitle: Text(phoneNumber),
+        subtitle: Text(fr.phoneNumber),
+
         trailing: badges.Badge(
-          onTap: () {},
           badgeContent: Text(
-            events.toString(),
-            style: AppColors.textbadger,
+            fr.events.length.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
-          showBadge: events > 0,
+          showBadge: fr.events.isNotEmpty,
           badgeAnimation: badges.BadgeAnimation.rotation(
             animationDuration: Duration(seconds: 1),
             colorChangeAnimationDuration: Duration(seconds: 1),
@@ -73,10 +80,21 @@ class FriendCard extends StatelessWidget {
             padding: EdgeInsets.all(10),
             elevation: 0,
           ),
-        ),
+
+
+        ) ,
+
         onTap: () {
           // Add any action here (e.g., open a contact details page or initiate a call)
-          print("Tapped on $name");
+          print("Tapped on $fr.name");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FriendPage(friend: fr),
+            ),
+          );
+
+
         },
       ),
     );

@@ -1,5 +1,6 @@
  import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:hedieaty/pages/EventListPage.dart';
 
 
 
@@ -15,11 +16,11 @@ import 'components/AppColors.dart';
 
 
 void main() {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // runApp( MyApp());
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  runApp( MyApp());
 
-  runApp(MyApp());
+  // runApp(MyApp());
 }
 
 
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.background,
         textTheme: const TextTheme(
           bodyLarge:  AppColors.textPrimary_h1,
-          bodyMedium: AppColors.textSecondary_h1,
+          bodyMedium: AppColors.textSecondary_h2,
         ),
         buttonTheme: const ButtonThemeData(
           buttonColor: AppColors.primary,
@@ -46,17 +47,19 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // Todo uncomment screen home :  SplashScreen(),
-      // home :  SplashScreen(),
+      home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      initialRoute:  '/home_page',
+      // initialRoute:  '/home_page',
       routes: {
         '/splash_page': (context) =>   SplashScreen(),
         '/intro_page': (context) =>   IntroPage(),
+
         '/home_page': (context) =>  Homepage(),
         '/GiftList': (context) =>  GiftListPage(),
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
         '/profile_page': (context) =>  ProfilePage(),
         '/notification_page': (context) =>  NotificationsPage(),
+        '/Eventlistpage' : (context) =>  Eventlistpage(),
         // '/info_page': (context) => const InfoPage(),
         // '/rules_page': (context) =>  CopyrightPage(),
         // '/stats_page': (context) => const StatsPage(),

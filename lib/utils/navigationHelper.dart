@@ -15,7 +15,7 @@ void navigateToPage(BuildContext context, int index) {
       page = '/home_page';
       break;
     case 3:
-      page ='/GiftList';
+      page ='/Eventlistpage';
       break;
     case 4:
       page = '/profile_page';

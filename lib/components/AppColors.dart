@@ -20,6 +20,12 @@ class AppColors {
   );
 
 
+  static const TextStyle textSecondary_h2 = TextStyle(
+    color: Color(0x80000000),
+    fontFamily: 'Roboto',
+  );
+
+
   static const TextStyle textPrimary_h2 = TextStyle(
     color: Color(0x80000000),
     fontFamily: 'Roboto',

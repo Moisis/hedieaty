@@ -21,17 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  CustomAppBar(
-        isSearchClicked: false,
-        searchController: TextEditingController(),
-        animationDuration: Duration(milliseconds: 300),
-        onSearchChanged: (value) {
 
-        },
-        onSearchIconPressed: () {
-          setState(() {
-
-          });
-        },
         onSettingsIconPressed: () {
           // Handle settings button press
         },
