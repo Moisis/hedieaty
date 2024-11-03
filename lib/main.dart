@@ -1,26 +1,40 @@
- import 'package:flutter/material.dart';
+//Imports
+
+//libs
+import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:hedieaty/pages/EventListPage.dart';
+import 'package:hedieaty/pages/SettingsPage.dart';
+
+// Style
+import 'components/AppColors.dart';
+
+//Landing
+ import 'package:hedieaty/pages/Landing/SplashScreen.dart';
+ import 'package:hedieaty/pages/Landing/intro_page.dart';
+
+//Auth
+
+import 'package:hedieaty/pages/auth/LoginPage.dart';
+import 'package:hedieaty/pages/auth/RegisterPage.dart';
 
 
+//Pages
 
 import 'package:hedieaty/pages/GiftListPage.dart';
 import 'package:hedieaty/pages/HomePage.dart';
-import 'package:hedieaty/pages/Landing/SplashScreen.dart';
-import 'package:hedieaty/pages/Landing/intro_page.dart';
 import 'package:hedieaty/pages/MyPledgedGiftsPage.dart';
 import 'package:hedieaty/pages/NotificationsPage.dart';
 import 'package:hedieaty/pages/ProfilePage.dart';
+ import 'package:hedieaty/pages/EventListPage.dart';
 
-import 'components/AppColors.dart';
 
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp( MyApp());
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // runApp( MyApp());
 
-  // runApp(MyApp());
+  runApp(MyApp());
 }
 
 
@@ -47,19 +61,27 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // Todo uncomment screen home :  SplashScreen(),
-      home :  SplashScreen(),
+      // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      // initialRoute:  '/home_page',
+      initialRoute:  '/home_page',
       routes: {
+        // Into Screen
         '/splash_page': (context) =>   SplashScreen(),
         '/intro_page': (context) =>   IntroPage(),
 
+        // Auth Screen
+        '/login_page': (context) =>  LoginPage(),
+        '/register_page': (context) =>  RegisterPage(),
+
+
+        // Pages
         '/home_page': (context) =>  Homepage(),
         '/GiftList': (context) =>  GiftListPage(),
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
         '/profile_page': (context) =>  ProfilePage(),
         '/notification_page': (context) =>  NotificationsPage(),
         '/Eventlistpage' : (context) =>  Eventlistpage(),
+        '/settings_page' : (context) =>  SettingsPage(),
         // '/info_page': (context) => const InfoPage(),
         // '/rules_page': (context) =>  CopyrightPage(),
         // '/stats_page': (context) => const StatsPage(),

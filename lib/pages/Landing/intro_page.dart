@@ -1,6 +1,8 @@
 import 'package:animated_introduction/animated_introduction.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/AppColors.dart';
+
 
 final List<SingleIntroScreen> pages = [
   const SingleIntroScreen(
@@ -29,6 +31,7 @@ class IntroPage extends StatelessWidget {
       slides: pages,
       indicatorType: IndicatorType.circle,
       footerBgColor: Color(0xff78CAEB),
+      doneWidget: const Text('Get Started !' , style: AppColors.textPrimary_h1 ,),
       onDone: () {
         /// TODO: Go to desire page like login or home
         Navigator.pushReplacementNamed(context, '/home_page');

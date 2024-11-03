@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hedieaty/components/widgets/CustomAppBar.dart';
+import 'package:hedieaty/components/widgets/nav/CustomAppBar.dart';
 
-import '../components/widgets/BottomNavBar.dart';
+import '../components/widgets/nav/BottomNavBar.dart';
 import '../utils/navigationHelper.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -22,9 +22,6 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar:  CustomAppBar(
 
-        onSettingsIconPressed: () {
-          // Handle settings button press
-        },
       ),
       body: Center(
         child: Column(

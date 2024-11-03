@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../components/widgets/BottomNavBar.dart';
-import '../components/widgets/CustomAppBar.dart';
+import '../components/widgets/nav/BottomNavBar.dart';
+import '../components/widgets/nav/CustomAppBar.dart';
 import '../modules/Event.dart';
 import '../modules/demoStorage.dart';
 import '../utils/navigationHelper.dart';
@@ -29,22 +29,7 @@ class _EventlistpageState extends State<Eventlistpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  CustomAppBar(
-        isSearchClicked: false,
-        searchController: TextEditingController(),
-        animationDuration: Duration(milliseconds: 300),
-        onSearchChanged: (value) {
-
-        },
-        onSearchIconPressed: () {
-          setState(() {
-
-          });
-        },
-        onSettingsIconPressed: () {
-          // Handle settings button press
-        },
-      ),
+      appBar:  CustomAppBar(),
       body: ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, index) {

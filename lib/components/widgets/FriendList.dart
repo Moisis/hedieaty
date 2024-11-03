@@ -3,6 +3,8 @@ import 'package:hedieaty/components/AppColors.dart';
 import '../../modules/Friend.dart';
 import 'FriendCard.dart';
 
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+
 
 
 class FriendList extends StatelessWidget {
@@ -52,13 +54,21 @@ class FriendList extends StatelessWidget {
         itemCount: filteredFriends.length,
         itemBuilder: (context, index) {
           final contact = filteredFriends[index];
-          return FriendCard(
-            fr: Friend(name: contact.name,
-                phoneNumber: contact.phoneNumber,
-                profileImageUrl:  contact.profileImageUrl,
-                events: contact.events,
-                giftList: contact.giftList)
-
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 500),
+            child: SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: FriendCard(
+                  fr: Friend(name: contact.name,
+                      phoneNumber: contact.phoneNumber,
+                      profileImageUrl:  contact.profileImageUrl,
+                      events: contact.events,
+                      giftList: contact.giftList)
+                ),
+              ),
+            ),
           );
         },
       );

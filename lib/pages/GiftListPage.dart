@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../components/widgets/BottomNavBar.dart';
-import '../components/widgets/CustomAppBar.dart';
+import '../components/widgets/nav/BottomNavBar.dart';
+import '../components/widgets/nav/CustomAppBar.dart';
 import '../utils/navigationHelper.dart';
 
 
@@ -27,13 +27,9 @@ class _GiftListPageState extends State<GiftListPage> {
 
         },
         onSearchIconPressed: () {
-          setState(() {
+          setState(() {});
+        },
 
-          });
-        },
-        onSettingsIconPressed: () {
-          // Handle settings button press
-        },
       ),
       body: Center(
         child: Column(

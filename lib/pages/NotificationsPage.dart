@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../components/widgets/BottomNavBar.dart';
-import '../components/widgets/CustomAppBar.dart';
+import '../components/widgets/nav/BottomNavBar.dart';
+import '../components/widgets/nav/CustomAppBar.dart';
 import '../utils/navigationHelper.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -20,9 +20,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  CustomAppBar(
-        onSettingsIconPressed: () {
-          // Handle settings button press
-        },
+
       ),
       body: Center(
         child: Column(

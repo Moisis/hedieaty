@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../components/widgets/BottomNavBar.dart';
-import '../components/widgets/CustomAppBar.dart';
+import '../components/widgets/nav/BottomNavBar.dart';
+import '../components/widgets/nav/CustomAppBar.dart';
 import '../utils/navigationHelper.dart';
 
 class PledgedGiftsPage extends StatefulWidget {
@@ -31,9 +31,7 @@ class _PledgedGiftsPageState extends State<PledgedGiftsPage> {
 
           });
         },
-        onSettingsIconPressed: () {
-          // Handle settings button press
-        },
+
       ),
       body: Center(
         child: Column(

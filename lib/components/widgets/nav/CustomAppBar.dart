@@ -2,7 +2,7 @@
 
 // lib/components/CustomAppBar.dart
 import 'package:flutter/material.dart';
-import '../AppColors.dart';
+import '../../AppColors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? isSearchClicked;
@@ -10,16 +10,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Duration? animationDuration;
   final Function(String)? onSearchChanged;
   final VoidCallback? onSearchIconPressed;
-  final VoidCallback onSettingsIconPressed;
+  final bool showBackButton; // New parameter
 
   CustomAppBar({
-    this.isSearchClicked = false, // Default to false
+    this.isSearchClicked = false,
     this.searchController,
-    this.animationDuration =
-        const Duration(milliseconds: 300), // Default animation duration
+    this.animationDuration = const Duration(milliseconds: 300),
     this.onSearchChanged,
     this.onSearchIconPressed,
-    required this.onSettingsIconPressed,
+    this.showBackButton = false, // Default to false
   });
 
   @override
@@ -27,20 +26,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final bool showSearch = isSearchClicked ?? false;
 
     return AppBar(
-      leading: showSearch
+      leading: showBackButton
           ? IconButton(
               icon: const Icon(Icons.arrow_back, color: AppColors.white),
-              onPressed: () {
-                searchController?.clear();
-                if (onSearchChanged != null) {
-                  onSearchChanged!('');
-                }
-                if (onSearchIconPressed != null) {
-                  onSearchIconPressed!();
-                }
-              },
+              onPressed: () => Navigator.of(context).pop(),
             )
-          : Image.asset("assets/images/intro_gift(No_bg).png"),
+          : showSearch
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back, color: AppColors.white),
+                  onPressed: () {
+                    searchController?.clear();
+                    if (onSearchChanged != null) {
+                      onSearchChanged!('');
+                    }
+                    if (onSearchIconPressed != null) {
+                      onSearchIconPressed!();
+                    }
+                  },
+                )
+              : Image.asset("assets/images/intro_gift(No_bg).png"),
       backgroundColor: AppColors.primary,
       title: AnimatedContainer(
         duration: animationDuration!,
@@ -64,8 +68,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
       ),
       actions: <Widget>[
-        if (onSearchIconPressed !=
-            null) // Only show if search functionality is present
+        if (onSearchIconPressed != null)
           IconButton(
             icon: Icon(
               Icons.search,
@@ -75,7 +78,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         IconButton(
           icon: const Icon(Icons.settings, color: AppColors.white),
-          onPressed: onSettingsIconPressed,
+          onPressed: () {
+            Navigator.pushNamed(context, '/settings_page');
+          },
         ),
       ],
     );
