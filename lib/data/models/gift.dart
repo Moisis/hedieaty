@@ -1,43 +1,40 @@
-class Gift {
-  int? giftId; // Nullable for auto-incrementing ID
-  String giftName;
-  String? giftDescription;
-  String? giftCat;
-  double? giftPrice;
-  String? giftStatus;
-  int? giftEventId; // Foreign Key
+import 'package:hedieaty/domain/entities/gift_entity.dart';
 
-  Gift({
-    this.giftId,
-    required this.giftName,
-    this.giftDescription,
-    this.giftCat,
-    this.giftPrice,
-    this.giftStatus,
-    this.giftEventId,
+class Gift extends GiftEntity{
+  Gift({required super.GiftId,
+    required super.GiftName,
+    required super.GiftDescription,
+    required super.GiftPrice,
+    required super.GiftCat,
+    required super.GiftStatus,
+    required super.GiftEventId
   });
 
-  Map<String, dynamic> toMap() {
+  factory Gift.fromJson(Map<String, dynamic> json) {
+    return Gift(
+      GiftId: json['GiftId'],
+      GiftName: json['GiftName'],
+      GiftDescription: json['GiftDescription'],
+      GiftPrice: json['GiftPrice'],
+      GiftCat: json['GiftCat'],
+      GiftStatus: json['GiftStatus'],
+      GiftEventId: json['GiftEventId'],
+    );
+  }
+
+
+  Map<String, dynamic> toJson() {
     return {
-      'GiftId': giftId,
-      'GiftName': giftName,
-      'GiftDescription': giftDescription,
-      'GiftCat': giftCat,
-      'GiftPrice': giftPrice,
-      'GiftStatus': giftStatus,
-      'GiftEventId': giftEventId,
+      'GiftId': GiftId,
+      'GiftName': GiftName,
+      'GiftDescription': GiftDescription,
+      'GiftPrice': GiftPrice,
+      'GiftCat': GiftCat,
+      'GiftStatus': GiftStatus,
+      'GiftEventId': GiftEventId,
     };
   }
 
-  factory Gift.fromMap(Map<String, dynamic> map) {
-    return Gift(
-      giftId: map['GiftId'],
-      giftName: map['GiftName'],
-      giftDescription: map['GiftDescription'],
-      giftCat: map['GiftCat'],
-      giftPrice: map['GiftPrice'],
-      giftStatus: map['GiftStatus'],
-      giftEventId: map['GiftEventId'],
-    );
-  }
+
+
 }

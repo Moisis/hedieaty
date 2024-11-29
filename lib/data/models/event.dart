@@ -1,39 +1,38 @@
-class Event {
-  int? eventId; // Nullable for auto-incrementing ID
-  String eventName;
-  String eventDate; // Use String for SQLite compatibility
-  String? eventLocation;
-  String? eventDescription;
-  int userId; // Foreign Key
 
+
+import 'package:hedieaty/domain/entities/event_entity.dart';
+
+
+
+class Event extends EventEntity {
   Event({
-    this.eventId,
-    required this.eventName,
-    required this.eventDate,
-    this.eventLocation,
-    this.eventDescription,
-    required this.userId,
+    required super.EventId,
+    required super.EventName,
+    required super.EventDate,
+    required super.EventLocation,
+    required super.EventDescription,
+    required super.UserId,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'EventId': eventId,
-      'EventName': eventName,
-      'EventDate': eventDate,
-      'EventLocation': eventLocation,
-      'EventDescription': eventDescription,
-      'UserId': userId,
-    };
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      EventId: json['EventId'],
+      EventName: json['EventName'],
+      EventDate : json['EventDate'],
+      EventLocation: json['EventLocation'],
+      EventDescription: json['EventDescription'],
+      UserId: json['UserId'],
+    );
   }
 
-  factory Event.fromMap(Map<String, dynamic> map) {
-    return Event(
-      eventId: map['EventId'],
-      eventName: map['EventName'],
-      eventDate: map['EventDate'],
-      eventLocation: map['EventLocation'],
-      eventDescription: map['EventDescription'],
-      userId: map['UserId'],
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      'EventId': EventId,
+      'EventName': EventName,
+      'EventDate': EventDate,
+      'EventLocation': EventLocation,
+      'EventDescription': EventDescription,
+      'UserId': UserId,
+    };
   }
 }

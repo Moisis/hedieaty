@@ -1,37 +1,31 @@
+import '../../domain/entities/user_entity.dart';
 
-
-class User {
-  int? userId; // Nullable for auto-incrementing ID
-  String userName;
-  String userEmail;
-  String? userPrefs;
-  String userPhone;
-
+class User extends UserEntity {
   User({
-    this.userId,
-    required this.userName,
-    required this.userEmail,
-    this.userPrefs,
-    required this.userPhone,
+    required super.UserId,
+    required super.UserName,
+    required super.UserEmail,
+    required super.UserPrefs,
+    required super.UserPhone,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'UserId': userId,
-      'UserName': userName,
-      'UserEmail': userEmail,
-      'UserPrefs': userPrefs,
-      'UserPhone': userPhone,
-    };
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      UserId: json['UserId'],
+      UserName: json['UserName'],
+      UserEmail: json['UserEmail'],
+      UserPrefs: json['UserPrefs'],
+      UserPhone: json['UserPhone'],
+    );
   }
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
-      userId: map['UserId'],
-      userName: map['UserName'],
-      userEmail: map['UserEmail'],
-      userPrefs: map['UserPrefs'],
-      userPhone: map['UserPhone'],
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      'UserId': UserId,
+      'UserName': UserName,
+      'UserEmail': UserEmail,
+      'UserPrefs': UserPrefs,
+      'UserPhone': UserPhone,
+    };
   }
 }

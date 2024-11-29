@@ -3,29 +3,29 @@
 //libs
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:hedieaty/pages/SettingsPage.dart';
+import 'package:hedieaty/view/pages/SettingsPage.dart';
 
 // Style
-import 'components/AppColors.dart';
+import 'package:hedieaty/view/components/AppColors.dart';
 
 //Landing
- import 'package:hedieaty/pages/Landing/SplashScreen.dart';
- import 'package:hedieaty/pages/Landing/intro_page.dart';
+ import 'package:hedieaty/view/pages/Landing/SplashScreen.dart';
+ import 'package:hedieaty/view/pages/Landing/intro_page.dart';
 
 //Auth
 
-import 'package:hedieaty/pages/auth/LoginPage.dart';
-import 'package:hedieaty/pages/auth/RegisterPage.dart';
+import 'package:hedieaty/view/pages/auth/LoginPage.dart';
+import 'package:hedieaty/view/pages/auth/RegisterPage.dart';
 
 
 //Pages
 
-import 'package:hedieaty/pages/GiftListPage.dart';
-import 'package:hedieaty/pages/HomePage.dart';
-import 'package:hedieaty/pages/MyPledgedGiftsPage.dart';
-import 'package:hedieaty/pages/NotificationsPage.dart';
-import 'package:hedieaty/pages/ProfilePage.dart';
- import 'package:hedieaty/pages/EventListPage.dart';
+import 'package:hedieaty/view/pages/GiftListPage.dart';
+import 'package:hedieaty/view/pages/HomePage.dart';
+import 'package:hedieaty/view/pages/MyPledgedGiftsPage.dart';
+import 'package:hedieaty/view/pages/NotificationsPage.dart';
+import 'package:hedieaty/view/pages/ProfilePage.dart';
+ import 'package:hedieaty/view/pages/EventListPage.dart';
 
 
 
@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
   // const MyApp({super.key});
   // const MyApp({super.key});
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,6 +65,8 @@ class MyApp extends StatelessWidget {
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
       initialRoute:  '/home_page',
+      // initialRoute: '/login_page',
+
       routes: {
         // Into Screen
         '/splash_page': (context) =>   SplashScreen(),
