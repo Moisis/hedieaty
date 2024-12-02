@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hedieaty/view/components/AppColors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,18 +12,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
         color: AppColors.primary,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 80),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -37,103 +43,114 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60),
-                    topRight: Radius.circular(60),
+                    topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                    topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
                   ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(30),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: 60),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(
-                                  165, 201, 255, 1.0),
-                              blurRadius: 20,
-                              offset: Offset(0, 10),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(color: Colors.grey.shade200),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromRGBO(165, 201, 255, 1.0),
+                                blurRadius: 20,
+                                offset: Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(color: Colors.grey.shade200),
+                                  ),
+                                ),
+                                child: TextField(
+                                  controller: _emailController,
+                                  decoration: InputDecoration(
+                                    hintText: "Email",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                              child: TextField(
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(color: Colors.grey.shade200),
+                                  ),
+                                ),
+                                child: TextField(
+                                  controller: _passwordController,
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                    hintText: "Password",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 40),
 
-                                decoration: InputDecoration(
-                                  hintText: "Email or Phone number",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  border: InputBorder.none,
-                                ),
-                              ),
+                        Custom_button(
+                          title: 'Login',
+                          onPress: () async {
+                            try {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim())
+                                  .then((value) =>
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, '/home_page', (route) => false));
+                            }on FirebaseAuthException catch(e){
+                              Fluttertoast.showToast(msg: e.message.toString() , gravity: ToastGravity.SNACKBAR);
+                            }
+                          },
+                        ),
+
+                        Row(
+                          children: [
+                            Text(
+                              "Forgot Password?",
+                              style: TextStyle(color: Colors.grey),
                             ),
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(color: Colors.grey.shade200),
-                                ),
+
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+
+                            TextButton(
+                              child: Text(
+                                "Aren't you a member?",
+                                style: TextStyle(color: Colors.grey),
                               ),
-                              child: TextField(
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  border: InputBorder.none,
-                                ),
-                              ),
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(context, '/register' , (route) => false);
+                              },
                             ),
+
                           ],
                         ),
-                      ),
-                      SizedBox(height: 40),
-                      Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      SizedBox(height: 40),
-                      Custom_button(
-                        // onPressed: () {},
-                        // height: 50,
-                        // color: AppColors.secondary ,
-                        // shape: RoundedRectangleBorder(
-                        //   borderRadius: BorderRadius.circular(50),
-                        // ),
-                        title: 'Login',
-                        onPress: () {  },
-                        // child: Center(
-                        //   child: Text(
-                        //     "Login",
-                        //     style: TextStyle(
-                        //       color: Colors.white,
-                        //       fontWeight: FontWeight.bold,
-                        //     ),
-                        //   ),
-                        // ),
-                      ),
-                      SizedBox(height: 50),
-                      Text(
-                        "Aren't you a member?",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      SizedBox(height: 30),
-                    ],
+
+                      ],
+                    ),
                   ),
                 ),
               ),

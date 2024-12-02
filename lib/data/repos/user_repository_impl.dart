@@ -25,6 +25,7 @@ class UserRepositoryImpl implements UserRepository {
       UserId: user.UserId,
       UserName: user.UserName,
       UserEmail: user.UserEmail,
+      UserPass: user.UserPass,
       UserPrefs: user.UserPrefs,
       UserPhone: user.UserPhone,
     );
@@ -53,6 +54,7 @@ class UserRepositoryImpl implements UserRepository {
       UserId: user.UserId,
       UserName: user.UserName,
       UserEmail: user.UserEmail,
+      UserPass: user.UserPass,
       UserPrefs: user.UserPrefs,
       UserPhone: user.UserPhone,
     );

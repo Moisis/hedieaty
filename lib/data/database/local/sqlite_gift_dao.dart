@@ -1,3 +1,4 @@
+import 'package:hedieaty/domain/entities/gift_entity.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/gift.dart';
@@ -9,7 +10,8 @@ class SQLiteGiftDataSource {
   bool _isInitialized = false;
 
   Future<void> init() async {
-    db = await DatabaseHelper().database; // Use DatabaseHelper to get the database instance
+    db = await DatabaseHelper()
+        .database; // Use DatabaseHelper to get the database instance
     _isInitialized = true;
   }
 
@@ -19,7 +21,7 @@ class SQLiteGiftDataSource {
     }
   }
 
-  Future<List<Gift>> getUsers() async {
+  Future<List<Gift>> getGifts() async {
     await _ensureInitialized();
     final maps = await db.query('Gifts');
     return maps.map((map) => Gift.fromJson(map)).toList();
@@ -32,18 +34,34 @@ class SQLiteGiftDataSource {
 
   Future<void> updateGift(Gift gift) async {
     await _ensureInitialized();
-    await db.update('Gifts', gift.toJson(), where: 'GiftId = ?', whereArgs: [gift.GiftId]);
+    await db.update(
+        'Gifts', gift.toJson(), where: 'GiftId = ?', whereArgs: [gift.GiftId]);
   }
 
-  Future<void> deleteUser(String id) async {
+  Future<void> deleteGift(String id) async {
     await _ensureInitialized();
     await db.delete('Gifts', where: 'GiftId = ?', whereArgs: [id]);
   }
 
-  Future<Gift?> getUserById(String id) async {
+  Future<Gift?> getGiftById(String id) async {
     await _ensureInitialized();
     final maps = await db.query('Gifts', where: 'GiftId = ?', whereArgs: [id]);
     if (maps.isEmpty) return null;
     return Gift.fromJson(maps.first);
   }
+
+  Future<void> deleteAllGifts() async {
+    await _ensureInitialized();
+    await db.delete('Gifts');
+  }
+
+  Future<List<GiftEntity>> getGiftsListbyEventId(String eventId) async {
+    await _ensureInitialized();
+    final maps = await db.query('Gifts', where: 'GiftEventId = ?', whereArgs: [eventId]);
+    return maps.map((map) => Gift.fromJson(map)).toList();
+  }
+
+
+
+
 }

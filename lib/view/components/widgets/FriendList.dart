@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hedieaty/view/components/AppColors.dart';
+import 'package:hedieaty/domain/entities/user_entity.dart';
+import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/modules/Friend.dart';
 import 'FriendCard.dart';
 
@@ -8,13 +9,13 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 
 class FriendList extends StatelessWidget {
-  final List<Friend> friends;
+  final List<UserEntity> friends;
   final String searchQuery;
 
   FriendList({required this.friends, required this.searchQuery});
 
 
-  List<Friend> searchContacts(List<Friend> contacts, String searchQuery) {
+  List<UserEntity> searchContacts(List<UserEntity> contacts, String searchQuery) {
     final query = searchQuery.trim().toLowerCase(); // Trim spaces and convert to lowercase
 
     if (query.isEmpty) return contacts; // If the query is empty, return all contacts
@@ -25,10 +26,10 @@ class FriendList extends StatelessWidget {
     final isPhoneNumberQuery = RegExp(r'^\d+$').hasMatch(normalizedQuery);
 
     return contacts.where((contact) {
-      final contactName = contact.name.trim().toLowerCase(); // Trim spaces in contact name
+      final contactName = contact.UserName.trim().toLowerCase(); // Trim spaces in contact name
 
       // Normalize phone number by stripping non-digit characters
-      final normalizedPhoneNumber = contact.phoneNumber.replaceAll(RegExp(r'\D'), '');
+      final normalizedPhoneNumber = contact.UserPhone.replaceAll(RegExp(r'\D'), '');
 
       // Check if the name contains the query
       final bool nameMatches = contactName.contains(query);
@@ -61,11 +62,11 @@ class FriendList extends StatelessWidget {
               verticalOffset: 50.0,
               child: FadeInAnimation(
                 child: FriendCard(
-                  fr: Friend(name: contact.name,
-                      phoneNumber: contact.phoneNumber,
-                      profileImageUrl:  contact.profileImageUrl,
-                      events: contact.events,
-                      giftList: contact.giftList)
+                  fr: Friend(name: contact.UserName,
+                      phoneNumber: contact.UserPhone,
+                      profileImageUrl:  contact.UserId,
+                      events: [],
+                      giftList:[])
                 ),
               ),
             ),

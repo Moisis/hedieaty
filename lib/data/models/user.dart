@@ -5,7 +5,8 @@ class User extends UserEntity {
     required super.UserId,
     required super.UserName,
     required super.UserEmail,
-    required super.UserPrefs,
+    required super.UserPass,
+     super.UserPrefs,
     required super.UserPhone,
   });
 
@@ -14,6 +15,7 @@ class User extends UserEntity {
       UserId: json['UserId'],
       UserName: json['UserName'],
       UserEmail: json['UserEmail'],
+      UserPass: json['UserPass'],
       UserPrefs: json['UserPrefs'],
       UserPhone: json['UserPhone'],
     );
@@ -24,6 +26,7 @@ class User extends UserEntity {
       'UserId': UserId,
       'UserName': UserName,
       'UserEmail': UserEmail,
+      'UserPass': UserPass,
       'UserPrefs': UserPrefs,
       'UserPhone': UserPhone,
     };

@@ -19,7 +19,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  late var _index = 4;
+  late var _index = 3;
 
   final Friend friend = getFriendList().first;
 

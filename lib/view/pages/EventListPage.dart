@@ -18,7 +18,7 @@ class Eventlistpage extends StatefulWidget {
 class _EventlistpageState extends State<Eventlistpage> {
 
   late List<Event> events;
-  late var _index = 3;
+  late var _index = 2;
 
   @override
   void initState() {

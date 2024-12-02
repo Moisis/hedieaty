@@ -51,6 +51,7 @@ class _UserScreenState extends State<UserScreen> {
       UserId: DateTime.now().millisecondsSinceEpoch.toString(),
       UserName: 'New User',
       UserEmail: 'newuser@example.com',
+      UserPass: 'password',
       UserPhone: '11111',
       UserPrefs: 'Default Preferences',
     );
@@ -106,6 +107,7 @@ class _UserScreenState extends State<UserScreen> {
                   UserId: user.UserId,
                   UserName: nameController.text,
                   UserEmail: emailController.text,
+                  UserPass: user.UserPass,
                   UserPrefs: user.UserPrefs,
                   UserPhone: user.UserPhone,
                 );

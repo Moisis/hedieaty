@@ -12,6 +12,7 @@ class AppColors {
   static const TextStyle textPrimary_h1 = TextStyle(
     color: Color(0xffffffff),
     fontFamily: 'Roboto',
+    fontSize: 20,
   );
 
   static const TextStyle textSecondary_h1 = TextStyle(

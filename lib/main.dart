@@ -1,12 +1,14 @@
 //Imports
 
 //libs
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hedieaty/view/pages/SettingsPage.dart';
 
 // Style
-import 'package:hedieaty/view/components/AppColors.dart';
+import 'package:hedieaty/utils/AppColors.dart';
 
 //Landing
  import 'package:hedieaty/view/pages/Landing/SplashScreen.dart';
@@ -26,14 +28,23 @@ import 'package:hedieaty/view/pages/MyPledgedGiftsPage.dart';
 import 'package:hedieaty/view/pages/NotificationsPage.dart';
 import 'package:hedieaty/view/pages/ProfilePage.dart';
  import 'package:hedieaty/view/pages/EventListPage.dart';
+import 'package:hedieaty/view/pages/user_screen.dart';
 
+import 'firebase_options.dart';
 
+void initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
+}
 
-void main() {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // runApp( MyApp());
+void main()  {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  initializeFirebase();
   runApp(MyApp());
 }
 
@@ -53,7 +64,7 @@ class MyApp extends StatelessWidget {
         // accentColor: AppColors.accent,
         scaffoldBackgroundColor: AppColors.background,
         textTheme: const TextTheme(
-          bodyLarge:  AppColors.textPrimary_h1,
+          bodyLarge:  AppColors.textPrimary_h2,
           bodyMedium: AppColors.textSecondary_h2,
         ),
         buttonTheme: const ButtonThemeData(
@@ -64,7 +75,7 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      initialRoute:  '/home_page',
+      initialRoute:  '/splash_page',
       // initialRoute: '/login_page',
 
       routes: {
@@ -73,9 +84,11 @@ class MyApp extends StatelessWidget {
         '/intro_page': (context) =>   IntroPage(),
 
         // Auth Screen
-        '/login_page': (context) =>  LoginPage(),
-        '/register_page': (context) =>  RegisterPage(),
+        '/login': (context) =>  LoginPage(),
+        '/register': (context) =>  RegisterPage(),
 
+
+        '/user': (context) =>  UserScreen(),
 
         // Pages
         '/home_page': (context) =>  Homepage(),

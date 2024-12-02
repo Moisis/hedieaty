@@ -3,7 +3,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:hedieaty/view/pages/FriendPage.dart';
 
 import 'package:hedieaty/modules/Friend.dart';
-import '../AppColors.dart';
+import '../../../utils/AppColors.dart';
 
 class FriendCard extends StatelessWidget {
   // final String name;

@@ -35,10 +35,10 @@ class _BottomnavbarState extends State<Bottomnavbar> {
           ),
           label: 'Notifications',
         ),
-        const BubbleNavItem(
-          icon: Icon(Icons.card_giftcard),
-          label: 'Pledged Gifts',
-        ),
+        // const BubbleNavItem(
+        //   icon: Icon(Icons.card_giftcard),
+        //   label: 'Pledged Gifts',
+        // ),
         const BubbleNavItem(
           icon: Icon(Icons.home),
           label: 'Home',

@@ -1,7 +1,7 @@
 import 'package:animated_introduction/animated_introduction.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/AppColors.dart';
+import '../../../utils/AppColors.dart';
 
 
 final List<SingleIntroScreen> pages = [

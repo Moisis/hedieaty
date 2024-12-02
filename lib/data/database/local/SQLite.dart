@@ -19,7 +19,7 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String dbPath = await getDatabasesPath();
-    String path = join(dbPath, 'test.db');
+    String path = join(dbPath, 'Hedieaty.db');
 
     return await openDatabase(
       path,
@@ -34,6 +34,7 @@ class DatabaseHelper {
           "UserId"	TEXT NOT NULL,
           "UserName"	TEXT NOT NULL,
           "UserEmail"	TEXT NOT NULL ,
+          "UserPass"	TEXT NOT NULL ,
           "UserPrefs"	TEXT,
           "UserPhone"	TEXT NOT NULL,
           PRIMARY KEY("UserId" )

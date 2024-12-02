@@ -2,7 +2,8 @@ class UserEntity {
   final String UserId;
   final String UserName;
   final String UserEmail;
-  final String UserPrefs;
+  final String UserPass;
+  String? UserPrefs;
   final String UserPhone;
 
 
@@ -10,7 +11,8 @@ class UserEntity {
     required this.UserId,
     required this.UserName,
     required this.UserEmail,
-    required this.UserPrefs,
+    required this.UserPass,
+    this.UserPrefs,
     required this.UserPhone,
   });
 }

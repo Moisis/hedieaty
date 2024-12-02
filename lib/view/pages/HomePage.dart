@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
-import 'package:hedieaty/view/components/AppColors.dart';
+import 'package:hedieaty/utils/AppColors.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
+
+import '../../data/database/local/sqlite_user_dao.dart';
+import '../../data/database/remote/firebase_user_dao.dart';
+import '../../data/repos/user_repository_impl.dart';
+import '../../domain/repos_head/user_repository.dart';
+import '../../domain/usecases/user/get_users.dart';
+import '../../domain/usecases/user/sync_users.dart';
+
+import '../../domain/entities/user_entity.dart';
+
 
 import '../components/widgets/buttons/Circular_small_Button.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
 import '../components/widgets/FriendList.dart';
 import '../components/widgets/nav/CustomAppBar.dart';
 
-import 'package:hedieaty/modules/demoStorage.dart';
-import 'package:hedieaty/modules/Event.dart';
-import 'package:hedieaty/modules/Friend.dart';
+// import 'package:hedieaty/modules/demoStorage.dart';
+// import 'package:hedieaty/modules/Event.dart';
+// import 'package:hedieaty/modules/Friend.dart';
 
 
 import 'package:hedieaty/utils/navigationHelper.dart';
@@ -28,22 +38,47 @@ class _HomepageState extends State<Homepage> {
   String searchText = '';
   final TextEditingController _searchController = TextEditingController();
   final Duration _animationDuration = const Duration(milliseconds: 300);
-  late var _index = 2;
-  late List<Event> sampleEvents;
-  late List<Friend> contacts;
+  late var _index = 1;
+  // late List<Event> sampleEvents;
+  // late List<Us> contacts;
+
+  late List<UserEntity> contacts = [];
+
   final ScrollController _scrollController = ScrollController();
+
+  late GetUsers getUsersUseCase;
+  late SyncUsers syncUsersUseCase;
+
 
   @override
   void initState() {
     super.initState();
-    sampleEvents = getEventList();
-    contacts = getFriendList();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final sqliteDataSource = SQLiteUserDataSource();
+    final firebaseDataSource = FirebaseUserDataSource();
+    final repository = UserRepositoryImpl(
+      sqliteDataSource: sqliteDataSource,
+      firebaseDataSource: firebaseDataSource,
+    );
+
+    getUsersUseCase = GetUsers(repository as UserRepository);
+    syncUsersUseCase = SyncUsers(repository as UserRepository);
+
+    await sqliteDataSource.init();
+
+    await _refreshContacts();
+
   }
 
   Future<void> _refreshContacts() async {
-    await Future.delayed(Duration(seconds: 2));
+    syncUsersUseCase.call();
+    contacts = await getUsersUseCase.call()  ;
+
     setState(() {
-      contacts.shuffle();
+
     });
   }
 
@@ -104,7 +139,7 @@ class _HomepageState extends State<Homepage> {
                   // ),
 
 
-                  Custom_button(title: "Create Your Own Event/List", onPress: (){})
+                  // Custom_button(title: "Create Your Own Event/List", onPress: (){})
 
 
                 ],

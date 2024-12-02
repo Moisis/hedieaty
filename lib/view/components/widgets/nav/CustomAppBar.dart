@@ -2,7 +2,7 @@
 
 // lib/components/CustomAppBar.dart
 import 'package:flutter/material.dart';
-import '../../AppColors.dart';
+import '../../../../utils/AppColors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? isSearchClicked;
