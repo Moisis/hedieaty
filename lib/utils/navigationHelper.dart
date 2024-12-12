@@ -8,16 +8,16 @@ void navigateToPage(BuildContext context, int index) {
     case 0:
       page = '/notification_page';
       break;
+    // case 1:
+    //   page = '/pledgedGifts';
+    //   break;
     case 1:
-      page = '/pledgedGifts';
-      break;
-    case 2:
       page = '/home_page';
       break;
-    case 3:
+    case 2:
       page ='/Eventlistpage';
       break;
-    case 4:
+    case 3:
       page = '/profile_page';
       break;
     default:
