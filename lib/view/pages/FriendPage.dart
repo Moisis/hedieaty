@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:hedieaty/modules/Friend.dart';
+import 'package:hedieaty/data/testback/Friend.dart';
 
 class FriendPage extends StatelessWidget {
   final Friend friend;

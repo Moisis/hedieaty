@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
 import '../components/widgets/nav/CustomAppBar.dart';
 
-import 'package:hedieaty/modules/Event.dart';
-import 'package:hedieaty/modules/demoStorage.dart';
+import 'package:hedieaty/data/testback/Event.dart';
+import 'package:hedieaty/data/testback/demoStorage.dart';
 
 import 'package:hedieaty/utils/navigationHelper.dart';
 

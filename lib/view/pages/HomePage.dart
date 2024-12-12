@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:hedieaty/utils/AppColors.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
@@ -13,16 +12,10 @@ import '../../domain/usecases/user/sync_users.dart';
 
 import '../../domain/entities/user_entity.dart';
 
-
 import '../components/widgets/buttons/Circular_small_Button.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
 import '../components/widgets/FriendList.dart';
 import '../components/widgets/nav/CustomAppBar.dart';
-
-// import 'package:hedieaty/modules/demoStorage.dart';
-// import 'package:hedieaty/modules/Event.dart';
-// import 'package:hedieaty/modules/Friend.dart';
-
 
 import 'package:hedieaty/utils/navigationHelper.dart';
 
@@ -38,17 +31,14 @@ class _HomepageState extends State<Homepage> {
   String searchText = '';
   final TextEditingController _searchController = TextEditingController();
   final Duration _animationDuration = const Duration(milliseconds: 300);
-  late var _index = 1;
-  // late List<Event> sampleEvents;
-  // late List<Us> contacts;
-
-  late List<UserEntity> contacts = [];
+  late int _index = 1;
+  bool isLoading = true;
+  List<UserEntity> contacts = [];
 
   final ScrollController _scrollController = ScrollController();
 
   late GetUsers getUsersUseCase;
   late SyncUsers syncUsersUseCase;
-
 
   @override
   void initState() {
@@ -64,22 +54,31 @@ class _HomepageState extends State<Homepage> {
       firebaseDataSource: firebaseDataSource,
     );
 
-    getUsersUseCase = GetUsers(repository as UserRepository);
-    syncUsersUseCase = SyncUsers(repository as UserRepository);
-
-    await sqliteDataSource.init();
+    getUsersUseCase = GetUsers(repository);
+    syncUsersUseCase = SyncUsers(repository);
 
     await _refreshContacts();
-
   }
 
   Future<void> _refreshContacts() async {
-    syncUsersUseCase.call();
-    contacts = await getUsersUseCase.call()  ;
+    try {
+      setState(() {
+        isLoading = true;
+      });
 
-    setState(() {
+      await syncUsersUseCase.call(); // Ensure sync completes
+      final newContacts = await getUsersUseCase.call(); // Fetch updated users
 
-    });
+      setState(() {
+        contacts = newContacts;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error refreshing contacts: $e');
+      setState(() {
+        isLoading = false; // Avoid infinite loader
+      });
+    }
   }
 
   @override
@@ -105,59 +104,32 @@ class _HomepageState extends State<Homepage> {
         },
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // ElevatedButton.icon(
-                  //   onPressed: () {
-                  //     navigateToPage(context, 4);
-                  //   },
-                  //   icon: Icon(Icons.add),
-                  //   label: Text('Add New Contact'),
-                  //   style: ElevatedButton.styleFrom(
-                  //     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  //   ),
-                  // ),
-                  // SizedBox(width: 16),
-                  // ElevatedButton.icon(
-                  //   onPressed: () {
-                  //     navigateToPage(context, 4);
-                  //   },
-                  //   icon: Icon(Icons.add),
-                  //   label: Text(
-                  //     'Create Your Own Event/List',
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  //   style: ElevatedButton.styleFrom(
-                  //     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  //   ),
-                  // ),
-
-
-                  // Custom_button(title: "Create Your Own Event/List", onPress: (){})
-
-
-                ],
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: RefreshIndicator(
-                  color: AppColors.primary,
-                  onRefresh: _refreshContacts,
-                  child: AnimationLimiter(
-                    child: FriendList(friends: contacts, searchQuery: searchText),
-                  ),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Add buttons if necessary
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: AnimationLimiter(
+                        child: FriendList(
+                          friends: contacts,
+                          searchQuery: searchText,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
       ),
       bottomNavigationBar: Bottomnavbar(
         currentIndex: _index,
@@ -174,6 +146,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 }

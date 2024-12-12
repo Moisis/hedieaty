@@ -32,26 +32,29 @@ import 'package:hedieaty/view/pages/user_screen.dart';
 
 import 'firebase_options.dart';
 
-void initializeFirebase() async {
+Future<void> initializeFirebase()  async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseDatabase.instance.setPersistenceEnabled(true);
 }
 
-void main()  {
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
+  // await initializeFirebase();
 
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
-  initializeFirebase();
   runApp(MyApp());
 }
 
 
 class MyApp extends StatelessWidget {
   // const MyApp({super.key});
-  // const MyApp({super.key});
+  const MyApp({super.key});
   // This widget is the root of your application.
 
   @override
@@ -75,8 +78,8 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      initialRoute:  '/splash_page',
-      // initialRoute: '/login_page',
+      // initialRoute:  '/home_page',
+      initialRoute: '/register',
 
       routes: {
         // Into Screen

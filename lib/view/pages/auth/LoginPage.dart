@@ -5,7 +5,6 @@ import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();

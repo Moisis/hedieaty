@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:hedieaty/view/pages/FriendPage.dart';
 
-import 'package:hedieaty/modules/Friend.dart';
+import 'package:hedieaty/data/testback/Friend.dart';
 import '../../../utils/AppColors.dart';
 
 class FriendCard extends StatelessWidget {

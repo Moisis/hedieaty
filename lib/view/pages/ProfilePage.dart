@@ -4,8 +4,8 @@ import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
 
 
-import 'package:hedieaty/modules/Friend.dart';
-import 'package:hedieaty/modules/demoStorage.dart';
+import 'package:hedieaty/data/testback/Friend.dart';
+import 'package:hedieaty/data/testback/demoStorage.dart';
 
 import 'package:hedieaty/utils/navigationHelper.dart';
 

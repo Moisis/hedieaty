@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hedieaty/domain/entities/user_entity.dart';
 
 import '../../../data/database/local/sqlite_user_dao.dart';
 
@@ -12,8 +13,6 @@ import '../../../domain/usecases/user/add_user.dart';
 import '../../../utils/AppColors.dart';
 import '../../components/widgets/buttons/CustomButton.dart';
 
-
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -22,11 +21,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
-
   late AddUser addUserUseCase;
-
-
 
   void initState() {
     super.initState();
@@ -39,13 +34,42 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     addUserUseCase = AddUser(repository as UserRepository);
     sqliteDataSource.init();
-
-
   }
 
+  final TextEditingController _controllername = TextEditingController();
   final TextEditingController _controlleremail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerPhone = TextEditingController();
 
+  Future<void> register() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _controlleremail.text.trim(),
+              password: _controllerPassword.text.trim());
+
+      // Get the User ID
+      String uid = userCredential.user?.uid ?? '';
+
+      // Create a new user data
+      final userData = UserEntity(
+        UserId: uid,
+        UserName: _controllername.text.trim(),
+        UserEmail: _controlleremail.text.trim(),
+        UserPass: _controllerPassword.text.trim(),
+        UserPhone: _controllerPhone.value.text.trim(),
+      );
+
+      addUserUseCase.call(userData);
+
+      // Navigate to home page
+      Navigator.pushNamedAndRemoveUntil(
+          context, "/home_page", (route) => false);
+    } on FirebaseAuthException catch (e) {
+      Fluttertoast.showToast(
+          msg: e.message.toString(), gravity: ToastGravity.SNACKBAR);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,16 +101,20 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
-                    topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                    topLeft: Radius.circular(
+                        MediaQuery.of(context).size.width * 0.1),
+                    topRight: Radius.circular(
+                        MediaQuery.of(context).size.width * 0.1),
                   ),
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.05),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05),
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -103,13 +131,16 @@ class _RegisterPageState extends State<RegisterPage> {
                             children: <Widget>[
                               // Name Field
                               Container(
-                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
                                 decoration: BoxDecoration(
                                   border: Border(
-                                    bottom: BorderSide(color: Colors.grey.shade200),
+                                    bottom:
+                                        BorderSide(color: Colors.grey.shade200),
                                   ),
                                 ),
                                 child: TextField(
+                                  controller: _controllername,
                                   decoration: InputDecoration(
                                     hintText: "Name",
                                     hintStyle: TextStyle(color: Colors.grey),
@@ -119,10 +150,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               // Email Field
                               Container(
-                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
                                 decoration: BoxDecoration(
                                   border: Border(
-                                    bottom: BorderSide(color: Colors.grey.shade200),
+                                    bottom:
+                                        BorderSide(color: Colors.grey.shade200),
                                   ),
                                 ),
                                 child: TextField(
@@ -137,21 +170,26 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               // Phone Number Field with Country Code
                               Container(
-                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.05),
                                 decoration: BoxDecoration(
                                   border: Border(
-                                    bottom: BorderSide(color: Colors.grey.shade200),
+                                    bottom:
+                                        BorderSide(color: Colors.grey.shade200),
                                   ),
                                 ),
                                 child: Row(
                                   children: [
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.2,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.2,
                                       child: TextField(
+                                        enabled: false,
                                         keyboardType: TextInputType.phone,
                                         decoration: InputDecoration(
                                           hintText: "+20",
-                                          hintStyle: TextStyle(color: Colors.grey),
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey),
                                           border: InputBorder.none,
                                         ),
                                       ),
@@ -159,10 +197,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                     SizedBox(width: 10),
                                     Expanded(
                                       child: TextField(
+                                        controller: _controllerPhone,
                                         keyboardType: TextInputType.phone,
                                         decoration: InputDecoration(
                                           hintText: "Phone Number",
-                                          hintStyle: TextStyle(color: Colors.grey),
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey),
                                           border: InputBorder.none,
                                         ),
                                       ),
@@ -175,7 +215,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   border: Border(
-                                    bottom: BorderSide(color: Colors.grey.shade200),
+                                    bottom:
+                                        BorderSide(color: Colors.grey.shade200),
                                   ),
                                 ),
                                 child: TextField(
@@ -194,18 +235,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(height: 40),
                         Custom_button(
                           title: 'Register',
-                          onPress: ()  async {
-                            try {
-                              await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                  email: _controlleremail.text.trim(),
-                                  password: _controllerPassword.text.trim())
-                                  .then((value) =>
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, "/home_page", (route) => false));
-                            }on FirebaseAuthException catch(e){
-                              Fluttertoast.showToast(msg: e.message.toString() , gravity: ToastGravity.SNACKBAR);
-                            }
-
+                          onPress: () {
+                            register();
                           },
                         ),
                         Row(
@@ -214,14 +245,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               "Forgot Password?",
                               style: TextStyle(color: Colors.grey),
                             ),
-                            SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.1),
                             TextButton(
                               child: Text(
                                 "Already have an account?",
                                 style: TextStyle(color: Colors.grey),
                               ),
                               onPressed: () {
-                                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, '/login', (route) => false);
                               },
                             ),
                           ],
@@ -232,7 +265,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-
           ],
         ),
       ),

@@ -27,8 +27,17 @@ class SQLiteUserDataSource {
 
   Future<void> addUser(User user) async {
     await _ensureInitialized();
-    await db.insert('Users', user.toJson());
+    try {
+      await db.insert('Users', user.toJson());
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        await updateUser(user);
+      } else {
+        rethrow;
+      }
+    }
   }
+
 
   Future<void> updateUser(User user) async {
     await _ensureInitialized();

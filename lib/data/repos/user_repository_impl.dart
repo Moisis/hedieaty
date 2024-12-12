@@ -15,7 +15,6 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<List<UserEntity>> getUsers() async {
-    syncUsers();
     return sqliteDataSource.getUsers();
   }
 
