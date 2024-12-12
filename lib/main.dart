@@ -1,38 +1,52 @@
 //Imports
 
 //libs
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:hedieaty/pages/SettingsPage.dart';
+import 'package:hedieaty/view/pages/SettingsPage.dart';
 
 // Style
-import 'components/AppColors.dart';
+import 'package:hedieaty/utils/AppColors.dart';
 
 //Landing
- import 'package:hedieaty/pages/Landing/SplashScreen.dart';
- import 'package:hedieaty/pages/Landing/intro_page.dart';
+ import 'package:hedieaty/view/pages/Landing/SplashScreen.dart';
+ import 'package:hedieaty/view/pages/Landing/intro_page.dart';
 
 //Auth
 
-import 'package:hedieaty/pages/auth/LoginPage.dart';
-import 'package:hedieaty/pages/auth/RegisterPage.dart';
+import 'package:hedieaty/view/pages/auth/LoginPage.dart';
+import 'package:hedieaty/view/pages/auth/RegisterPage.dart';
 
 
 //Pages
 
-import 'package:hedieaty/pages/GiftListPage.dart';
-import 'package:hedieaty/pages/HomePage.dart';
-import 'package:hedieaty/pages/MyPledgedGiftsPage.dart';
-import 'package:hedieaty/pages/NotificationsPage.dart';
-import 'package:hedieaty/pages/ProfilePage.dart';
- import 'package:hedieaty/pages/EventListPage.dart';
+import 'package:hedieaty/view/pages/GiftListPage.dart';
+import 'package:hedieaty/view/pages/HomePage.dart';
+import 'package:hedieaty/view/pages/MyPledgedGiftsPage.dart';
+import 'package:hedieaty/view/pages/NotificationsPage.dart';
+import 'package:hedieaty/view/pages/ProfilePage.dart';
+ import 'package:hedieaty/view/pages/EventListPage.dart';
+import 'package:hedieaty/view/pages/user_screen.dart';
 
+import 'firebase_options.dart';
 
+Future<void> initializeFirebase()  async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
+}
 
-void main() {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // runApp( MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
+  // await initializeFirebase();
 
   runApp(MyApp());
 }
@@ -40,8 +54,9 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // const MyApp({super.key});
-  // const MyApp({super.key});
+  const MyApp({super.key});
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -52,7 +67,7 @@ class MyApp extends StatelessWidget {
         // accentColor: AppColors.accent,
         scaffoldBackgroundColor: AppColors.background,
         textTheme: const TextTheme(
-          bodyLarge:  AppColors.textPrimary_h1,
+          bodyLarge:  AppColors.textPrimary_h2,
           bodyMedium: AppColors.textSecondary_h2,
         ),
         buttonTheme: const ButtonThemeData(
@@ -63,16 +78,20 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      initialRoute:  '/home_page',
+      // initialRoute:  '/home_page',
+      initialRoute: '/register',
+
       routes: {
         // Into Screen
         '/splash_page': (context) =>   SplashScreen(),
         '/intro_page': (context) =>   IntroPage(),
 
         // Auth Screen
-        '/login_page': (context) =>  LoginPage(),
-        '/register_page': (context) =>  RegisterPage(),
+        '/login': (context) =>  LoginPage(),
+        '/register': (context) =>  RegisterPage(),
 
+
+        '/user': (context) =>  UserScreen(),
 
         // Pages
         '/home_page': (context) =>  Homepage(),
