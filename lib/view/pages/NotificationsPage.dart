@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../components/widgets/nav/BottomNavBar.dart';
 import '../components/widgets/nav/CustomAppBar.dart';
 
-import 'package:hedieaty/utils/navigationHelper.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -14,14 +12,14 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
 
-  late var _index = 0;
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  CustomAppBar(
-
+        title: 'Notifcation Page',
+        showBackButton : true,
+        showNotificationIcon: false,
       ),
       body: Center(
         child: Column(
@@ -33,16 +31,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
             ),
           ],
         ),
-      ),
-
-      bottomNavigationBar: Bottomnavbar(
-        currentIndex: _index,
-        onIndexChanged: (index) {
-          setState(() {
-            _index = index;
-            navigateToPage(context , _index);
-          });
-        },
       ),
     );
   }

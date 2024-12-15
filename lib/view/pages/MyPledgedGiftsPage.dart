@@ -13,13 +13,14 @@ class PledgedGiftsPage extends StatefulWidget {
 
 class _PledgedGiftsPageState extends State<PledgedGiftsPage> {
 
-  late var _index = 1;
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  CustomAppBar(
+        title: 'Pledged Gifts ',
+        showBackButton: true,
         isSearchClicked: false,
         searchController: TextEditingController(),
         animationDuration: Duration(milliseconds: 300),
@@ -45,15 +46,7 @@ class _PledgedGiftsPageState extends State<PledgedGiftsPage> {
         ),
       ),
 
-      bottomNavigationBar: Bottomnavbar(
-        currentIndex: _index,
-        onIndexChanged: (index) {
-          setState(() {
-            _index = index;
-            navigateToPage(context , _index);
-          });
-        },
-      ),
+
     );
   }
 }

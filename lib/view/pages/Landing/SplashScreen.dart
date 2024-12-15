@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,6 +11,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+
+
   @override
   void initState() {
     super.initState();
@@ -23,12 +28,18 @@ class _SplashScreenState extends State<SplashScreen> {
     print('go!');
     FlutterNativeSplash.remove();
 
+
+
+    final prefs = await SharedPreferences.getInstance();
+    bool hasSeenIntro = prefs.getBool('hasSeenIntro') ?? false;
+
     // You can replace this logic to check for intro screen status
-    bool hasSeenIntro = true;
+    hasSeenIntro = true;
 
     if (hasSeenIntro) {
       Navigator.pushReplacementNamed(context, '/home_page');
     } else {
+      prefs.setBool('hasSeenIntro' ,false );
       Navigator.pushReplacementNamed(context, '/intro_page');
     }
   }

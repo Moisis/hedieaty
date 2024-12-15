@@ -1,24 +1,32 @@
 // // lib/components/CustomAppBar.dart
 
 // lib/components/CustomAppBar.dart
+
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import '../../../../utils/AppColors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+
+  final String title;
   final bool? isSearchClicked;
   final TextEditingController? searchController;
   final Duration? animationDuration;
   final Function(String)? onSearchChanged;
   final VoidCallback? onSearchIconPressed;
-  final bool showBackButton; // New parameter
+  final bool showBackButton;
+  final bool showNotificationIcon;
 
   CustomAppBar({
+    this.title = '',
     this.isSearchClicked = false,
     this.searchController,
     this.animationDuration = const Duration(milliseconds: 300),
     this.onSearchChanged,
     this.onSearchIconPressed,
     this.showBackButton = false, // Default to false
+    this.showNotificationIcon = true, // Default to true
+
   });
 
   @override
@@ -26,6 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final bool showSearch = isSearchClicked ?? false;
 
     return AppBar(
+
       leading: showBackButton
           ? IconButton(
               icon: const Icon(Icons.arrow_back, color: AppColors.white),
@@ -62,8 +71,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 onChanged: onSearchChanged,
               )
-            : const Text(
-                'Hedieaty',
+            :  Text(
+                title.isEmpty ?'Hedieaty' : title,
                 style: AppColors.textPrimary_h1,
               ),
       ),
@@ -76,12 +85,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             onPressed: onSearchIconPressed,
           ),
+        if (showNotificationIcon)
         IconButton(
-          icon: const Icon(Icons.settings, color: AppColors.white),
+          icon: badges.Badge(
+            position: badges.BadgePosition.topEnd(top: -5, end: -5),
+            badgeContent: const Text('3'),
+            child: const Icon(Icons.notifications_active,
+                color: AppColors.white, size: 30),
+          ),
           onPressed: () {
-            Navigator.pushNamed(context, '/settings_page');
+            Navigator.pushNamed(context, '/notification_page');
           },
-        ),
+        )
       ],
     );
   }

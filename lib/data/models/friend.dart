@@ -1,19 +1,23 @@
 
 
-import '../../domain/entities/friend_entity.dart';
 
-class Friend extends FriendEntity {
+class Friend   {
+  final String UserId;
+  final String FriendId;
 
   Friend({
-    required super.UserId,
-    required super.FriendId,
+    required  this.UserId,
+    required this.FriendId,
   });
 
-  factory Friend.fromJson(Map<String, dynamic> json) {
+
+  factory Friend.fromJson(Map<dynamic, dynamic> json) {
     return Friend(
-      UserId: json['UserId'], FriendId: json['FriendId'],
+      UserId: json['UserID'],
+      FriendId: json['FriendID'] ,
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

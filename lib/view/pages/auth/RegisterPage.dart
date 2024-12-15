@@ -4,6 +4,7 @@ import 'package:hedieaty/domain/entities/user_entity.dart';
 
 import '../../../data/database/local/sqlite_user_dao.dart';
 
+import '../../../data/database/remote/firebase_auth.dart';
 import '../../../data/database/remote/firebase_user_dao.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -28,9 +29,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final sqliteDataSource = SQLiteUserDataSource();
     final firebaseDataSource = FirebaseUserDataSource();
+    final firebaseAuthDataSource = FirebaseAuthDataSource();
+
     final repository = UserRepositoryImpl(
       sqliteDataSource: sqliteDataSource,
       firebaseDataSource: firebaseDataSource,
+      firebaseAuthDataSource: firebaseAuthDataSource,
     );
     addUserUseCase = AddUser(repository as UserRepository);
     sqliteDataSource.init();
@@ -58,6 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
         UserEmail: _controlleremail.text.trim(),
         UserPass: _controllerPassword.text.trim(),
         UserPhone: _controllerPhone.value.text.trim(),
+        UserEventsNo: 0,
       );
 
       addUserUseCase.call(userData);
