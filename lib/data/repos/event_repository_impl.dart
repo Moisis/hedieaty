@@ -54,10 +54,17 @@ class EventRepositoryImpl implements EventRepository {
   }
 
   @override
-  Future<List<EventEntity>> getEvents() {
-    syncEvents();
-    return sqliteDataSource.getEvents();
+  Future<List<EventEntity>> getEvents() async {
+    final events = await sqliteDataSource.getEvents();
 
+    return events.map((event) => EventEntity(
+        EventId: event.EventId,
+        EventName: event.EventName,
+        EventDate: event.EventDate,
+        EventLocation: event.EventLocation,
+        EventDescription: event.EventDescription,
+        UserId: event.UserId
+    )).toList();
   }
 
   @override

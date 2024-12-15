@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function(String)? onSearchChanged;
   final VoidCallback? onSearchIconPressed;
   final bool showBackButton;
-  final bool showNotificationIcon;
+
 
   CustomAppBar({
     this.title = '',
@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onSearchChanged,
     this.onSearchIconPressed,
     this.showBackButton = false, // Default to false
-    this.showNotificationIcon = true, // Default to true
+
 
   });
 
@@ -85,18 +85,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             onPressed: onSearchIconPressed,
           ),
-        if (showNotificationIcon)
-        IconButton(
-          icon: badges.Badge(
-            position: badges.BadgePosition.topEnd(top: -5, end: -5),
-            badgeContent: const Text('3'),
-            child: const Icon(Icons.notifications_active,
-                color: AppColors.white, size: 30),
-          ),
-          onPressed: () {
-            Navigator.pushNamed(context, '/notification_page');
-          },
-        )
+        // if (showNotificationIcon)
+        // IconButton(
+        //   icon: badges.Badge(
+        //     position: badges.BadgePosition.topEnd(top: -5, end: -5),
+        //     badgeContent: const Text('3'),
+        //     child: const Icon(Icons.notifications_active,
+        //         color: AppColors.white, size: 30),
+        //   ),
+        //   onPressed: () {
+        //     Navigator.pushNamed(context, '/notification_page');
+        //   },
+        // )
       ],
     );
   }

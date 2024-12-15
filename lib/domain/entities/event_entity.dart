@@ -1,18 +1,19 @@
-class EventEntity {
-  final String EventId;
-  final String EventName;
-  final String EventDate;
-  final String EventLocation;
-  final String EventDescription;
-  final String UserId;
+import 'package:hedieaty/data/models/event.dart';
+
+class EventEntity extends Event{
+
+  String? UserName ;
+
 
   EventEntity({
-    required this.EventId,
-    required this.EventName,
-    required this.EventDate,
-    required this.EventLocation,
-    required this.EventDescription,
-    required this.UserId,
+    required super.EventId,
+    required super.EventName,
+    required super.EventDate,
+    required super.EventLocation,
+    required super.EventDescription,
+    required super.UserId,
+    this.UserName
+
 
   });
 }

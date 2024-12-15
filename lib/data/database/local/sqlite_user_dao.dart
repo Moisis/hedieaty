@@ -56,5 +56,12 @@ class SQLiteUserDataSource {
     return UserModel.fromJson(maps.first);
   }
 
+  Future<UserModel> getUserByPhone(String phone) async {
+    await _ensureInitialized();
+    final maps = await db.query('Users', where: 'UserPhone = ?', whereArgs: [phone]);
+    if (maps.isEmpty) return UserModel(UserId: '', UserName: '', UserEmail: '', UserPass: '', UserPhone: '');
+    return UserModel.fromJson(maps.first);
+  }
+
 
 }

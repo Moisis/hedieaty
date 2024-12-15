@@ -12,10 +12,13 @@ class UserRepositoryImpl implements UserRepository {
   final FirebaseAuthDataSource firebaseAuthDataSource;
 
   UserRepositoryImpl({
-    required this.sqliteDataSource,
-    required this.firebaseDataSource,
-    required this.firebaseAuthDataSource,
-  });
+  SQLiteUserDataSource? sqliteDataSource,
+  FirebaseUserDataSource? firebaseDataSource,
+  FirebaseAuthDataSource? firebaseAuthDataSource,
+  })  : sqliteDataSource = sqliteDataSource ?? SQLiteUserDataSource(),
+  firebaseDataSource = firebaseDataSource ?? FirebaseUserDataSource(),
+  firebaseAuthDataSource = firebaseAuthDataSource ?? FirebaseAuthDataSource();
+
 
   @override
   Future<List<UserEntity>> getUsers() async {
@@ -142,14 +145,28 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<String> getUserAuthId() {
-    // TODO: implement getUserAuthId
-    throw UnimplementedError();
+    return firebaseAuthDataSource.getUserAuthID();
   }
 
   @override
   Future<void> registerUser(String email, String password) {
     // TODO: implement registerUser
     throw UnimplementedError();
+  }
+
+  @override
+  Future<UserEntity> getUserByPhone(String phone) async {
+    final usermodel = await sqliteDataSource.getUserByPhone(phone);
+
+    return UserEntity(
+      UserId: usermodel.UserId,
+      UserName: usermodel.UserName,
+      UserEmail: usermodel.UserEmail,
+      UserPass: usermodel.UserPass,
+      UserPrefs: usermodel.UserPrefs,
+      UserPhone: usermodel.UserPhone,
+      UserEventsNo: 0,
+    );
   }
 
 

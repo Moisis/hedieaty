@@ -79,7 +79,6 @@ class FriendList extends StatelessWidget {
                     UserPhone: contact.UserPhone,
                     UserEventsNo: contact.UserEventsNo,
                     FriendId: contact.FriendId,
-
                   ),
                 ),
               ),

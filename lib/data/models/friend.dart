@@ -13,8 +13,8 @@ class Friend   {
 
   factory Friend.fromJson(Map<dynamic, dynamic> json) {
     return Friend(
-      UserId: json['UserID'],
-      FriendId: json['FriendID'] ,
+      UserId: json['UserId'] ,
+      FriendId: json['FriendId'] ,
     );
   }
 

@@ -29,7 +29,7 @@ class FriendCard extends StatelessWidget {
           radius: 25,
           backgroundColor: Colors.grey.shade200, // Placeholder background color
           child: Hero(
-            tag: fr.UserId,
+            tag: fr.UserPhone ?? 'Unknown Phone',
             // child: ClipOval(
             //   child: Image.network(
             //     fr.UserId,

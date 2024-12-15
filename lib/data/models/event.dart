@@ -2,14 +2,23 @@ import 'package:hedieaty/domain/entities/event_entity.dart';
 
 
 
-class Event extends EventEntity {
+class Event   {
+
+
+  final String EventId;
+  final String EventName;
+  final String EventDate;
+  final String EventLocation;
+  final String EventDescription;
+  final String UserId;
+
   Event({
-    required super.EventId,
-    required super.EventName,
-    required super.EventDate,
-    required super.EventLocation,
-    required super.EventDescription,
-    required super.UserId,
+    required this.EventId,
+    required this.EventName,
+    required this.EventDate,
+    required this.EventLocation,
+    required this.EventDescription,
+    required this.UserId,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {

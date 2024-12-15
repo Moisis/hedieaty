@@ -70,11 +70,11 @@ class DatabaseHelper {
 
     await db.execute('''
         CREATE TABLE "Friends" (
-                "UserID"	TEXT NOT NULL,
-                "FriendID"	TEXT NOT NULL,
-                PRIMARY KEY("UserID","FriendID"),
-                FOREIGN KEY("FriendID") REFERENCES "Users"("UserId") ON DELETE CASCADE,
-                FOREIGN KEY("UserID") REFERENCES "Users"("UserId") ON DELETE CASCADE
+                "UserId"	TEXT NOT NULL,
+                "FriendId"	TEXT NOT NULL,
+                PRIMARY KEY("UserID","FriendId"),
+                FOREIGN KEY("FriendId") REFERENCES "Users"("UserId") ON DELETE CASCADE,
+                FOREIGN KEY("UserId") REFERENCES "Users"("UserId") ON DELETE CASCADE
         );  
     ''');
 

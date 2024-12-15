@@ -9,6 +9,6 @@ class GetFriends {
   GetFriends(this.repository);
 
   Future<List<FriendEntity>> call(String id) async {
-    return await repository.getFriends(id);
+    return await repository.getFriendsById(id);
   }
 }

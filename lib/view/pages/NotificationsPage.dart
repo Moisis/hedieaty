@@ -19,7 +19,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
       appBar:  CustomAppBar(
         title: 'Notifcation Page',
         showBackButton : true,
-        showNotificationIcon: false,
       ),
       body: Center(
         child: Column(
