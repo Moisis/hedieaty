@@ -1,3 +1,5 @@
+import 'package:hedieaty/data/database/remote/firebase_auth.dart';
+
 import '../../domain/repos_head/user_repository.dart';
 import '../../domain/entities/user_entity.dart';
 import '../database/remote/firebase_user_dao.dart';
@@ -7,20 +9,31 @@ import '../models/user.dart';
 class UserRepositoryImpl implements UserRepository {
   final SQLiteUserDataSource sqliteDataSource;
   final FirebaseUserDataSource firebaseDataSource;
+  final FirebaseAuthDataSource firebaseAuthDataSource;
 
   UserRepositoryImpl({
     required this.sqliteDataSource,
     required this.firebaseDataSource,
+    required this.firebaseAuthDataSource,
   });
 
   @override
   Future<List<UserEntity>> getUsers() async {
-    return sqliteDataSource.getUsers();
+    final users = await sqliteDataSource.getUsers();
+    return users.map((user) => UserEntity(
+      UserId: user.UserId,
+      UserName: user.UserName,
+      UserEmail: user.UserEmail,
+      UserPass: user.UserPass,
+      UserPrefs: user.UserPrefs,
+      UserPhone: user.UserPhone,
+
+    )).toList();
   }
 
   @override
   Future<void> addUser(UserEntity user) async {
-    final userModel = User(
+    final userModel = UserModel(
       UserId: user.UserId,
       UserName: user.UserName,
       UserEmail: user.UserEmail,
@@ -49,7 +62,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<void> updateUser(UserEntity user) async {
-    final userModel = User(
+    final userModel = UserModel(
       UserId: user.UserId,
       UserName: user.UserName,
       UserEmail: user.UserEmail,
@@ -82,5 +95,63 @@ class UserRepositoryImpl implements UserRepository {
       }
     });
   }
+
+  @override
+  Future<void> loginUser(String email, String password) async {
+    firebaseAuthDataSource.signInWithEmailAndPassword(email, password);
+  }
+
+  @override
+  Future<void> logoutUser() async {
+    firebaseAuthDataSource.signOut();
+
+  }
+
+  // @override
+  // Future<void> registerUser(UserModel user) async {
+  //   // firebaseAuthDataSource.signUpWithEmailAndPassword(user., password);
+  //   // String id =  await firebaseAuthDataSource.getUserAuthID();
+  //   //
+  //   // // Create a new user data
+  //   // final userData = UserModel(
+  //   //   UserId: uid,
+  //   //   UserName: _controllername.text.trim(),
+  //   //   UserEmail: _controlleremail.text.trim(),
+  //   //   UserPass: _controllerPassword.text.trim(),
+  //   //   UserPhone: _controllerPhone.value.text.trim(),
+  //   // );
+  //
+  //
+  // }
+
+
+  @override
+  Future<UserEntity> getUserById(String id) async {
+    final usermodel = await sqliteDataSource.getUserById(id);
+
+    return UserEntity(
+      UserId: usermodel?.UserId ?? '',
+      UserName: usermodel!.UserName,
+      UserEmail: usermodel.UserEmail,
+      UserPass: usermodel.UserPass,
+      UserPrefs: usermodel.UserPrefs,
+      UserPhone: usermodel.UserPhone,
+      UserEventsNo: 0,
+    );
+  }
+
+  @override
+  Future<String> getUserAuthId() {
+    // TODO: implement getUserAuthId
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> registerUser(String email, String password) {
+    // TODO: implement registerUser
+    throw UnimplementedError();
+  }
+
+
 
 }

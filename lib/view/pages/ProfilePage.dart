@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 
 import '../components/widgets/nav/BottomNavBar.dart';
@@ -9,9 +10,9 @@ import 'package:hedieaty/data/testback/demoStorage.dart';
 
 import 'package:hedieaty/utils/navigationHelper.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 class ProfilePage extends StatefulWidget {
-
-
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -19,7 +20,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  late var _index = 3;
+  late var _index = 2;
+
+  void _logout(BuildContext context) {
+    // UserRepository().logoutUser();
+    FirebaseAuth.instance.signOut();
+
+    Navigator.pushReplacementNamed(context, '/register');
+  }
 
   final Friend friend = getFriendList().first;
 
@@ -28,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  CustomAppBar(
-
+        title: 'Profile Page',
       ),
       body: Column(
         children: [
@@ -62,54 +70,63 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Divider(),
-          // Gift List Section
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0), // Adjust the padding value as needed
-              child: Text(
-                'Events',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0x80000000),
-                ),
-              ),
-            ),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text('Account Information'),
+            subtitle: Text('Change your account information'),
+            trailing: Icon(Icons.arrow_forward_ios_rounded),
+            onTap: () {},
           ),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: friend.events.length,
-              itemBuilder: (context, eventIndex) {
-                final event = friend.events[eventIndex];
-                final eventGifts = friend.giftList
-                    .where((gift) => gift.event == event)
-                    .toList();
-
-                return ExpansionTile(
-                  title: Text(event.name),
-                  subtitle: Text(
-                    '${event.date.toLocal()} - ${event.location}',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  children: eventGifts.map((gift) {
-                    return ListTile(
-                      leading: Icon(Icons.card_giftcard),
-                      title: Text(gift.name),
-                      subtitle: Text(gift.description),
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          // Handle gift pledge functionality
-                        },
-                        child: Text('Pledge'),
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.supervisor_account_sharp),
+            title: Text('Friends'),
+            subtitle: Text('Manage friends'),
+            trailing: Icon(Icons.arrow_forward_ios_rounded),
+            onTap: () {},
           ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.card_giftcard),
+            title: Text('Pledged Gifts'),
+            subtitle: Text('Manage payment methods'),
+            trailing: Icon(Icons.arrow_forward_ios_rounded),
+            onTap: () {
+
+              Navigator.pushNamed(context, '/pledgedGifts');
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            subtitle:
+            Text('Change Options'),
+            trailing: Icon(Icons.arrow_forward_ios_rounded),
+            onTap: () {
+
+              Navigator.pushNamed(context, '/settings_page');
+            },
+          ),
+          Divider(),
+          // ListTile(
+          //   leading: Icon(Icons.logout),
+          //   title: Text('Logout'),
+          //   subtitle: Text('Logout from your account'),
+          //   trailing: Icon(Icons.arrow_forward_ios_rounded),
+          //   onTap: () {},
+          // ),
+
+          Spacer(),
+          Custom_button(
+              title: 'Logout',
+              onPress: () {
+                _logout(context);
+          }
+
+          ),
+          Spacer(),
+
         ],
       ),
       bottomNavigationBar: Bottomnavbar(
@@ -124,3 +141,4 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+

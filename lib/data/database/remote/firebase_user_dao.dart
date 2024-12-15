@@ -4,20 +4,20 @@ import '../../models/user.dart';
 class FirebaseUserDataSource {
   final DatabaseReference dbRef = FirebaseDatabase.instance.ref('Users');
 
-  Stream<List<User>> getUsersStream() {
+  Stream<List<UserModel>> getUsersStream() {
     return dbRef.onValue.map((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       return data.entries
-          .map((entry) => User.fromJson(Map<String, dynamic>.from(entry.value)))
+          .map((entry) => UserModel.fromJson(Map<String, dynamic>.from(entry.value)))
           .toList();
     });
   }
 
-  Future<void> addUser(User user) async {
+  Future<void> addUser(UserModel user) async {
     await dbRef.child(user.UserId).set(user.toJson());
   }
 
-  Future<void> updateUser(User user) async {
+  Future<void> updateUser(UserModel user) async {
     await dbRef.child(user.UserId).update(user.toJson());
   }
 
@@ -25,17 +25,17 @@ class FirebaseUserDataSource {
     await dbRef.child(id).remove();
   }
 
-  Future<User?> getUserById(String id) async {
+  Future<UserModel?> getUserById(String id) async {
     final snapshot = await dbRef.child(id).get();
     if (!snapshot.exists) return null;
-    return User.fromJson(Map<String, dynamic>.from(snapshot.value as Map));
+    return UserModel.fromJson(Map<String, dynamic>.from(snapshot.value as Map));
   }
 
-  Future<List<User>> getUsers() async {
+  Future<List<UserModel>> getUsers() async {
     final snapshot = await dbRef.get();
     final data = snapshot.value as Map<dynamic, dynamic>;
     return data.entries
-        .map((entry) => User.fromJson(Map<String, dynamic>.from(entry.value)))
+        .map((entry) => UserModel.fromJson(Map<String, dynamic>.from(entry.value)))
         .toList();
   }
 }

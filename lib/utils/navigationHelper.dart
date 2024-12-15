@@ -6,7 +6,7 @@ void navigateToPage(BuildContext context, int index) {
   String  page;
   switch (index) {
     case 0:
-      page = '/notification_page';
+      page = '/Eventlistpage';
       break;
     // case 1:
     //   page = '/pledgedGifts';
@@ -14,10 +14,10 @@ void navigateToPage(BuildContext context, int index) {
     case 1:
       page = '/home_page';
       break;
+    // case 2:
+    //   page ='/Eventlistpage';
+    //   break;
     case 2:
-      page ='/Eventlistpage';
-      break;
-    case 3:
       page = '/profile_page';
       break;
     default:

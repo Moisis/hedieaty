@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:hedieaty/domain/entities/friend_entity.dart';
 
 
 import '../../../data/testback/Friend.dart';
@@ -8,12 +9,13 @@ import '../../../utils/AppColors.dart';
 import 'FriendCard.dart';
 
 class FriendList extends StatelessWidget {
-  final List<UserEntity> friends;
+  final List<FriendEntity> friends;
   final String searchQuery;
 
   FriendList({required this.friends, required this.searchQuery});
 
-  List<UserEntity> searchContacts(List<UserEntity> contacts, String searchQuery) {
+  List<FriendEntity>
+  searchContacts(List<FriendEntity> contacts, String searchQuery) {
     final query = searchQuery.trim().toLowerCase(); // Trim spaces and convert to lowercase
 
     if (query.isEmpty) return contacts; // If the query is empty, return all contacts
@@ -24,24 +26,26 @@ class FriendList extends StatelessWidget {
     final isPhoneNumberQuery = RegExp(r'^\d+$').hasMatch(normalizedQuery);
 
     return contacts.where((contact) {
-      final contactName = contact.UserName.trim().toLowerCase(); // Trim spaces in contact name
+      final contactName = contact.UserName?.trim().toLowerCase(); // Trim spaces in contact name
 
       // Normalize phone number by stripping non-digit characters
-      final normalizedPhoneNumber = contact.UserPhone.replaceAll(RegExp(r'\D'), '');
+      final normalizedPhoneNumber = contact.UserPhone?.replaceAll(RegExp(r'\D'), '');
 
       // Check if the name contains the query
-      final bool nameMatches = contactName.contains(query);
+      final bool? nameMatches = contactName?.contains(query);
 
       // Check if the phone number contains the query (after normalizing both)
-      final bool phoneMatches = normalizedPhoneNumber.contains(normalizedQuery);
+      final bool? phoneMatches = normalizedPhoneNumber?.contains(normalizedQuery);
 
-      return isPhoneNumberQuery ? phoneMatches : nameMatches;
+      return (isPhoneNumberQuery ? phoneMatches : nameMatches) ?? false;
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+
     final filteredFriends = searchContacts(friends, searchQuery);
+
 
     if (filteredFriends.isEmpty) {
       return const Center(
@@ -59,6 +63,7 @@ class FriendList extends StatelessWidget {
         itemCount: filteredFriends.length,
         itemBuilder: (context, index) {
           final contact = filteredFriends[index];
+          debugPrint('Contact: ${contact.UserName} - Events: ${contact.UserEventsNo}');
           return AnimationConfiguration.staggeredList(
             position: index,
             duration: const Duration(milliseconds: 500),
@@ -66,12 +71,15 @@ class FriendList extends StatelessWidget {
               verticalOffset: 50.0,
               child: FadeInAnimation(
                 child: FriendCard(
-                  fr: Friend(
-                    name: contact.UserName,
-                    phoneNumber: contact.UserPhone,
-                    profileImageUrl: contact.UserId,
-                    events: [],
-                    giftList: [],
+                  fr: FriendEntity(
+                    UserId: contact.UserId,
+                    UserName: contact.UserName,
+                    UserEmail: contact.UserEmail,
+                    UserPass: contact.UserPass,
+                    UserPhone: contact.UserPhone,
+                    UserEventsNo: contact.UserEventsNo,
+                    FriendId: contact.FriendId,
+
                   ),
                 ),
               ),

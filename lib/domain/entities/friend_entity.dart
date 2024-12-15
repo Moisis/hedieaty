@@ -1,10 +1,23 @@
-class FriendEntity {
-  final String UserId;
-  final String FriendId;
+import 'package:hedieaty/data/models/friend.dart';
 
-  FriendEntity({
-    required this.UserId,
-    required this.FriendId,
-  });
+class FriendEntity extends Friend{
 
+
+   String? UserName;
+   String? UserEmail;
+   String? UserPass;
+  String? UserPrefs;
+   String? UserPhone;
+  int? UserEventsNo ;
+
+   FriendEntity({
+     required super.UserId,
+     required super.FriendId,
+      this.UserName,
+      this.UserEmail,
+      this.UserPass,
+      this.UserPrefs,
+      this.UserPhone,
+     this.UserEventsNo
+   }) ;
 }

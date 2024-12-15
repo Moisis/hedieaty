@@ -1,18 +1,20 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:hedieaty/data/testback/Friend.dart';
+import 'package:hedieaty/domain/entities/user_entity.dart';
+
+import '../../domain/entities/friend_entity.dart';
+import '../../utils/AppColors.dart';
 
 class FriendPage extends StatelessWidget {
-  final Friend friend;
+  final FriendEntity friend;
 
   const FriendPage({Key? key, required this.friend}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('${friend.name}\'s Profile'),
+        title: Text('${friend.UserName}\'s Profile'),
       ),
       body: Column(
         children: [
@@ -22,10 +24,12 @@ class FriendPage extends StatelessWidget {
             child: Row(
               children: [
                 Hero(
-                  tag: friend.name,
+                  tag: friend.UserId,
                   child: CircleAvatar(
                     radius: 40,
-                    backgroundImage: NetworkImage(friend.profileImageUrl),
+                    backgroundImage: AssetImage(
+                      'assets/images/default_profile.png', // Ensure you have this asset in your project
+                    ),
                   ),
                 ),
                 SizedBox(width: 16),
@@ -34,12 +38,12 @@ class FriendPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        friend.name,
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold , color:  Color(0x80000000),),
+                        friend.UserName ?? 'Unknown Name',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0x80000000)),
                       ),
                       SizedBox(height: 4),
                       Text(
-                        'No bio available',
+                        friend.UserEmail ?? 'Unknown Email',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
@@ -64,39 +68,38 @@ class FriendPage extends StatelessWidget {
               ),
             ),
           ),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: friend.events.length,
-              itemBuilder: (context, eventIndex) {
-                final event = friend.events[eventIndex];
-                final eventGifts = friend.giftList
-                    .where((gift) => gift.event == event)
-                    .toList();
-
-                return ExpansionTile(
-                  title: Text(event.name),
-                  subtitle: Text(
-                    '${event.date.toLocal()} - ${event.location}',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  children: eventGifts.map((gift) {
-                    return ListTile(
-                      leading: Icon(Icons.card_giftcard),
-                      title: Text(gift.name),
-                      subtitle: Text(gift.description),
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          // Handle gift pledge functionality
-                        },
-                        child: Text('Pledge'),
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-          ),
+          // Expanded(
+          //   // child: ListView.builder(
+          //   //   itemCount: friend.UserEventsNo ?? 0,
+          //   //   itemBuilder: (context, eventIndex) {
+          //   //     final event = friend.events[eventIndex];
+          //   //     final eventGifts = friend.giftList
+          //   //         .where((gift) => gift.event == event)
+          //   //         .toList();
+          //   //
+          //   //     return ExpansionTile(
+          //   //       title: Text(event.name),
+          //   //       subtitle: Text(
+          //   //         '${event.date.toLocal()} - ${event.location}',
+          //   //         style: TextStyle(fontSize: 12),
+          //   //       ),
+          //   //       children: eventGifts.map((gift) {
+          //   //         return ListTile(
+          //   //           leading: Icon(Icons.card_giftcard),
+          //   //           title: Text(gift.name),
+          //   //           subtitle: Text(gift.description),
+          //   //           trailing: ElevatedButton(
+          //   //             onPressed: () {
+          //   //               // Handle gift pledge functionality
+          //   //             },
+          //   //             child: Text('Pledge'),
+          //   //           ),
+          //   //         );
+          //   //       }).toList(),
+          //   //     );
+          //   //   },
+          //   // ),
+          // ),
         ],
       ),
     );

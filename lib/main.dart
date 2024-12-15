@@ -28,7 +28,6 @@ import 'package:hedieaty/view/pages/MyPledgedGiftsPage.dart';
 import 'package:hedieaty/view/pages/NotificationsPage.dart';
 import 'package:hedieaty/view/pages/ProfilePage.dart';
  import 'package:hedieaty/view/pages/EventListPage.dart';
-import 'package:hedieaty/view/pages/user_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -78,8 +77,8 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      // initialRoute:  '/home_page',
-      initialRoute: '/register',
+      initialRoute:  '/home_page',
+      // initialRoute: '/register',
 
       routes: {
         // Into Screen
@@ -91,13 +90,15 @@ class MyApp extends StatelessWidget {
         '/register': (context) =>  RegisterPage(),
 
 
-        '/user': (context) =>  UserScreen(),
+        // '/user': (context) =>  UserScreen(),
 
         // Pages
         '/home_page': (context) =>  Homepage(),
         '/GiftList': (context) =>  GiftListPage(),
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
         '/profile_page': (context) =>  ProfilePage(),
+        // '/profile_page': (context) =>  ProfileScreen(),
+
         '/notification_page': (context) =>  NotificationsPage(),
         '/Eventlistpage' : (context) =>  Eventlistpage(),
         '/settings_page' : (context) =>  SettingsPage(),

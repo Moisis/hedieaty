@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+
 import 'package:hedieaty/view/pages/FriendPage.dart';
 
-import 'package:hedieaty/data/testback/Friend.dart';
+
+import '../../../domain/entities/friend_entity.dart';
 import '../../../utils/AppColors.dart';
 
 class FriendCard extends StatelessWidget {
-  // final String name;
-  // final String phoneNumber;
-  // final String profileImageUrl;
-  // final int events;
 
-  final Friend fr;
+
+  final FriendEntity fr;
 
   FriendCard({
     required this.fr,
@@ -30,44 +29,54 @@ class FriendCard extends StatelessWidget {
           radius: 25,
           backgroundColor: Colors.grey.shade200, // Placeholder background color
           child: Hero(
-            tag: fr.name,
+            tag: fr.UserId,
+            // child: ClipOval(
+            //   child: Image.network(
+            //     fr.UserId,
+            //     fit: BoxFit.cover,
+            //     width: 50,
+            //     height: 50,
+            //     errorBuilder: (context, error, stackTrace) {
+            //       // Provide a fallback image if the network image fails to load
+            //       return Image.asset(
+            //         'assets/images/default_profile.png', // Ensure you have this asset in your project
+            //         fit: BoxFit.cover,
+            //         width: 50,
+            //         height: 50,
+            //       );
+            //     },
+            //   ),
+            // ),
+
             child: ClipOval(
-              child: Image.network(
-                fr.profileImageUrl,
-                fit: BoxFit.cover,
-                width: 50,
-                height: 50,
-                errorBuilder: (context, error, stackTrace) {
-                  // Provide a fallback image if the network image fails to load
-                  return Image.asset(
+              child:  Image.asset(
                     'assets/images/default_profile.png', // Ensure you have this asset in your project
                     fit: BoxFit.cover,
                     width: 50,
                     height: 50,
-                  );
-                },
+
               ),
             ),
           ),
         ),
         title: Text(
-          fr.name,
+          fr.UserName ?? 'Unknown Name',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),
-        subtitle: Text(fr.phoneNumber),
+        subtitle: Text(fr.UserPhone ?? 'Unknown Phone'),
 
         trailing: badges.Badge(
           badgeContent: Text(
-            fr.events.length.toString(),
+            fr.UserEventsNo.toString(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 12,
             ),
           ),
-          showBadge: fr.events.isNotEmpty,
+          showBadge: (fr.UserEventsNo ?? 0) > 0,
           badgeAnimation: badges.BadgeAnimation.rotation(
             animationDuration: Duration(seconds: 1),
             colorChangeAnimationDuration: Duration(seconds: 1),

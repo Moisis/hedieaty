@@ -18,7 +18,7 @@ class Eventlistpage extends StatefulWidget {
 class _EventlistpageState extends State<Eventlistpage> {
 
   late List<Event> events;
-  late var _index = 2;
+  late var _index = 0;
 
   @override
   void initState() {
@@ -31,7 +31,9 @@ class _EventlistpageState extends State<Eventlistpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  CustomAppBar(),
+      appBar:  CustomAppBar(
+        title: 'Event List',
+      ),
       body: ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, index) {

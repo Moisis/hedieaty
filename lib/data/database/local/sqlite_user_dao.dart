@@ -19,13 +19,13 @@ class SQLiteUserDataSource {
     }
   }
 
-  Future<List<User>> getUsers() async {
+  Future<List<UserModel>> getUsers() async {
     await _ensureInitialized();
     final maps = await db.query('Users');
-    return maps.map((map) => User.fromJson(map)).toList();
+    return maps.map((map) => UserModel.fromJson(map)).toList();
   }
 
-  Future<void> addUser(User user) async {
+  Future<void> addUser(UserModel user) async {
     await _ensureInitialized();
     try {
       await db.insert('Users', user.toJson());
@@ -39,7 +39,7 @@ class SQLiteUserDataSource {
   }
 
 
-  Future<void> updateUser(User user) async {
+  Future<void> updateUser(UserModel user) async {
     await _ensureInitialized();
     await db.update('Users', user.toJson(), where: 'UserId = ?', whereArgs: [user.UserId]);
   }
@@ -49,10 +49,12 @@ class SQLiteUserDataSource {
     await db.delete('Users', where: 'UserId = ?', whereArgs: [id]);
   }
 
-  Future<User?> getUserById(String id) async {
+  Future<UserModel?> getUserById(String id) async {
     await _ensureInitialized();
     final maps = await db.query('Users', where: 'UserId = ?', whereArgs: [id]);
     if (maps.isEmpty) return null;
-    return User.fromJson(maps.first);
+    return UserModel.fromJson(maps.first);
   }
+
+
 }
