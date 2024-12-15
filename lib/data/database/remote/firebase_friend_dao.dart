@@ -5,9 +5,10 @@ import '../../models/gift.dart';
 class FirebaseFriendDataSource {
   final DatabaseReference dbRef = FirebaseDatabase.instance.ref('Friends');
 
-  Stream<List<Friend>> getFriendsStream(String userId) {
+  Stream<List<Friend>> getFriendsStreamById(String userId) {
     return dbRef.onValue.map((event) {
       final data = event.snapshot.value;
+      print('Data: $data');
 
       // Safely handle null and non-map values
       if (data is Map<dynamic, dynamic>) {
@@ -22,10 +23,28 @@ class FirebaseFriendDataSource {
     });
   }
 
+  Stream<List<Friend>> getFriendsStream( ) {
+    return dbRef.onValue.map((event) {
+      final data = event.snapshot.value;
+      print('Data: $data');
+
+      // Safely handle null and non-map values
+      if (data is Map<dynamic, dynamic>) {
+        return data.entries
+            .map((entry) => Friend.fromJson(Map<String, dynamic>.from(entry.value)))
+            .toList();
+      } else {
+        // Return an empty list if data is null or not a Map
+        return <Friend>[];
+      }
+    });
+  }
+
 
   Future<void> addFriend(Friend friend) async {
-    await dbRef.child(friend.UserId).set(friend.toJson());
+    await dbRef.child(friend.UserId).child(friend.FriendId).set(friend.toJson());
   }
+
 
   Future<void> updateFriend(Friend friend) async {
     await dbRef.child(friend.UserId).update(friend.toJson());

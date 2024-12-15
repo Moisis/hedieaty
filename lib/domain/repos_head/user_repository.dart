@@ -13,4 +13,5 @@ abstract class UserRepository {
 
   Future<UserEntity> getUserById(String id);
   Future<String> getUserAuthId();
+  Future<UserEntity> getUserByPhone(String phone);
 }

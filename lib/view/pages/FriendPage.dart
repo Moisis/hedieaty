@@ -24,7 +24,7 @@ class FriendPage extends StatelessWidget {
             child: Row(
               children: [
                 Hero(
-                  tag: friend.UserId,
+                  tag: friend.UserPhone ?? 'Unknown Phone',
                   child: CircleAvatar(
                     radius: 40,
                     backgroundImage: AssetImage(

@@ -5,16 +5,42 @@ import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 
 class LoginPage extends StatefulWidget {
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  String? _validateEmail(String? value) {
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (value == null || !emailRegex.hasMatch(value)) {
+      return "Enter a valid email";
+    }
+    return null;
+  }
 
+  String? _validatePassword(String? value) {
+    if (value == null || value.length < 6) {
+      return "Password must be at least 6 characters long";
+    }
+    return null;
+  }
+
+  Future<void> _login() async {
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _controllerEmail.text.trim(),
+              password: _controllerPassword.text.trim())
+          .then((value) => Navigator.pushNamedAndRemoveUntil(
+              context, '/home_page', (route) => false));
+    } on FirebaseAuthException catch (e) {
+      Fluttertoast.showToast(
+          msg: e.message.toString(), gravity: ToastGravity.SNACKBAR);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +73,20 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
-                    topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                    topLeft: Radius.circular(
+                        MediaQuery.of(context).size.width * 0.1),
+                    topRight: Radius.circular(
+                        MediaQuery.of(context).size.width * 0.1),
                   ),
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.05),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1),
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -72,35 +102,31 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: <Widget>[
                               Container(
-                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(color: Colors.grey.shade200),
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: _emailController,
-                                  decoration: InputDecoration(
-                                    hintText: "Email",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
+                                padding: const EdgeInsets.all(10),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    controller: _controllerEmail,
+                                    decoration: const InputDecoration(
+                                      labelText: "Email",
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: _validateEmail,
                                   ),
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(color: Colors.grey.shade200),
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: _passwordController,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: "Password",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
+                                padding: const EdgeInsets.all(10),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    controller: _controllerPassword,
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                      labelText: "Password",
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: _validatePassword,
                                   ),
                                 ),
                               ),
@@ -108,46 +134,29 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         SizedBox(height: 40),
-
                         Custom_button(
                           title: 'Login',
-                          onPress: () async {
-                            try {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text.trim())
-                                  .then((value) =>
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/home_page', (route) => false));
-                            }on FirebaseAuthException catch(e){
-                              Fluttertoast.showToast(msg: e.message.toString() , gravity: ToastGravity.SNACKBAR);
-                            }
-                          },
+                          onPress: _login,
                         ),
-
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "Forgot Password?",
+                            const Text(
+                              "Don't have an account?",
                               style: TextStyle(color: Colors.grey),
                             ),
-
-                            SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-
                             TextButton(
-                              child: Text(
-                                "Aren't you a member?",
-                                style: TextStyle(color: Colors.grey),
-                              ),
                               onPressed: () {
-                                Navigator.pushNamedAndRemoveUntil(context, '/register' , (route) => false);
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, '/register', (route) => false);
                               },
+                              child: const Text(
+                                "Sign Up",
+                                style: TextStyle(color: AppColors.primary),
+                              ),
                             ),
-
                           ],
                         ),
-
                       ],
                     ),
                   ),

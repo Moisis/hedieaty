@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hedieaty/domain/usecases/user/Logout_user.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 
+import '../../data/database/remote/firebase_auth.dart';
+import '../../data/repos/user_repository_impl.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
 
 
@@ -10,7 +13,6 @@ import 'package:hedieaty/data/testback/demoStorage.dart';
 
 import 'package:hedieaty/utils/navigationHelper.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatefulWidget {
 
@@ -22,10 +24,46 @@ class _ProfilePageState extends State<ProfilePage> {
 
   late var _index = 2;
 
-  void _logout(BuildContext context) {
-    // UserRepository().logoutUser();
-    FirebaseAuth.instance.signOut();
+  late LogoutUser logoutUser;
 
+
+
+  Future<void> _initialize() async {
+    try {
+      // final sqliteDataSource = SQLiteUserDataSource();
+      // final firebaseDataSource = FirebaseUserDataSource();
+
+      // final sqliteEventSource = SQLiteEventDataSource();
+      // final firebaseEventSource = FirebaseEventDataSource();
+      //
+      final firebaseAuthDataSource = FirebaseAuthDataSource();
+      //
+      // final sqliteFriendSource = SQLiteFriendDataSource();
+      // final firebaseFriendSource = FirebaseFriendDataSource();
+
+      final userRepository = UserRepositoryImpl(
+        // sqliteDataSource: sqliteDataSource,
+        // firebaseDataSource: firebaseDataSource,
+        firebaseAuthDataSource: firebaseAuthDataSource,
+      );
+
+      logoutUser = LogoutUser(userRepository);
+
+    } catch (e) {
+      debugPrint('Error during initialization: $e');
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  void _logout(BuildContext context) {
+
+    logoutUser.call();
     Navigator.pushReplacementNamed(context, '/register');
   }
 

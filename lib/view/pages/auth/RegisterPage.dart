@@ -1,18 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hedieaty/domain/entities/user_entity.dart';
+import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 
 import '../../../data/database/local/sqlite_user_dao.dart';
-
 import '../../../data/database/remote/firebase_auth.dart';
 import '../../../data/database/remote/firebase_user_dao.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../../data/repos/user_repository_impl.dart';
+import '../../../domain/entities/user_entity.dart';
 import '../../../domain/repos_head/user_repository.dart';
 import '../../../domain/usecases/user/add_user.dart';
 import '../../../utils/AppColors.dart';
-import '../../components/widgets/buttons/CustomButton.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -22,8 +20,16 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+
   late AddUser addUserUseCase;
 
+  final TextEditingController _controllerName = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerPhone = TextEditingController();
+
+
+  @override
   void initState() {
     super.initState();
 
@@ -40,17 +46,13 @@ class _RegisterPageState extends State<RegisterPage> {
     sqliteDataSource.init();
   }
 
-  final TextEditingController _controllername = TextEditingController();
-  final TextEditingController _controlleremail = TextEditingController();
-  final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerPhone = TextEditingController();
 
   Future<void> register() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: _controlleremail.text.trim(),
-              password: _controllerPassword.text.trim());
+          email: _controllerEmail.text.trim(),
+          password: _controllerPassword.text.trim());
 
       // Get the User ID
       String uid = userCredential.user?.uid ?? '';
@@ -58,8 +60,8 @@ class _RegisterPageState extends State<RegisterPage> {
       // Create a new user data
       final userData = UserEntity(
         UserId: uid,
-        UserName: _controllername.text.trim(),
-        UserEmail: _controlleremail.text.trim(),
+        UserName: _controllerName.text.trim(),
+        UserEmail: _controllerEmail.text.trim(),
         UserPass: _controllerPassword.text.trim(),
         UserPhone: _controllerPhone.value.text.trim(),
         UserEventsNo: 0,
@@ -76,6 +78,68 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+
+
+
+  final _formKey = GlobalKey<FormState>();
+  String? _errorMessage;
+
+  void _resetForm() {
+    setState(() {
+      _controllerName.clear();
+      _controllerEmail.clear();
+      _controllerPhone.clear();
+      _controllerPassword.clear();
+      _errorMessage = null;
+    });
+  }
+
+  void _validateAndSubmit() {
+    if (_formKey.currentState!.validate()) {
+      register();
+      setState(() {
+        _errorMessage = null;
+      });
+      Fluttertoast.showToast(msg: "Registration completed successfully!" , gravity: ToastGravity.SNACKBAR);
+    } else {
+      setState(() {
+        _errorMessage = "Please fix the errors above.";
+
+      });
+    }
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Name cannot be empty";
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (value == null || !emailRegex.hasMatch(value)) {
+      return "Enter a valid email";
+    }
+    return null;
+  }
+
+
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.length != 10 || !RegExp(r'^\d{10}$').hasMatch(value)) {
+      return "Phone number must be exactly 10 digits";
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.length < 6) {
+      return "Password must be at least 6 characters long";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,11 +154,11 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     "Register",
                     style: TextStyle(color: Colors.white, fontSize: 40),
                   ),
-                  Text(
+                  const Text(
                     "Welcome Back",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
@@ -106,165 +170,96 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(
-                        MediaQuery.of(context).size.width * 0.1),
-                    topRight: Radius.circular(
-                        MediaQuery.of(context).size.width * 0.1),
+                    topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                    topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
                   ),
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.05),
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.05),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(165, 201, 255, 1.0),
-                                blurRadius: 20,
-                                offset: Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              // Name Field
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom:
-                                        BorderSide(color: Colors.grey.shade200),
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: _controllername,
-                                  decoration: InputDecoration(
-                                    hintText: "Name",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                              // Email Field
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom:
-                                        BorderSide(color: Colors.grey.shade200),
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: _controlleremail,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    hintText: "Email",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                              // Phone Number Field with Country Code
-                              Container(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.05),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom:
-                                        BorderSide(color: Colors.grey.shade200),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: TextField(
-                                        enabled: false,
-                                        keyboardType: TextInputType.phone,
-                                        decoration: InputDecoration(
-                                          hintText: "+20",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: TextField(
-                                        controller: _controllerPhone,
-                                        keyboardType: TextInputType.phone,
-                                        decoration: InputDecoration(
-                                          hintText: "Phone Number",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Password Field
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom:
-                                        BorderSide(color: Colors.grey.shade200),
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: _controllerPassword,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: "Password",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 40),
-                        Custom_button(
-                          title: 'Register',
-                          onPress: () {
-                            register();
-                          },
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Forgot Password?",
-                              style: TextStyle(color: Colors.grey),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                          // Name Field
+                          TextFormField(
+                            controller: _controllerName,
+                            decoration: const InputDecoration(
+                              labelText: "Name",
+                              border: OutlineInputBorder(),
                             ),
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.1),
-                            TextButton(
-                              child: Text(
+                            validator: _validateName,
+                          ),
+                          const SizedBox(height: 20),
+                          // Email Field
+                          TextFormField(
+                            controller: _controllerEmail,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              labelText: "Email",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: _validateEmail,
+                          ),
+                          const SizedBox(height: 20),
+                          // Phone Number Field
+                          TextFormField(
+                            controller: _controllerPhone,
+                            keyboardType: TextInputType.phone,
+                            decoration: const InputDecoration(
+                              labelText: "Phone Number",
+                              border: OutlineInputBorder(),
+                              prefixText: "+20 ",
+                            ),
+                            validator: _validatePhone,
+                          ),
+                          const SizedBox(height: 20),
+                          // Password Field
+                          TextFormField(
+                            controller: _controllerPassword,
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                              labelText: "Password",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: _validatePassword,
+                          ),
+                          const SizedBox(height: 20),
+                          // Error Message Display
+                          if (_errorMessage != null)
+                            Text(
+                              _errorMessage!,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          const SizedBox(height: 20),
+                          // Buttons
+
+                          Custom_button(
+                            onPress: _validateAndSubmit,
+                            title: "Register",
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
                                 "Already have an account?",
                                 style: TextStyle(color: Colors.grey),
                               ),
-                              onPressed: () {
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, '/login', (route) => false);
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, '/login', (route) => false);
+                                },
+                                child: const Text(
+                                  "Log In",
+                                  style: TextStyle(color: AppColors.primary),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -275,4 +270,17 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+
+
+  // @override
+  // void dispose() {
+  //   _resetForm();
+  //   _controllerName.dispose();
+  //   _controllerEmail.dispose();
+  //   _controllerPhone.dispose();
+  //   _controllerPassword.dispose();
+  //   super.dispose();
+  // }
 }
+
+

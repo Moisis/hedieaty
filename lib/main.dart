@@ -77,8 +77,10 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      initialRoute:  '/home_page',
-      // initialRoute: '/register',
+      // initialRoute:  '/home_page',
+      // initialRoute: '/login',
+      initialRoute: '/register',
+      // initialRoute: '/Eventlistpage',
 
       routes: {
         // Into Screen
