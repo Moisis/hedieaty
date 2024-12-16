@@ -52,9 +52,9 @@ class FriendList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: 50, color: AppColors.primary),
+            Icon(Icons.search_off, size: 100, color: AppColors.primary),
             SizedBox(height: 20),
-            Text('No contacts found', style: AppColors.textPrimary_h2),
+            Text('No Friends found', style: AppColors.textPrimary_h2),
           ],
         ),
       );

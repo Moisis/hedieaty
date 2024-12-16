@@ -152,34 +152,30 @@ class _HomepageState extends State<Homepage> {
     }
 
     try {
-      // Placeholder for future use cases or additional checks
-      final user = FirebaseAuth.instance.currentUser;
 
       final foundFriend = await getUserByPhoneUseCase.call(phone);
 
       FriendEntity tempFriend = FriendEntity(
-        UserId: user!.uid,
+        UserId: FirebaseAuth.instance.currentUser!.uid,
         FriendId: foundFriend.UserId,
       );
 
       await addFriendUseCase.call(tempFriend);
 
-      // Refresh contacts after successful addition
-      await syncFriendsUseCase.call();
 
-      await _refreshContacts();
       Navigator.pop(context);
       Fluttertoast.showToast(
         msg: "Friend added successfully!",
         gravity: ToastGravity.SNACKBAR,
       );
 
+      await _refreshContacts();
       setState(() {
         _controllerPhone.clear();
       });
     } catch (e) {
       Fluttertoast.showToast(
-        msg: "Error adding friend",
+        msg: "Error adding friend $e",
         gravity: ToastGravity.SNACKBAR,
       );
     }
