@@ -6,6 +6,6 @@ abstract class FriendRepository {
   Future<void> deleteFriend(FriendEntity user);
   Future<List<FriendEntity>> getFriendsById(String id);
   Future<void> syncFriends();
-  Future<List<FriendEntity>> getFriends(String id);
+  // Future<List<FriendEntity>> getFriends(String id);
 
 }

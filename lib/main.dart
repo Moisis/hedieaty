@@ -78,8 +78,8 @@ class MyApp extends StatelessWidget {
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
       // initialRoute:  '/home_page',
-      // initialRoute: '/login',
-      initialRoute: '/register',
+      initialRoute: '/login',
+      // initialRoute: '/register',
       // initialRoute: '/Eventlistpage',
 
       routes: {

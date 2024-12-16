@@ -13,26 +13,6 @@ class FriendRepositoryImpl implements FriendRepository {
     required this.firebaseDataSource,
   });
 
-  // Future<void> addFriend(FriendEntity friend) async {
-  //   final friendModel = Friend(
-  //     UserId: friend.UserId,
-  //     FriendId: friend.FriendId,
-  //   );
-  //
-  //   final friendModel2 = Friend(
-  //     UserId: friend.FriendId,
-  //     FriendId: friend.UserId,
-  //   );
-  //
-  //   // Check if the user already exists in Firebase
-  //   final existingFriend = await firebaseDataSource.getFriendById(friend.FriendId);
-  //   if (existingFriend != null) {
-  //     print("Friend already exists, skipping insert.");
-  //     return; // Friend already exists, skip adding.
-  //   }
-  //
-  // }
-
 
   @override
   Future<void> addFriend(FriendEntity friend) async {
@@ -46,18 +26,10 @@ class FriendRepositoryImpl implements FriendRepository {
       FriendId: friend.UserId,
     );
 
-
-    // Check if the user already exists in Firebase
-    // final existingFriend = await firebaseDataSource.getFriendById(friend.FriendId);
-    // if (existingFriend != null) {
-    //   print("Friend already exists, skipping insert.");
-    //   return; // Friend already exists, skip adding.
-    // }
-
     await firebaseDataSource.addFriend(friendModel);
-    // await firebaseDataSource.addFriend(friendModel2);
+    await firebaseDataSource.addFriend(friendModel2);
     await sqliteDataSource.addFriend(friendModel);
-    await sqliteDataSource.addFriend(friendModel2);
+
   }
 
   @override
@@ -67,81 +39,67 @@ class FriendRepositoryImpl implements FriendRepository {
       FriendId: friend.FriendId,
     );
 
-    await firebaseDataSource.deleteFriend(friend.FriendId);
-    await sqliteDataSource.deleteFriend(friend.FriendId);
+    final friendModel2 = Friend(
+      UserId: friend.FriendId,
+      FriendId: friend.UserId,
+    );
+
+    await firebaseDataSource.deleteFriend(friendModel);
+    await firebaseDataSource.deleteFriend(friendModel2);
+    await sqliteDataSource.deleteFriend(friendModel);
   }
-
-  @override
-  Future<List<FriendEntity>> getFriends(String userId) async {
-
-    print("Getting friends for user $userId");
-    final friends = await sqliteDataSource.getFriends(userId);
-    print("Got friends from SQLite: $friends");
-    for (var friend in friends) {
-      print("aaFriend: ${friend.UserId}, ${friend.FriendId}");
-    }
-
-    return friends.map((friend) => FriendEntity(
-      UserId: friend.UserId,
-      FriendId: friend.FriendId,
-    )).toList();
-
-  }
-
-  // Future<void> syncFriends() async {
-  //   final users = await firebaseDataSource.getFriendsStream().first;
-  //   for (var user in users) {
-  //     // Check if the user already exists locally before adding
-  //     final existingUser = await sqliteDataSource.getFriends(user.FriendId);
-  //
-  //     if (existingUser == null) {
-  //       await sqliteDataSource.addFriend(user);
-  //     } else {
-  //       await sqliteDataSource.updateFriend(user);
-  //     }
-  //   }
-  // }
-
 
 
   @override
   Future<void> syncFriends() async {
-    firebaseDataSource.getFriendsStream().listen((users) async {
-      for (var user in users) {
-        // Check if the user already exists locally before adding
-        final existingUser = await sqliteDataSource.getFriendById(user.UserId);
+    // Listen to the stream of friends from Firebase
+    firebaseDataSource.getFriendsStream().listen((friends) async {
+      // Iterate over each Friend in the list
+      for (var friend in friends) {
+        for (var friend in friends) {
+          print("Friend: ${friend.UserId}, ${friend.FriendId}");
 
-        if (existingUser == null) {
-          await sqliteDataSource.addFriend(user);
-        }else{
-          await sqliteDataSource.updateFriend(user);
+          // Check if the friend already exists locally before adding
+          final existingFriend = await sqliteDataSource.getFriendById(friend.UserId, friend.FriendId);
+
+          // If the friend doesn't exist locally, add it
+          if (existingFriend == null) {
+            print("Adding friend to SQLite: ${friend.UserId}, ${friend.FriendId}");
+            await sqliteDataSource.addFriend(friend);
+          } else {
+            print("Updating friend in SQLite: ${friend.UserId}, ${friend
+                .FriendId}");
+            // Update existing friend in local SQLite
+            await sqliteDataSource.updateFriend(friend);
+          }
         }
+
+
       }
     });
   }
 
+
   @override
   Future<List<FriendEntity>> getFriendsById(String id) async {
-
     print("Getting friends for user $id");
     final friends = await sqliteDataSource.getFriends(id);
-    print("Got friends from SQLite: ${friends.first.UserId}");
-    for (var friend in friends) {
+    print("Got friends from SQLite: ${friends?.first.UserId}");
+    for (var friend in friends!) {
       print("Friend: ${friend.UserId}, ${friend.FriendId}");
     }
 
     print("Getting friends for user $id");
-    print("Got friends from Firebase: ${
-        friends.map((friend) => FriendEntity(
+    print("Got friends from Firebase: ${friends.map((friend) => FriendEntity(
           UserId: friend.UserId,
           FriendId: friend.FriendId,
         )).toList()}");
 
-    return friends.map((friend) => FriendEntity(
-      UserId: friend.UserId,
-      FriendId: friend.FriendId,
-    )).toList();
+    return friends
+        .map((friend) => FriendEntity(
+              UserId: friend.UserId,
+              FriendId: friend.FriendId,
+            ))
+        .toList();
   }
-
-
 }
