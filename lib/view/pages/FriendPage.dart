@@ -5,16 +5,22 @@ import 'package:hedieaty/domain/usecases/event/getEventsbyUserId.dart';
 import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 
 import '../../data/database/local/sqlite_event_dao.dart';
+import '../../data/database/local/sqlite_gift_dao.dart';
 import '../../data/database/local/sqlite_user_dao.dart';
 import '../../data/database/remote/firebase_auth.dart';
 import '../../data/database/remote/firebase_event_dao.dart';
+import '../../data/database/remote/firebase_gift_dao.dart';
 import '../../data/database/remote/firebase_user_dao.dart';
 import '../../data/repos/event_repository_impl.dart';
+import '../../data/repos/gift_repository_impl.dart';
 import '../../data/repos/user_repository_impl.dart';
 import '../../domain/entities/friend_entity.dart';
+import '../../domain/entities/gift_entity.dart';
 import '../../domain/usecases/event/add_event.dart';
 
 import '../../domain/usecases/event/sync_events.dart';
+import '../../domain/usecases/gifts/get_gifts_event.dart';
+import '../../domain/usecases/gifts/sync_gifts.dart';
 import '../../domain/usecases/user/get_users.dart';
 import '../../domain/usecases/user/sync_users.dart';
 import '../../utils/AppColors.dart';
@@ -149,6 +155,7 @@ class _FriendPageState extends State<FriendPage> {
       }).toList();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +306,7 @@ class _FriendPageState extends State<FriendPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          EventDetails(event: event),
+                                          EventDetails(event: event ),
                                     ),
                                   );
                                 },

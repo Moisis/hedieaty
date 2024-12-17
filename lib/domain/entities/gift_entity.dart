@@ -1,21 +1,17 @@
-class GiftEntity {
-  final String GiftId;
-  final String GiftName;
-  final String GiftDescription;
-  final String GiftCat;
-  final double  GiftPrice;
-  final String GiftStatus;
-  final String GiftEventId;
+import '../../data/models/gift.dart';
+
+class GiftEntity  extends Gift {
+
 
 
   GiftEntity({
-    required this.GiftId,
-    required this.GiftName,
-    required this.GiftDescription,
-    required this.GiftPrice,
-    required this.GiftCat,
-    required this.GiftStatus,
-    required this.GiftEventId,
+    required super.GiftId,
+    required super.GiftName,
+    required super.GiftDescription,
+    required super.GiftPrice,
+    required super.GiftCat,
+    required super.GiftStatus,
+    required super.GiftEventId,
 
   });
 }

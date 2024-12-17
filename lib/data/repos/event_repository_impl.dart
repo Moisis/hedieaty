@@ -101,4 +101,16 @@ class EventRepositoryImpl implements EventRepository {
     return getEvents().then((events) => events.where((event) => event.UserId == id).toList());
   }
 
+  @override
+  Stream<List<EventEntity>> getStreamEvents() {
+    return firebaseDataSource.getEventsStream().map((events) => events.map((event) => EventEntity(
+        EventId: event.EventId,
+        EventName: event.EventName,
+        EventDate: event.EventDate,
+        EventLocation: event.EventLocation,
+        EventDescription: event.EventDescription,
+        UserId: event.UserId
+    )).toList());
+  }
+
 }

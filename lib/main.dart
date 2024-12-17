@@ -1,9 +1,10 @@
 //Imports
-
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 //libs
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hedieaty/view/pages/Event/EventCreationPage.dart';
 import 'package:hedieaty/view/pages/Event/testevent.dart';
@@ -66,11 +67,12 @@ class MyApp extends StatelessWidget {
       title: 'Hedieaty',
       theme: ThemeData(
         primaryColor: AppColors.primary,
-        // accentColor: AppColors.accent,
         scaffoldBackgroundColor: AppColors.background,
-        textTheme: const TextTheme(
-          bodyLarge:  AppColors.textPrimary_h2,
-          bodyMedium: AppColors.textSecondary_h2,
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme.copyWith(
+            bodyLarge: AppColors.textPrimary_h2,
+            bodyMedium: AppColors.textSecondary_h2,
+          ),
         ),
         buttonTheme: const ButtonThemeData(
           buttonColor: AppColors.primary,
@@ -80,8 +82,8 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      initialRoute:  '/home_page',
-      // initialRoute: '/login',
+      // initialRoute:  '/home_page',
+      initialRoute: '/splash_page',
       // initialRoute: '/register',
       // initialRoute: '/Eventlistpage',
 

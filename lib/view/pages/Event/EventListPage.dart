@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hedieaty/domain/entities/event_entity.dart';
 import 'package:hedieaty/domain/usecases/event/delete_event.dart';
@@ -5,15 +7,22 @@ import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/view/pages/Event/EventCreationPage.dart';
 
 import '../../../data/database/local/sqlite_event_dao.dart';
+import '../../../data/database/local/sqlite_gift_dao.dart';
 import '../../../data/database/local/sqlite_user_dao.dart';
 import '../../../data/database/remote/firebase_auth.dart';
 import '../../../data/database/remote/firebase_event_dao.dart';
+import '../../../data/database/remote/firebase_gift_dao.dart';
 import '../../../data/database/remote/firebase_user_dao.dart';
 import '../../../data/repos/event_repository_impl.dart';
+import '../../../data/repos/gift_repository_impl.dart';
 import '../../../data/repos/user_repository_impl.dart';
+import '../../../domain/entities/gift_entity.dart';
 import '../../../domain/usecases/event/add_event.dart';
 import '../../../domain/usecases/event/get_events.dart';
 import '../../../domain/usecases/event/sync_events.dart';
+import '../../../domain/usecases/gifts/get_gifts_event.dart';
+import '../../../domain/usecases/gifts/sync_gifts.dart';
+import '../../../domain/usecases/user/getUserAuthId.dart';
 import '../../../domain/usecases/user/get_users.dart';
 import '../../../domain/usecases/user/sync_users.dart';
 import '../../components/widgets/EventCard.dart';
@@ -25,6 +34,7 @@ import 'package:hedieaty/utils/navigationHelper.dart';
 
 import '../gift/EventListDetailsPage.dart';
 import 'EventEditPage.dart';
+import 'GetStreamEvent.dart';
 
 class Eventlistpage extends StatefulWidget {
   const Eventlistpage({super.key});
@@ -34,19 +44,28 @@ class Eventlistpage extends StatefulWidget {
 }
 
 class _EventlistpageState extends State<Eventlistpage> {
-  List<EventEntity> events = [];
+
   List<EventEntity> filteredEvents = [];
   late var _index = 0;
   var _selectedStatus = 0;
 
   late GetUsers getUsersUseCase;
   late SyncUsers syncUsersUseCase;
+  late GetUserAuthId getUserAuthId;
 
   late SyncEvents syncEventsUseCase;
   late GetEvents getEventsUseCase;
   late DeleteEvent deleteEventUseCase;
 
+
   late AddEvent addEventUseCase;
+
+  late GetStreamEvent getStreamEvent;
+  late Stream<List<EventEntity>> eventsStream;
+  late StreamSubscription<List<EventEntity>>? _eventSubscription;
+  List<EventEntity> events = [];
+
+
 
   void _onStatusChange(int index) {
     setState(() {
@@ -99,6 +118,8 @@ class _EventlistpageState extends State<Eventlistpage> {
   void initState() {
     super.initState();
     _intializeData();
+    _subscribetoEvents();
+
   }
 
   Future<void> _intializeData() async {
@@ -125,34 +146,55 @@ class _EventlistpageState extends State<Eventlistpage> {
       getEventsUseCase = GetEvents(eventRepository);
       addEventUseCase = AddEvent(eventRepository);
       deleteEventUseCase = DeleteEvent(eventRepository);
+      getStreamEvent = GetStreamEvent(eventRepository);
 
       getUsersUseCase = GetUsers(userRepository);
       syncUsersUseCase = SyncUsers(userRepository);
+      getUserAuthId = GetUserAuthId(userRepository);
 
-      await syncUsersUseCase.call();
-      await syncEventsUseCase.call();
 
-      final newEvents = await getEventsUseCase.call();
-      final users = await getUsersUseCase.call();
 
-      final userAuthId = await userRepository.getUserAuthId();
-
-      for (EventEntity event in newEvents) {
-        if (event.UserId == userAuthId) {
-          event.UserName = 'Me';
-        } else {
-          final user = users.firstWhere((user) => user.UserId == event.UserId);
-          event.UserName = user.UserName;
-        }
-      }
-
-      setState(() {
-        this.events = newEvents;
-        _onStatusChange(_selectedStatus);
-      });
     } catch (e) {
       print(e);
     }
+  }
+
+
+  Future<void> _subscribetoEvents() async {
+    await syncUsersUseCase.call();
+    await syncEventsUseCase.call();
+
+    final users = await getUsersUseCase.call();
+
+    final userAuthId = await getUserAuthId.call();
+    eventsStream = getStreamEvent.call();
+
+
+    _eventSubscription = eventsStream.listen((updatedEvents) {
+      print('Gifts updated: $updatedEvents');
+      setState(()  {
+
+        for (EventEntity event in updatedEvents) {
+          if (event.UserId == userAuthId) {
+            event.UserName = 'Me';
+          } else {
+            final user = users.firstWhere((user) => user.UserId == event.UserId);
+            event.UserName = user.UserName;
+          }
+        }
+        events = updatedEvents;
+        _onStatusChange(_selectedStatus);
+
+      });
+    });
+
+
+  }
+
+  @override
+  void dispose() {
+    _eventSubscription?.cancel(); // Clean up the subscription
+    super.dispose();
   }
 
   @override
@@ -327,7 +369,7 @@ class _EventlistpageState extends State<Eventlistpage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    EventDetails(event: event),
+                                    EventDetails(event: event  ),
                               ),
                             );
                           },
@@ -339,7 +381,7 @@ class _EventlistpageState extends State<Eventlistpage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    EventDetails(event: event),
+                                    EventDetails(event: event ),
                               ),
                             );
                           },

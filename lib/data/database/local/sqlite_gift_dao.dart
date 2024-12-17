@@ -33,6 +33,7 @@ class SQLiteGiftDataSource {
   }
 
   Future<void> updateGift(Gift gift) async {
+    print('updateGift');
     await _ensureInitialized();
     await db.update(
         'Gifts', gift.toJson(), where: 'GiftId = ?', whereArgs: [gift.GiftId]);
@@ -43,11 +44,21 @@ class SQLiteGiftDataSource {
     await db.delete('Gifts', where: 'GiftId = ?', whereArgs: [id]);
   }
 
+
   Future<Gift?> getGiftById(String id) async {
+
     await _ensureInitialized();
-    final maps = await db.query('Gifts', where: 'GiftId = ?', whereArgs: [id]);
-    if (maps.isEmpty) return null;
-    return Gift.fromJson(maps.first);
+    final List<Map<String, dynamic>> maps = await db.query(
+      'gifts',
+      where: 'GiftId = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Gift.fromJson(maps.first);
+    } else {
+      return null;
+    }
   }
 
   Future<void> deleteAllGifts() async {
@@ -55,7 +66,7 @@ class SQLiteGiftDataSource {
     await db.delete('Gifts');
   }
 
-  Future<List<GiftEntity>> getGiftsListbyEventId(String eventId) async {
+  Future<List<Gift>> getGiftsListbyEventId(String eventId) async {
     await _ensureInitialized();
     final maps = await db.query('Gifts', where: 'GiftEventId = ?', whereArgs: [eventId]);
     return maps.map((map) => Gift.fromJson(map)).toList();

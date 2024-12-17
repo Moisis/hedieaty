@@ -11,30 +11,29 @@ class AppColors {
 
   static const TextStyle textPrimary_h1 = TextStyle(
     color: Color(0xffffffff),
-    fontFamily: 'Roboto',
     fontSize: 20,
   );
 
   static const TextStyle textSecondary_h1 = TextStyle(
     color: Color(0xffe3e2e2),
-    fontFamily: 'Roboto',
+
   );
 
 
   static const TextStyle textSecondary_h2 = TextStyle(
     color: Color(0x80000000),
-    fontFamily: 'Roboto',
+
   );
 
 
   static const TextStyle textPrimary_h2 = TextStyle(
     color: Color(0x80000000),
-    fontFamily: 'Roboto',
+
   );
 
   static const TextStyle textbadger = TextStyle(
     color: Color(0xffffffff),
-    fontFamily: 'Roboto',
+
     fontSize: 16 ,
   );
 

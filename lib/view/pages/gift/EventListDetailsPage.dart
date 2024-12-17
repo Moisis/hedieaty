@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hedieaty/data/database/local/sqlite_gift_dao.dart';
 import 'package:hedieaty/data/database/remote/firebase_gift_dao.dart';
@@ -10,6 +12,7 @@ import 'package:hedieaty/domain/usecases/gifts/get_gifts_event.dart';
 import 'package:hedieaty/domain/usecases/gifts/sync_gifts.dart';
 import 'package:hedieaty/utils/AppColors.dart';
 
+import '../../../domain/usecases/gifts/getStreamGift.dart';
 import '../../components/widgets/nav/CustomAppBar.dart';
 
 
@@ -23,21 +26,24 @@ class EventDetails extends StatefulWidget {
 }
 
 class _EventDetailsState extends State<EventDetails> {
-  late ScrollController _controller = ScrollController();
+   final ScrollController _controller = ScrollController();
 
-  List<GiftEntity> gifts = [];
+   late GetStreamGift getGiftsStream;
+   late Stream<List<GiftEntity>> giftsStream;
+   late StreamSubscription<List<GiftEntity>>? _giftsSubscription;
+   List<GiftEntity> gifts = [];
 
   @override
   void initState() {
     super.initState();
     _initializeGifts();
+    _subscribeToGifts();
 
   }
 
   late GetGiftsEvent getGiftsEvent;
   late AddGift addGift;
   late SyncGifts syncGifts;
-
 
 
   Future<void> _initializeGifts() async {
@@ -51,38 +57,34 @@ class _EventDetailsState extends State<EventDetails> {
         firebaseDataSource: firebaseDataSource,
       );
 
-      getGiftsEvent = GetGiftsEvent(giftRepository);
+      getGiftsStream = GetStreamGift(giftRepository);
       addGift = AddGift(giftRepository);
-      syncGifts = SyncGifts(giftRepository);
-
-
-      // addGift.call(GiftEntity(
-      //   GiftId: '1',
-      //   GiftName: 'Gift 1',
-      //   GiftDescription: 'Gift 1 Description',
-      //   GiftPrice: 100,
-      //   GiftCat: 'Gift 1 Category',
-      //   GiftStatus: 'Gift 1 Status',
-      //   GiftEventId: widget.event.EventId,
-      // ));
-
-      await syncGifts.call();
-
-      gifts = await getGiftsEvent.call(widget.event.EventId);
-
-      setState(() {
-
-      });
 
     } catch (e) {
       debugPrint('Error during initialization: $e');
-    }finally{
-
     }
   }
 
 
-  @override
+   void _subscribeToGifts() {
+     giftsStream = getGiftsStream.call(widget.event.EventId) ;
+
+     _giftsSubscription = giftsStream.listen((updatedGifts) {
+       print('Gifts updated: $updatedGifts');
+       setState(() {
+         gifts = updatedGifts;
+       });
+     });
+   }
+
+   @override
+   void dispose() {
+     _giftsSubscription?.cancel(); // Clean up the subscription
+     super.dispose();
+   }
+
+
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
@@ -161,6 +163,7 @@ class _EventDetailsState extends State<EventDetails> {
                 itemBuilder: (context, index) {
                   final gift = gifts[index];
                   return Card(
+                    color: gift.GiftStatus == 'Pledged' ? Colors.green[50] : Colors.white,
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
                       leading: const Icon(
@@ -172,7 +175,7 @@ class _EventDetailsState extends State<EventDetails> {
                         style: const TextStyle(fontSize: 18),
                       ),
                       subtitle: Text(
-                        gift.GiftDescription,
+                        gift.GiftStatus,
                         style: const TextStyle(color: Colors.grey),
                       ),
                       trailing: Text(
@@ -195,6 +198,16 @@ class _EventDetailsState extends State<EventDetails> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // _addFriendWindow();
+
+          addGift.call(GiftEntity(
+            GiftId: '23',
+            GiftName: 'Gift 323',
+            GiftDescription: 'Gift 23 Description',
+            GiftPrice: 100,
+            GiftCat: 'Gift 1 Category',
+            GiftStatus: 'add',
+            GiftEventId: widget.event.EventId,
+          ));
         },
         child: const Icon(
           Icons.add_task,
@@ -205,3 +218,11 @@ class _EventDetailsState extends State<EventDetails> {
     );
   }
 }
+
+
+
+
+
+
+
+
