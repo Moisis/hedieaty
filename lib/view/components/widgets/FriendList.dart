@@ -3,8 +3,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hedieaty/domain/entities/friend_entity.dart';
 
 
-import '../../../data/testback/Friend.dart';
-import '../../../domain/entities/user_entity.dart';
 import '../../../utils/AppColors.dart';
 import 'FriendCard.dart';
 

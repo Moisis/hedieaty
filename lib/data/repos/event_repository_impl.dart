@@ -96,6 +96,9 @@ class EventRepositoryImpl implements EventRepository {
     await firebaseDataSource.updateEvent(eventModel);
   }
 
-
+  @override
+  Future<List<EventEntity>> getEventsbyUserId(String id) {
+    return getEvents().then((events) => events.where((event) => event.UserId == id).toList());
+  }
 
 }

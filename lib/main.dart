@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:hedieaty/view/pages/Event/EventCreationPage.dart';
+import 'package:hedieaty/view/pages/Event/testevent.dart';
 import 'package:hedieaty/view/pages/SettingsPage.dart';
 
 // Style
@@ -22,12 +24,13 @@ import 'package:hedieaty/view/pages/auth/RegisterPage.dart';
 
 //Pages
 
-import 'package:hedieaty/view/pages/GiftListPage.dart';
+
 import 'package:hedieaty/view/pages/HomePage.dart';
-import 'package:hedieaty/view/pages/MyPledgedGiftsPage.dart';
-import 'package:hedieaty/view/pages/NotificationsPage.dart';
+
+
 import 'package:hedieaty/view/pages/ProfilePage.dart';
- import 'package:hedieaty/view/pages/EventListPage.dart';
+import 'package:hedieaty/view/pages/Event/EventListPage.dart';
+import 'package:hedieaty/view/pages/gift/MyPledgedGiftsPage.dart';
 
 import 'firebase_options.dart';
 
@@ -77,10 +80,11 @@ class MyApp extends StatelessWidget {
       // Todo uncomment screen home :  SplashScreen(),
       // home :  SplashScreen(),
       // initialRoute:  '/splash_page',
-      // initialRoute:  '/home_page',
-      initialRoute: '/login',
+      initialRoute:  '/home_page',
+      // initialRoute: '/login',
       // initialRoute: '/register',
       // initialRoute: '/Eventlistpage',
+
 
       routes: {
         // Into Screen
@@ -96,17 +100,23 @@ class MyApp extends StatelessWidget {
 
         // Pages
         '/home_page': (context) =>  Homepage(),
-        '/GiftList': (context) =>  GiftListPage(),
+        // '/GiftList': (context) =>  EventDetails(),
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
         '/profile_page': (context) =>  ProfilePage(),
         // '/profile_page': (context) =>  ProfileScreen(),
 
-        '/notification_page': (context) =>  NotificationsPage(),
+        // '/notification_page': (context) =>  NotificationsPage(),
+
+        //Event
         '/Eventlistpage' : (context) =>  Eventlistpage(),
+        '/EventCreatePage' : (context) =>  EventCreationPage(),
+
         '/settings_page' : (context) =>  SettingsPage(),
         // '/info_page': (context) => const InfoPage(),
         // '/rules_page': (context) =>  CopyrightPage(),
         // '/stats_page': (context) => const StatsPage(),
+
+
       },
     );
   }

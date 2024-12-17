@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../components/widgets/nav/BottomNavBar.dart';
-import '../components/widgets/nav/CustomAppBar.dart';
-import 'package:hedieaty/utils/navigationHelper.dart';
+import '../../components/widgets/nav/CustomAppBar.dart';
+
+
 
 class PledgedGiftsPage extends StatefulWidget {
   const PledgedGiftsPage({super.key});

@@ -67,10 +67,10 @@ class FriendRepositoryImpl implements FriendRepository {
             print("Adding friend to SQLite: ${friend.UserId}, ${friend.FriendId}");
             await sqliteDataSource.addFriend(friend);
           } else {
-            print("Updating friend in SQLite: ${friend.UserId}, ${friend
-                .FriendId}");
-            // Update existing friend in local SQLite
-            await sqliteDataSource.updateFriend(friend);
+            // print("Updating friend in SQLite: ${friend.UserId}, ${friend
+            //     .FriendId}");
+            // // Update existing friend in local SQLite
+            // await sqliteDataSource.updateFriend(friend);
           }
         }
 
@@ -82,18 +82,13 @@ class FriendRepositoryImpl implements FriendRepository {
 
   @override
   Future<List<FriendEntity>> getFriendsById(String id) async {
-    print("Getting friends for user $id");
+
     final friends = await sqliteDataSource.getFriends(id);
-    print("Got friends from SQLite: ${friends?.first.UserId}");
+
     for (var friend in friends!) {
       print("Friend: ${friend.UserId}, ${friend.FriendId}");
     }
 
-    print("Getting friends for user $id");
-    print("Got friends from Firebase: ${friends.map((friend) => FriendEntity(
-          UserId: friend.UserId,
-          FriendId: friend.FriendId,
-        )).toList()}");
 
     return friends
         .map((friend) => FriendEntity(
