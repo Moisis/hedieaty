@@ -1,37 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:hedieaty/domain/entities/user_entity.dart';
 import 'package:hedieaty/domain/usecases/user/Logout_user.dart';
+import 'package:hedieaty/domain/usecases/user/getUserAuthId.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 
+import '../../data/database/local/sqlite_user_dao.dart';
 import '../../data/database/remote/firebase_auth.dart';
+import '../../data/database/remote/firebase_user_dao.dart';
 import '../../data/repos/user_repository_impl.dart';
+import '../../domain/usecases/user/getUserbyId.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
-
 
 import 'package:hedieaty/data/testback/Friend.dart';
 import 'package:hedieaty/data/testback/demoStorage.dart';
 
 import 'package:hedieaty/utils/navigationHelper.dart';
 
-
 class ProfilePage extends StatefulWidget {
-
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   late var _index = 2;
 
   late LogoutUser logoutUser;
-
-
+  late GetUserById getUserById;
+  late GetUserAuthId getUserAuthId;
+  UserEntity user = UserEntity(
+      UserId: '',
+      UserName: '',
+      UserEmail: '',
+      UserPass: '',
+      UserPrefs: '',
+      UserPhone: '');
 
   Future<void> _initialize() async {
     try {
-      // final sqliteDataSource = SQLiteUserDataSource();
-      // final firebaseDataSource = FirebaseUserDataSource();
+      final sqliteDataSource = SQLiteUserDataSource();
+      final firebaseDataSource = FirebaseUserDataSource();
 
       // final sqliteEventSource = SQLiteEventDataSource();
       // final firebaseEventSource = FirebaseEventDataSource();
@@ -42,18 +50,25 @@ class _ProfilePageState extends State<ProfilePage> {
       // final firebaseFriendSource = FirebaseFriendDataSource();
 
       final userRepository = UserRepositoryImpl(
-        // sqliteDataSource: sqliteDataSource,
-        // firebaseDataSource: firebaseDataSource,
+        sqliteDataSource: sqliteDataSource,
+        firebaseDataSource: firebaseDataSource,
         firebaseAuthDataSource: firebaseAuthDataSource,
       );
 
       logoutUser = LogoutUser(userRepository);
+      getUserById = GetUserById(userRepository);
+      getUserAuthId = GetUserAuthId(userRepository);
 
+      var userAuthID = await getUserAuthId.call();
+      final user2 = await getUserById.call(userAuthID);
+
+      setState(() {
+        user = user2;
+      });
     } catch (e) {
       debugPrint('Error during initialization: $e');
     }
   }
-
 
   @override
   void initState() {
@@ -62,18 +77,16 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _logout(BuildContext context) {
-
     logoutUser.call();
     Navigator.pushReplacementNamed(context, '/register');
   }
 
   final Friend friend = getFriendList().first;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  CustomAppBar(
+      appBar: CustomAppBar(
         title: 'Profile Page',
       ),
       body: Column(
@@ -93,12 +106,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        friend.name,
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold , color:  Color(0x80000000),),
+                        user.UserName,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0x80000000),
+                        ),
                       ),
                       SizedBox(height: 4),
                       Text(
-                        'No bio available',
+                        user.UserEmail,
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
@@ -116,6 +133,15 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: () {},
           ),
           Divider(),
+
+          ListTile(
+            leading: Icon(Icons.event),
+            title: Text('Events'),
+            subtitle: Text('Manage events'),
+            trailing: Icon(Icons.arrow_forward_ios_rounded),
+            onTap: () {},
+          ),
+          Divider(),
           ListTile(
             leading: Icon(Icons.supervisor_account_sharp),
             title: Text('Friends'),
@@ -127,10 +153,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ListTile(
             leading: Icon(Icons.card_giftcard),
             title: Text('Pledged Gifts'),
-            subtitle: Text('Manage payment methods'),
+            subtitle: Text('Manage Pledged Gifts'),
             trailing: Icon(Icons.arrow_forward_ios_rounded),
             onTap: () {
-
               Navigator.pushNamed(context, '/pledgedGifts');
             },
           ),
@@ -138,33 +163,29 @@ class _ProfilePageState extends State<ProfilePage> {
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
-            subtitle:
-            Text('Change Options'),
+            subtitle: Text('Change Options'),
             trailing: Icon(Icons.arrow_forward_ios_rounded),
             onTap: () {
-
               Navigator.pushNamed(context, '/settings_page');
             },
           ),
+
           Divider(),
-          // ListTile(
-          //   leading: Icon(Icons.logout),
-          //   title: Text('Logout'),
-          //   subtitle: Text('Logout from your account'),
-          //   trailing: Icon(Icons.arrow_forward_ios_rounded),
-          //   onTap: () {},
-          // ),
-
-          Spacer(),
-          Custom_button(
-              title: 'Logout',
-              onPress: () {
-                _logout(context);
-          }
-
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Logout'),
+            subtitle: Text('Logout from your account'),
+            trailing: Icon(Icons.arrow_forward_ios_rounded),
+            onTap: () {
+              _logout(context);
+            },
           ),
-          Spacer(),
 
+          // Custom_button(
+          //     title: 'Logout',
+          //     onPress: () {
+          //       _logout(context);
+          //     }),
         ],
       ),
       bottomNavigationBar: Bottomnavbar(
@@ -172,11 +193,10 @@ class _ProfilePageState extends State<ProfilePage> {
         onIndexChanged: (index) {
           setState(() {
             _index = index;
-            navigateToPage(context , _index);
+            navigateToPage(context, _index);
           });
         },
       ),
     );
   }
 }
-

@@ -1,8 +1,8 @@
 import'package:flutter/material.dart';
 import 'package:hedieaty/utils/AppColors.dart';
 
-class BookingStatusButton extends StatelessWidget {
-  const BookingStatusButton({
+class StatusButton extends StatelessWidget {
+  const StatusButton({
     Key? key,
     required this.label,
     required this.onTap,
@@ -31,7 +31,7 @@ class BookingStatusButton extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(
           vertical: 10,
-          horizontal: 25,
+          horizontal: 20,
         ),
         child: Text(
           label,

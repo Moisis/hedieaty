@@ -1,12 +1,13 @@
-import '../../entities/user_entity.dart';
-import '../../repos_head/user_repository.dart';
 
-class UpdateUser {
-  final UserRepository repository;
+import 'package:hedieaty/domain/entities/event_entity.dart';
+import 'package:hedieaty/domain/repos_head/event_repository.dart';
 
-  UpdateUser(this.repository);
+class UpdateEvent {
+  final EventRepository repository;
 
-  Future<void> call(UserEntity user) async {
-    return await repository.updateUser(user);
+  UpdateEvent(this.repository);
+
+  Future<void> call(EventEntity event) async {
+    return await repository.updateEvent(event);
   }
 }

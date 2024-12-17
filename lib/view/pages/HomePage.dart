@@ -10,6 +10,7 @@ import 'package:hedieaty/domain/usecases/event/add_event.dart';
 import 'package:hedieaty/domain/usecases/event/sync_events.dart';
 import 'package:hedieaty/domain/usecases/friend/getFriends.dart';
 import 'package:hedieaty/domain/usecases/friend/sync_Friends.dart';
+import 'package:hedieaty/domain/usecases/user/getUserAuthId.dart';
 import 'package:hedieaty/domain/usecases/user/getUserbyId.dart';
 import 'package:hedieaty/utils/AppColors.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -59,6 +60,7 @@ class _HomepageState extends State<Homepage> {
   // List<FriendEntity> Friends = [];
 
   String connectionStatus = 'unknown';
+  String UserAuthId = '';
 
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _controllerPhone = TextEditingController();
@@ -72,6 +74,7 @@ class _HomepageState extends State<Homepage> {
   late SyncEvents syncEventsUseCase;
   late GetEvents getEventsUseCase;
   late AddEvent addEventUseCase;
+  late GetUserAuthId  getUserAuthIdUseCase;
 
   late GetFriends getFriendsUseCase;
   late AddFriend addFriendUseCase;
@@ -81,12 +84,15 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     print('init state');
-
+    isLoading = true;
     _initialize();
   }
 
   Future<void> _initialize() async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       final sqliteDataSource = SQLiteUserDataSource();
       final firebaseDataSource = FirebaseUserDataSource();
       final firebaseAuthDataSource = FirebaseAuthDataSource();
@@ -120,6 +126,7 @@ class _HomepageState extends State<Homepage> {
       getUsersUseCase = GetUsers(userRepository);
       syncUsersUseCase = SyncUsers(userRepository);
       getUserByPhoneUseCase = GetUserByPhone(userRepository);
+      getUserAuthIdUseCase = GetUserAuthId(userRepository);
 
 
       getFriendsUseCase = GetFriends(friendRepository);
@@ -132,6 +139,10 @@ class _HomepageState extends State<Homepage> {
       await _refreshContacts();
     } catch (e) {
       debugPrint('Error during initialization: $e');
+    }finally{
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -156,7 +167,7 @@ class _HomepageState extends State<Homepage> {
       final foundFriend = await getUserByPhoneUseCase.call(phone);
 
       FriendEntity tempFriend = FriendEntity(
-        UserId: FirebaseAuth.instance.currentUser!.uid,
+        UserId: UserAuthId,
         FriendId: foundFriend.UserId,
       );
 
@@ -272,18 +283,9 @@ class _HomepageState extends State<Homepage> {
   Future<void> _refreshContacts() async {
     print('Refresh:');
     try {
-      setState(() {
-        isLoading = true;
-      });
 
-      // Synchronize users and events
-      if (connectionStatus == 'none') {
-        // No internet connection
-        setState(() {
-          isLoading = false;
-        });
-        return;
-      }
+      UserAuthId = await getUserAuthIdUseCase.call();
+      print('UserAuthId: $UserAuthId');
       await syncUsersUseCase.call();
       await syncEventsUseCase.call();
       await syncFriendsUseCase.call();
@@ -291,21 +293,19 @@ class _HomepageState extends State<Homepage> {
       // Fetch updated data
       final newContacts = await getUsersUseCase.call();
       final newEvents = await getEventsUseCase.call();
+      final newFriends = await getFriendsUseCase.call(UserAuthId);
 
-      // // Update user event counts
+
+
+      // Update user event counts
       for (var user in newContacts) {
         user.UserEventsNo =
             newEvents.where((event) => event.UserId == user.UserId).length;
       }
-      //  Todo - Auth
-      FirebaseAuth auth = FirebaseAuth.instance;
-      final user = auth.currentUser;
-
-      final newFriends = await getFriendsUseCase.call(user!.uid);
 
       for (FriendEntity friend in newFriends) {
         final user =
-            newContacts.firstWhere((user) => user.UserId == friend.FriendId);
+        newContacts.firstWhere((user) => user.UserId == friend.FriendId);
         friend.UserName = user.UserName;
         friend.UserEmail = user.UserEmail;
         friend.UserPhone = user.UserPhone;
@@ -316,15 +316,13 @@ class _HomepageState extends State<Homepage> {
 
       setState(() {
         contacts = newFriends;
-        isLoading = false;
+        isLoading=false;
       });
     } catch (e) {
-      // debugPrint('Error refreshing contacts: $e');
-      setState(() {
-        isLoading = false;
-      });
+      debugPrint('Error refreshing contacts: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +360,9 @@ class _HomepageState extends State<Homepage> {
 
                         IC_button(
                           title: 'Create Your Own Event',
-                          onPress: () {},
+                          onPress: () {
+                            Navigator.pushNamed(context, '/EventCreatePage');
+                          },
                           icon: const Icon(
                             Icons.edit_calendar,
                             color: Colors.white,
