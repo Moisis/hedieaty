@@ -1,21 +1,33 @@
 import 'package:hedieaty/domain/entities/gift_entity.dart';
 
-class Gift extends GiftEntity{
-  Gift({required super.GiftId,
-    required super.GiftName,
-    required super.GiftDescription,
-    required super.GiftPrice,
-    required super.GiftCat,
-    required super.GiftStatus,
-    required super.GiftEventId
+class Gift {
+
+  final String GiftId;
+  final String GiftName;
+  final String GiftDescription;
+  final String GiftCat;
+  final double  GiftPrice;
+  final String GiftStatus;
+  final String GiftEventId;
+
+
+  Gift({
+    required this.GiftId,
+    required this.GiftName,
+    required this.GiftDescription,
+    required this.GiftPrice,
+    required this.GiftCat,
+    required this.GiftStatus,
+    required this.GiftEventId,
   });
+
 
   factory Gift.fromJson(Map<String, dynamic> json) {
     return Gift(
       GiftId: json['GiftId'],
       GiftName: json['GiftName'],
       GiftDescription: json['GiftDescription'],
-      GiftPrice: json['GiftPrice'],
+      GiftPrice: (json['GiftPrice'] as num).toDouble(),
       GiftCat: json['GiftCat'],
       GiftStatus: json['GiftStatus'],
       GiftEventId: json['GiftEventId'],

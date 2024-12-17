@@ -55,9 +55,19 @@ class GiftRepositoryImpl implements GiftRepository {
   }
 
   @override
-  Future<List<GiftEntity>> getGifts() {
-    syncGifts();
-    return sqliteDataSource.getGifts();
+  Future<List<GiftEntity>> getGifts() async {
+
+    final gifts = await sqliteDataSource.getGifts();
+
+    return gifts.map((event) => GiftEntity(
+        GiftId: event.GiftId,
+        GiftName: event.GiftName,
+        GiftDescription: event.GiftDescription,
+        GiftPrice: event.GiftPrice,
+        GiftCat: event.GiftCat,
+        GiftStatus: event.GiftStatus,
+        GiftEventId: event.GiftEventId
+    )).toList();
   }
 
   @override
@@ -92,19 +102,50 @@ class GiftRepositoryImpl implements GiftRepository {
     });
   }
 
-  @override
-  Future<GiftEntity?> getGiftById(String id) {
-    syncGifts();
-    return sqliteDataSource.getGiftById(id);
+
+  Future<GiftEntity?> getGiftById(String id) async {
+    final gift = await sqliteDataSource.getGiftById(id);
+    if (gift == null) {
+      return null;
+    }
+    return GiftEntity(
+      GiftId: gift.GiftId,
+      GiftName: gift.GiftName,
+      GiftDescription: gift.GiftDescription,
+      GiftPrice: gift.GiftPrice,
+      GiftCat: gift.GiftCat,
+      GiftStatus: gift.GiftStatus,
+      GiftEventId: gift.GiftEventId,
+    );
   }
 
-
   @override
-  Future<List<GiftEntity>> getGiftsListbyEventId(String eventId) {
-    syncGifts();
-    return sqliteDataSource.getGiftsListbyEventId(eventId);
+  Future<List<GiftEntity>> getGiftsListbyEventId(String eventId) async {
+    final gifts = await sqliteDataSource.getGiftsListbyEventId(eventId);
+    return gifts.map((gift) => GiftEntity(
+        GiftId: gift.GiftId,
+        GiftName: gift.GiftName,
+        GiftDescription: gift.GiftDescription,
+        GiftPrice: gift.GiftPrice,
+        GiftCat: gift.GiftCat,
+        GiftStatus: gift.GiftStatus,
+        GiftEventId: gift.GiftEventId
+    )).toList();
   }
 
+  @override
+  Stream<List<GiftEntity>> getStreamGift(String eventId) {
+    return firebaseDataSource.getGiftsStreambyEventId(eventId).map((gifts) => gifts.map((gift) => GiftEntity(
+        GiftId: gift.GiftId,
+        GiftName: gift.GiftName,
+        GiftDescription: gift.GiftDescription,
+        GiftPrice: gift.GiftPrice,
+        GiftCat: gift.GiftCat,
+        GiftStatus: gift.GiftStatus,
+        GiftEventId: gift.GiftEventId
+    )).toList());
+
+  }
 
 
 

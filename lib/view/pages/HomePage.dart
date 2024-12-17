@@ -137,12 +137,11 @@ class _HomepageState extends State<Homepage> {
       print(FirebaseAuth.instance.currentUser!.uid);
 
       await _refreshContacts();
-    } catch (e) {
-      debugPrint('Error during initialization: $e');
-    }finally{
       setState(() {
         isLoading = false;
       });
+    } catch (e) {
+      debugPrint('Error during initialization: $e');
     }
   }
 

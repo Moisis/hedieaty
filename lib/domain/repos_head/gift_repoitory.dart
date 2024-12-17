@@ -8,6 +8,7 @@ abstract class GiftRepository {
   Future<List<GiftEntity>> getGifts();
   Future<GiftEntity?> getGiftById(String id);
   Future<List<GiftEntity>> getGiftsListbyEventId(String eventId);
+  Stream<List<GiftEntity>> getStreamGift(String eventId);
 
   Future<void> syncGifts();
 
