@@ -117,4 +117,17 @@ class EventRepositoryImpl implements EventRepository {
     )).toList());
   }
 
+  @override
+  Future<EventEntity?> getEventById(String id) {
+    return sqliteDataSource.getEventById(id).then((event) => event == null ? null : EventEntity(
+        EventId: event.EventId,
+        EventName: event.EventName,
+        EventDate: event.EventDate,
+        EventLocation: event.EventLocation,
+        EventImageUrl: event.EventImageUrl,
+        EventDescription: event.EventDescription,
+        UserId: event.UserId
+    ));
+  }
+
 }

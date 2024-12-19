@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hedieaty/domain/usecases/user/getUserAuthId.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 import '../../../data/database/local/sqlite_event_dao.dart';
 import '../../../data/database/local/sqlite_friend_dao.dart';
 import '../../../data/database/local/sqlite_gift_dao.dart';
@@ -22,18 +22,16 @@ import '../../../domain/usecases/gifts/sync_gifts.dart';
 import '../../../domain/usecases/user/sync_users.dart';
 
 class SplashScreen extends StatefulWidget {
-
-
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   late SyncUsers syncUsersUseCase;
   late SyncFriends syncFriendsUseCase;
   late SyncEvents syncEventsUseCase;
   late SyncGifts syncGiftsUseCase;
+  late GetUserAuthId getUserAuthIdUseCase;
 
   @override
   void initState() {
@@ -42,43 +40,28 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> initialization() async {
-
-
     try {
-      final sqliteDataSource = SQLiteUserDataSource();
-      final firebaseDataSource = FirebaseUserDataSource();
-      final firebaseAuthDataSource = FirebaseAuthDataSource();
-
-      final sqliteEventSource = SQLiteEventDataSource();
-      final firebaseEventSource = FirebaseEventDataSource();
-
-      final sqliteFriendSource = SQLiteFriendDataSource();
-      final firebaseFriendSource = FirebaseFriendDataSource();
-
-      final sqliteGiftDataSource = SQLiteGiftDataSource();
-      final firebaseGiftDataSource = FirebaseGiftDataSource();
-
       final giftRepository = GiftRepositoryImpl(
-        sqliteDataSource: sqliteGiftDataSource,
-        firebaseDataSource: firebaseGiftDataSource,
+        sqliteDataSource: SQLiteGiftDataSource(),
+        firebaseDataSource: FirebaseGiftDataSource(),
       );
 
       syncGiftsUseCase = SyncGifts(giftRepository);
 
       final userRepository = UserRepositoryImpl(
-        sqliteDataSource: sqliteDataSource,
-        firebaseDataSource: firebaseDataSource,
-        firebaseAuthDataSource: firebaseAuthDataSource,
+        sqliteDataSource: SQLiteUserDataSource(),
+        firebaseDataSource: FirebaseUserDataSource(),
+        firebaseAuthDataSource: FirebaseAuthDataSource(),
       );
 
       final eventRepository = EventRepositoryImpl(
-        sqliteDataSource: sqliteEventSource,
-        firebaseDataSource: firebaseEventSource,
+        sqliteDataSource: SQLiteEventDataSource(),
+        firebaseDataSource: FirebaseEventDataSource(),
       );
 
       final friendRepository = FriendRepositoryImpl(
-        sqliteDataSource: sqliteFriendSource,
-        firebaseDataSource: firebaseFriendSource,
+        sqliteDataSource: SQLiteFriendDataSource(),
+        firebaseDataSource: FirebaseFriendDataSource(),
       );
 
       syncEventsUseCase = SyncEvents(eventRepository);
@@ -92,28 +75,46 @@ class _SplashScreenState extends State<SplashScreen> {
         syncEventsUseCase.call(),
         syncGiftsUseCase.call(),
       ]);
-
-      // Navigate to the login screen
-      Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
-      // Handle errors gracefully, e.g., show an error message or retry
+      // Handle errors gracefully
       print('Error during initialization: $e');
-      // Optionally, navigate to an error screen or show a dialog
-    }
-    finally {
+    } finally {
       // Clean up resources, if necessary
       FlutterNativeSplash.remove();
-
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+      if (isLoggedIn) {
+        Navigator.pushReplacementNamed(context, '/home_page');
+      } else {
+        if (prefs.getBool('isFirstTime') == false) {
+        } else {
+          prefs.setBool('isFirstTime', false);
+          Navigator.pushReplacementNamed(context, '/onboarding');
+        }
+      }
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        if (snapshot.hasData) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacementNamed(context, '/home_page');
+          });
+          return Container(); // Return an empty container while navigating
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacementNamed(context, '/login');
+          });
+          return Container(); // Return an empty container while navigating
+        }
+      },
     );
   }
 }

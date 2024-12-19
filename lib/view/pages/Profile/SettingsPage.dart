@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import '../components/widgets/nav/CustomAppBar.dart';
+import '../../components/widgets/nav/CustomAppBar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -16,6 +16,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return  Scaffold(
       appBar: CustomAppBar(
         showBackButton : true,
+        title: 'Settings',
       ),
 
       body: SettingsList(
@@ -37,31 +38,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   initialValue: true,
                   leading: Icon(Icons.format_paint),
                   title: Text('Enable custom theme'),
-                ),
-              ],
-            ),
-            SettingsSection(
-              title: const Text('Account' , style: TextStyle(
-                  fontSize: 28,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.bold,
-              )
-              ),
-              tiles: <SettingsTile>[
-                SettingsTile.navigation(
-                  leading: Icon(Icons.person),
-                  title: TextButton(
-                    onPressed: () {
-
-                    },
-                    child: const Text(
-                      "Log out",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Roboto',
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),

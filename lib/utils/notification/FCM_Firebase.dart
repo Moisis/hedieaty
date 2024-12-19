@@ -15,14 +15,8 @@ class FirestoreService {
         return existingUser.id; // Return the existing user ID
       }
 
-      // If no existing user found, proceed with adding a new user
-      // final docRef = await _db.collection('Users').add({
-      //   'auth_id': authId,
-      //   'fcm_token': fcmToken,
-      // });
 
-      final docRef = await _db.collection('Users').doc(authId).set({
-        // 'auth_id': authId,
+       await _db.collection('Users').doc(authId).set({
         'fcm_token': fcmToken,
       });
 
@@ -63,22 +57,7 @@ class FirestoreService {
     }
   }
 
-  // Get the FCM token of a user
-  // Future<String?> getUserFcmToken(String userId) async {
-  //   try {
-  //     final docRef = _db.collection('Users').doc(userId);
-  //     final doc = await docRef.get();
-  //     if (doc.exists) {
-  //       final userData = doc.data();
-  //       return userData?['fcm_token'];
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     print('Error fetching user FCM token: $error');
-  //     return null;
-  //   }
-  // }
+
 
   Future<String?> getFcm2(String userId) async {
     try {
@@ -97,24 +76,6 @@ class FirestoreService {
     }
   }
 
-
-  Future<String?> getUserFcmToken(String userId) async {
-    try {
-      final docRef = _db.collection('Users').doc(userId);
-      final doc = await docRef.get();
-      print('Fetched document: ${doc.data()}'); // Debugging statement
-      if (doc.exists) {
-        final userData = doc.data();
-        return userData?['fcm_token'];
-      } else {
-        print('Document does not exist for userId: $userId');
-        return null;
-      }
-    } catch (error) {
-      print('Error fetching user FCM token: $error');
-      return null; // Or rethrow if needed
-    }
-  }
 
 
   // Update user data (authId and/or fcmToken)

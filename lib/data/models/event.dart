@@ -1,4 +1,3 @@
-import 'package:hedieaty/domain/entities/event_entity.dart';
 
 
 

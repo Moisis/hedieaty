@@ -79,5 +79,28 @@ class FirebaseGiftDataSource {
     });
   }
 
+  Future<void> deleteGiftsEvent(String Eventid) async {
+    final dataSnapshot = await dbRef.get();
+    if (!dataSnapshot.exists) return;
+
+    final data = dataSnapshot.value;
+    if (data is Map<dynamic, dynamic>) {
+      for (final entry in data.entries) {
+        final gift = Gift.fromJson(Map<String, dynamic>.from(entry.value));
+        if (gift.GiftEventId == Eventid) {
+          await dbRef.child(gift.GiftId).remove();
+        }
+      }
+    } else if (data is List) {
+      for (final element in data) {
+        if (element == null) continue;
+        final gift = Gift.fromJson(Map<String, dynamic>.from(element));
+        if (gift.GiftEventId == Eventid) {
+          await dbRef.child(gift.GiftId).remove();
+        }
+      }
+    }
+  }
+
 
 }

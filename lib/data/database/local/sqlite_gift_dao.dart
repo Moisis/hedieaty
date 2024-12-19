@@ -1,4 +1,3 @@
-import 'package:hedieaty/domain/entities/gift_entity.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/gift.dart';
@@ -70,6 +69,19 @@ class SQLiteGiftDataSource {
     await _ensureInitialized();
     final maps = await db.query('Gifts', where: 'GiftEventId = ?', whereArgs: [eventId]);
     return maps.map((map) => Gift.fromJson(map)).toList();
+  }
+
+
+  Future<List<Gift>> getPledgedGifts(String userid) async {
+    await _ensureInitialized();
+    final maps = await db.query('Gifts', where: 'GiftStatus = ?', whereArgs: [userid]);
+    return maps.map((map) => Gift.fromJson(map)).toList();
+  }
+
+
+  Future<void> deleteGiftsEvent(String Eventid) async {
+    await _ensureInitialized();
+    await db.delete('Gifts', where: 'GiftEventId = ?', whereArgs: [Eventid]);
   }
 
 
