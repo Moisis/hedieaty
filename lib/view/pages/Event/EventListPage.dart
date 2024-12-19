@@ -44,7 +44,6 @@ class Eventlistpage extends StatefulWidget {
 }
 
 class _EventlistpageState extends State<Eventlistpage> {
-
   List<EventEntity> filteredEvents = [];
   late var _index = 0;
   var _selectedStatus = 0;
@@ -57,15 +56,12 @@ class _EventlistpageState extends State<Eventlistpage> {
   late GetEvents getEventsUseCase;
   late DeleteEvent deleteEventUseCase;
 
-
   late AddEvent addEventUseCase;
 
   late GetStreamEvent getStreamEvent;
   late Stream<List<EventEntity>> eventsStream;
   late StreamSubscription<List<EventEntity>>? _eventSubscription;
   List<EventEntity> events = [];
-
-
 
   void _onStatusChange(int index) {
     setState(() {
@@ -119,7 +115,6 @@ class _EventlistpageState extends State<Eventlistpage> {
     super.initState();
     _intializeData();
     _subscribetoEvents();
-
   }
 
   Future<void> _intializeData() async {
@@ -151,14 +146,10 @@ class _EventlistpageState extends State<Eventlistpage> {
       getUsersUseCase = GetUsers(userRepository);
       syncUsersUseCase = SyncUsers(userRepository);
       getUserAuthId = GetUserAuthId(userRepository);
-
-
-
     } catch (e) {
       print(e);
     }
   }
-
 
   Future<void> _subscribetoEvents() async {
     await syncUsersUseCase.call();
@@ -169,32 +160,68 @@ class _EventlistpageState extends State<Eventlistpage> {
     final userAuthId = await getUserAuthId.call();
     eventsStream = getStreamEvent.call();
 
-
     _eventSubscription = eventsStream.listen((updatedEvents) {
       print('Gifts updated: $updatedEvents');
-      setState(()  {
-
+      setState(() {
         for (EventEntity event in updatedEvents) {
           if (event.UserId == userAuthId) {
             event.UserName = 'Me';
           } else {
-            final user = users.firstWhere((user) => user.UserId == event.UserId);
+            final user =
+                users.firstWhere((user) => user.UserId == event.UserId);
             event.UserName = user.UserName;
           }
         }
         events = updatedEvents;
         _onStatusChange(_selectedStatus);
-
       });
     });
-
-
   }
 
   @override
   void dispose() {
     _eventSubscription?.cancel(); // Clean up the subscription
     super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    setState(() {
+      filteredEvents = events
+          .where((event) =>
+              event.EventName.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void _onSortOptionSelected(String option) {
+    setState(() {
+      switch (option) {
+        case 'name_asc':
+          filteredEvents.sort((a, b) => a.EventName.compareTo(b.EventName));
+          break;
+        case 'name_desc':
+          filteredEvents.sort((a, b) => b.EventName.compareTo(a.EventName));
+          break;
+        case 'date_asc':
+          filteredEvents.sort((a, b) {
+            final dateA = DateTime.tryParse(a.EventDate);
+            final dateB = DateTime.tryParse(b.EventDate);
+            if (dateA == null || dateB == null) return 0;
+            return dateA.compareTo(dateB);
+          });
+          break;
+        case 'date_desc':
+          filteredEvents.sort((a, b) {
+            final dateA = DateTime.tryParse(a.EventDate);
+            final dateB = DateTime.tryParse(b.EventDate);
+            if (dateA == null || dateB == null) return 0;
+            return dateB.compareTo(dateA);
+          });
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   @override
@@ -259,7 +286,7 @@ class _EventlistpageState extends State<Eventlistpage> {
                     ),
                     onChanged: (value) {
                       // Call a method to filter bookings based on search query
-                      // _onSearchChanged(value);
+                      _onSearchChanged(value);
                     },
                   ),
                 ),
@@ -292,28 +319,28 @@ class _EventlistpageState extends State<Eventlistpage> {
                                 ListTile(
                                   title: Text('Name (Ascending)'),
                                   onTap: () {
-                                    // _onSortOptionSelected('name_asc');
+                                    _onSortOptionSelected('name_asc');
                                     Navigator.pop(context);
                                   },
                                 ),
                                 ListTile(
                                   title: Text('Name (Descending)'),
                                   onTap: () {
-                                    // _onSortOptionSelected('name_desc');
+                                    _onSortOptionSelected('name_desc');
                                     Navigator.pop(context);
                                   },
                                 ),
                                 ListTile(
                                   title: Text('Date (Ascending)'),
                                   onTap: () {
-                                    // _onSortOptionSelected('date_asc');
+                                    _onSortOptionSelected('date_asc');
                                     Navigator.pop(context);
                                   },
                                 ),
                                 ListTile(
                                   title: Text('Date (Descending)'),
                                   onTap: () {
-                                    // _onSortOptionSelected('date_desc');
+                                    _onSortOptionSelected('date_desc');
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -329,67 +356,48 @@ class _EventlistpageState extends State<Eventlistpage> {
             ),
           ),
 
+
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 10,
-                right: 10,
-              ),
+              padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
               child: ListView.builder(
                 itemCount: filteredEvents.length,
                 itemBuilder: (context, index) {
                   final event = filteredEvents[index];
 
-                  return DateTime.tryParse(event.EventDate)
-                              ?.isAfter(DateTime.now()) ==
-                          true
-                      ? Eventcard(
-                          event: event,
-                          onEdit: () async {
-                            final isUpdated = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    EditEventPage(event: event),
-                              ),
-                            );
-                            if (isUpdated == true) {
-                              print('Event Updated');
-                              await _intializeData();
-                              _onStatusChange(_selectedStatus);
-                            }
-                          },
-                          onDelete: () async {
-                            await deleteEventUseCase(event.EventId);
-                            await _intializeData();
-                          },
-                          onTap: () async {
-                            final isViewed = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    EventDetails(event: event  ),
-                              ),
-                            );
-                          },
-                        )
-                      : Eventcard(
-                          event: event,
-                          onTap: () async {
-                            final isViewed = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    EventDetails(event: event ),
-                              ),
-                            );
-                          },
-                        );
+                  return Eventcard(
+                    event: event,
+                    onEdit: () async {
+                      final isUpdated = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditEventPage(event: event),
+                        ),
+                      );
+                      if (isUpdated == true) {
+                        print('Event Updated');
+                        await _intializeData();
+                        _onStatusChange(_selectedStatus);
+                      }
+                    },
+                    onDelete: () async {
+                      await deleteEventUseCase(event.EventId);
+                      await _intializeData();
+                    },
+                    onTap: () async {
+                      final isViewed = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EventDetails(event: event),
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
             ),
-          ),
+          )
+
         ],
       ),
       bottomNavigationBar: Bottomnavbar(
@@ -410,12 +418,13 @@ class _EventlistpageState extends State<Eventlistpage> {
             ),
           );
           if (isCreated == true) {
-            print('Event Updated lol');
+            print('Event Updated ');
             await _intializeData();
           }
         },
         child: Icon(
           Icons.edit_calendar,
+          color: Colors.white,
         ),
         backgroundColor: AppColors.secondary,
       ),
@@ -423,3 +432,4 @@ class _EventlistpageState extends State<Eventlistpage> {
     );
   }
 }
+

@@ -1,6 +1,8 @@
 //Imports
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 //libs
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -21,7 +23,7 @@ import 'package:hedieaty/utils/AppColors.dart';
 
 import 'package:hedieaty/view/pages/auth/LoginPage.dart';
 import 'package:hedieaty/view/pages/auth/RegisterPage.dart';
-
+import 'utils/notification/reciever.dart';
 
 //Pages
 
@@ -35,21 +37,24 @@ import 'package:hedieaty/view/pages/gift/MyPledgedGiftsPage.dart';
 
 import 'firebase_options.dart';
 
-Future<void> initializeFirebase()  async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  FirebaseDatabase.instance.setPersistenceEnabled(true);
-}
+// Future<void> initializeFirebase()  async {
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+//   FirebaseDatabase.instance.setPersistenceEnabled(true);
+// }
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseDatabase.instance.setPersistenceEnabled(true);
-  // await initializeFirebase();
+  FirebaseDatabase.instance.setPersistenceEnabled  // await initializeFirebase();
+    (true);
+  await NotificationServiceRec.instance.initialize();
+
+
 
   runApp(MyApp());
 }
@@ -59,6 +64,8 @@ class MyApp extends StatelessWidget {
   // const MyApp({super.key});
   const MyApp({super.key});
   // This widget is the root of your application.
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +110,7 @@ class MyApp extends StatelessWidget {
         // Pages
         '/home_page': (context) =>  Homepage(),
         // '/GiftList': (context) =>  EventDetails(),
-        '/pledgedGifts': (context) =>  PledgedGiftsPage(),
-        '/profile_page': (context) =>  ProfilePage(),
+
         // '/profile_page': (context) =>  ProfileScreen(),
 
         // '/notification_page': (context) =>  NotificationsPage(),
@@ -113,7 +119,11 @@ class MyApp extends StatelessWidget {
         '/Eventlistpage' : (context) =>  Eventlistpage(),
         '/EventCreatePage' : (context) =>  EventCreationPage(),
 
+
+        //Profile
         '/settings_page' : (context) =>  SettingsPage(),
+        '/pledgedGifts': (context) =>  PledgedGiftsPage(),
+        '/profile_page': (context) =>  ProfilePage(),
         // '/info_page': (context) => const InfoPage(),
         // '/rules_page': (context) =>  CopyrightPage(),
         // '/stats_page': (context) => const StatsPage(),

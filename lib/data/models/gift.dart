@@ -24,13 +24,13 @@ class Gift {
 
   factory Gift.fromJson(Map<String, dynamic> json) {
     return Gift(
-      GiftId: json['GiftId'],
-      GiftName: json['GiftName'],
+      GiftId: json['GiftId'] ?? '',
+      GiftName: json['GiftName'] ?? '',
       GiftDescription: json['GiftDescription'],
-      GiftPrice: (json['GiftPrice'] as num).toDouble(),
-      GiftCat: json['GiftCat'],
-      GiftStatus: json['GiftStatus'],
-      GiftEventId: json['GiftEventId'],
+      GiftPrice: (json['GiftPrice'] as num).toDouble() ?? 0.0,
+      GiftCat: json['GiftCat'] ?? '',
+      GiftStatus: json['GiftStatus'] ?? '',
+      GiftEventId: json['GiftEventId'] ?? '',
     );
   }
 

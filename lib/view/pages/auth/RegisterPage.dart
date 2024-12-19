@@ -27,6 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
+  final TextEditingController _controllerConfirmPassword = TextEditingController();
 
 
   @override
@@ -90,6 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _controllerEmail.clear();
       _controllerPhone.clear();
       _controllerPassword.clear();
+      _controllerConfirmPassword.clear();
       _errorMessage = null;
     });
   }
@@ -140,101 +142,165 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.length < 6) {
+      return "Password must be at least 6 characters long";
+    }else if (value != _controllerPassword.text){
+      return "Passwords do not match";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: AppColors.primary,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-            Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Register",
-                    style: TextStyle(color: Colors.white, fontSize: 40),
-                  ),
-                  const Text(
-                    "Welcome Back",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
-                    topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            color: AppColors.primary,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                Padding(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text(
+                        "Register",
+                        style: TextStyle(color: Colors.white, fontSize: 40),
+                      ),
+                      const Text(
+                        "Welcome To Hedieaty",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ],
                   ),
                 ),
-                child: SingleChildScrollView(
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                      topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(165, 201, 255, 1.0),
+                        blurRadius: 20,
+                        offset: Offset(0, 10),
+                      ),
+                    ],
+                  ),
                   child: Padding(
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         children: <Widget>[
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                           // Name Field
-                          TextFormField(
-                            controller: _controllerName,
-                            decoration: const InputDecoration(
-                              labelText: "Name",
-                              border: OutlineInputBorder(),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color.fromRGBO(165, 201, 255, 1.0),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 10),
+                                ),
+                              ],
                             ),
-                            validator: _validateName,
-                          ),
-                          const SizedBox(height: 20),
-                          // Email Field
-                          TextFormField(
-                            controller: _controllerEmail,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                              labelText: "Email",
-                              border: OutlineInputBorder(),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      controller: _controllerName,
+                                      decoration: const InputDecoration(
+                                        labelText: "Name",
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: _validateName,
+                                    ),
+                                  ),
+                                ),
+
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      controller: _controllerEmail,
+                                      decoration: const InputDecoration(
+                                        labelText: "Email",
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: _validateEmail,
+                                    ),
+                                  ),
+                                ),
+
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child:  TextFormField(
+                                      controller: _controllerPhone,
+                                      keyboardType: TextInputType.phone,
+                                      decoration: const InputDecoration(
+                                        labelText: "Phone Number",
+                                        border: InputBorder.none,
+                                        prefixText: "+20 ",
+                                      ),
+                                      validator: _validatePhone,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      controller: _controllerPassword,
+                                      obscureText: true,
+                                      decoration: const InputDecoration(
+                                        labelText: "Password",
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: _validatePassword,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      controller: _controllerConfirmPassword,
+                                      obscureText: true,
+                                      decoration: const InputDecoration(
+                                        labelText: "Confirm Password",
+                                        border: InputBorder.none,
+                                      ),
+                                      validator: _validateConfirmPassword,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            validator: _validateEmail,
                           ),
-                          const SizedBox(height: 20),
-                          // Phone Number Field
-                          TextFormField(
-                            controller: _controllerPhone,
-                            keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
-                              labelText: "Phone Number",
-                              border: OutlineInputBorder(),
-                              prefixText: "+20 ",
-                            ),
-                            validator: _validatePhone,
-                          ),
-                          const SizedBox(height: 20),
-                          // Password Field
-                          TextFormField(
-                            controller: _controllerPassword,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              labelText: "Password",
-                              border: OutlineInputBorder(),
-                            ),
-                            validator: _validatePassword,
-                          ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           // Error Message Display
                           if (_errorMessage != null)
                             Text(
                               _errorMessage!,
                               style: const TextStyle(color: Colors.red),
                             ),
-                          const SizedBox(height: 20),
                           // Buttons
-
                           Custom_button(
                             onPress: _validateAndSubmit,
                             title: "Register",
@@ -263,9 +329,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

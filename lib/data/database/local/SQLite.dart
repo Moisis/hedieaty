@@ -46,6 +46,7 @@ class DatabaseHelper {
               "EventId"	TEXT,
               "EventName"	TEXT NOT NULL,
               "EventDate"	TEXT NOT NULL,
+              "EventImageUrl"	TEXT ,
               "EventLocation"	TEXT,
               "EventDescription"	TEXT,
               "UserId"	TEXT NOT NULL,
@@ -77,6 +78,52 @@ class DatabaseHelper {
                 FOREIGN KEY("UserId") REFERENCES "Users"("UserId") ON DELETE CASCADE
         );  
     ''');
+
+    await db.execute('''
+        CREATE TABLE "Barcodes" (
+                "BarcodeId"	TEXT NOT NULL,
+                 "GiftName"	TEXT NOT NULL,
+                  "GiftDescription"	TEXT,
+                  "GiftCat"	TEXT,
+                  "GiftPrice"	REAL,
+                  "GiftStatus"	TEXT,
+                  PRIMARY KEY("BarcodeId")
+        );  
+    ''');
+
+    // Insert 3 records
+    await db.insert('Barcodes', {
+      'BarcodeId': '3120605329065',
+      'GiftName': 'T.Huer Link Lady Watch',
+      'GiftDescription': 'A stylish and elegant watch designed for modern women, offering both sophistication and durability. Perfect for any occasion.',
+      'GiftCat': 'Accessories',
+      'GiftPrice': 200.0,
+      'GiftStatus': 'Available',
+    });
+
+    await db.insert('Barcodes', {
+      'BarcodeId': '6001065600048',
+      'GiftName': 'Gadbury Daily Milk Chocolate',
+      'GiftDescription': 'Smooth and creamy milk chocolate made with the finest cocoa. A delicious treat for any chocolate lover.',
+      'GiftCat': 'Food & Drinks',
+      'GiftPrice': 10.0,
+      'GiftStatus': 'Available',
+
+    });
+
+    await db.insert('Barcodes', {
+      'BarcodeId': '5060478371236',
+      'GiftName': 'Xbox 360',
+      'GiftDescription': 'A powerful gaming console offering a wide range of games, immersive graphics, and multimedia entertainment for all ages.',
+      'GiftCat': 'Electronics',
+      'GiftPrice': 300.0,
+      'GiftStatus': 'Available',
+
+    });
+
+    // Close the database
+    await db.close();
+
 
   }
 }

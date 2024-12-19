@@ -44,6 +44,7 @@ class _EventCreationPageState extends State<EventCreationPage> {
         EventName: _eventNameController.text,
         EventDate: _eventDateController.text,
         EventLocation:  _eventLocationController.text,
+        EventImageUrl: _selectedImageUrl! ,
         EventDescription: _eventDescriptionController.text,
         UserId: UserAuthId,
       );
@@ -66,7 +67,30 @@ class _EventCreationPageState extends State<EventCreationPage> {
   @override
   void initState() {
     super.initState();
+    _fetchImagesFromApi();
     _intialize();
+  }
+
+  List<String> _imageUrls = []; // List to store image URLs fetched from API
+  String? _selectedImageUrl; // Store the selected image URL
+
+
+  Future<void> _fetchImagesFromApi() async {
+    setState(() {
+      _imageUrls = [
+      'https://picsum.photos/300/300?id=1&category=events',
+      'https://picsum.photos/300/300?id=2&category=events',
+      'https://picsum.photos/300/300?id=3&category=events',
+      'https://picsum.photos/300/300?id=4&category=events',
+      'https://picsum.photos/300/300?id=5&category=events',
+      'https://picsum.photos/300/300?id=6&category=events',];
+    });
+  }
+
+  void _selectImage(String imageUrl) {
+    setState(() {
+      _selectedImageUrl = imageUrl;
+    });
   }
 
   void _intialize() async {
@@ -101,6 +125,110 @@ class _EventCreationPageState extends State<EventCreationPage> {
     UserAuthId = await getUserAuthIdUseCase.call();
 
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: CustomAppBar(
+  //       title: 'Create Event',
+  //       showBackButton: true,
+  //     ),
+  //     body: Padding(
+  //       padding: const EdgeInsets.all(16.0),
+  //       child: Form(
+  //         key: _formKey,
+  //         child: SingleChildScrollView(
+  //           child: Column(
+  //             children: [
+  //               Card(
+  //                 margin: EdgeInsets.symmetric(vertical: 8.0),
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(16.0),
+  //                   child: Column(
+  //                     children: [
+  //                       TextFormField(
+  //                         controller: _eventNameController,
+  //                         decoration: InputDecoration(labelText: 'Event Name'),
+  //                         validator: (value) {
+  //                           if (value == null || value.isEmpty) {
+  //                             return 'Event Name is required';
+  //                           }
+  //                           return null;
+  //                         },
+  //                       ),
+  //                       TextFormField(
+  //                         controller: _eventDateController,
+  //                         decoration: InputDecoration(labelText: 'Event Date'),
+  //                         onTap: () async {
+  //                           FocusScope.of(context).requestFocus(FocusNode());
+  //                           final selectedDate = await showDatePicker(
+  //                             context: context,
+  //                             initialDate: DateTime.now(),
+  //                             firstDate: DateTime(2000),
+  //                             lastDate: DateTime(2100),
+  //                           );
+  //                           if (selectedDate != null) {
+  //                             _eventDateController.text =
+  //                                 selectedDate.toIso8601String().split('T')[0];
+  //                           }
+  //
+  //                         },
+  //                         validator: (value) {
+  //                           if (value == null || value.isEmpty) {
+  //                             return 'Event Date is required';
+  //                           }
+  //                           return null;
+  //                         },
+  //                       ),
+  //                       TextFormField(
+  //                         controller: _eventLocationController,
+  //                         decoration:
+  //                             InputDecoration(labelText: 'Event Location'),
+  //                       ),
+  //                       TextFormField(
+  //                         controller: _eventDescriptionController,
+  //                         decoration:
+  //                             InputDecoration(labelText: 'Event Description'),
+  //                         maxLines: 3,
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 20),
+  //
+  //               Row(
+  //                 children: [
+  //                   IC_button(
+  //                     title: 'Add Event ',
+  //                     icon: Icon(Icons.edit_calendar , color: AppColors.white,),
+  //                     onPress: _createEvent ,
+  //                     color:AppColors.secondary,
+  //                     fontsize: 14,
+  //                     width: 150,
+  //                     height: 70,
+  //                   ),
+  //                   SizedBox(width: 50),
+  //                   IC_button(
+  //                     title: 'Cancel ',
+  //                     icon: Icon(Icons.cancel , color: AppColors.white,),
+  //                     onPress: (){
+  //                       Navigator.pop(context);
+  //                     } ,
+  //                     color:Colors.red,
+  //                     fontsize: 14,
+  //                     width: 150,
+  //                     height: 70,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -145,9 +273,8 @@ class _EventCreationPageState extends State<EventCreationPage> {
                             );
                             if (selectedDate != null) {
                               _eventDateController.text =
-                                  selectedDate.toIso8601String().split('T')[0];
+                              selectedDate.toIso8601String().split('T')[0];
                             }
-
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -159,27 +286,60 @@ class _EventCreationPageState extends State<EventCreationPage> {
                         TextFormField(
                           controller: _eventLocationController,
                           decoration:
-                              InputDecoration(labelText: 'Event Location'),
+                          InputDecoration(labelText: 'Event Location'),
                         ),
                         TextFormField(
                           controller: _eventDescriptionController,
                           decoration:
-                              InputDecoration(labelText: 'Event Description'),
+                          InputDecoration(labelText: 'Event Description'),
                           maxLines: 3,
                         ),
+                        const SizedBox(height: 16),
+                        Text('Select an Event Image', style: TextStyle(fontSize: 16)),
+                        const SizedBox(height: 8),
+                        if (_imageUrls.isNotEmpty)
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
+                            ),
+                            itemCount: _imageUrls.length,
+                            itemBuilder: (context, index) {
+                              final imageUrl = _imageUrls[index];
+                              return GestureDetector(
+                                onTap: () => _selectImage(imageUrl),
+                                child: Stack(
+                                  children: [
+                                    Image.network(imageUrl, fit: BoxFit.cover),
+                                    if (_selectedImageUrl == imageUrl)
+                                      Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Icon(Icons.check_circle,
+                                            color: Colors.green),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
+                        else
+                          CircularProgressIndicator(),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 Row(
                   children: [
                     IC_button(
                       title: 'Add Event ',
-                      icon: Icon(Icons.edit_calendar , color: AppColors.white,),
-                      onPress: _createEvent ,
-                      color:AppColors.secondary,
+                      icon: Icon(Icons.edit_calendar, color: AppColors.white),
+                      onPress: _createEvent,
+                      color: AppColors.secondary,
                       fontsize: 14,
                       width: 150,
                       height: 70,
@@ -187,11 +347,11 @@ class _EventCreationPageState extends State<EventCreationPage> {
                     SizedBox(width: 50),
                     IC_button(
                       title: 'Cancel ',
-                      icon: Icon(Icons.cancel , color: AppColors.white,),
-                      onPress: (){
+                      icon: Icon(Icons.cancel, color: AppColors.white),
+                      onPress: () {
                         Navigator.pop(context);
-                      } ,
-                      color:Colors.red,
+                      },
+                      color: Colors.red,
                       fontsize: 14,
                       width: 150,
                       height: 70,

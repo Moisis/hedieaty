@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
+
+import '../../../utils/notification/FCM_Firebase.dart';
+import '../../../utils/notification/notification_helper.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,6 +18,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+
+
+  final FirestoreService _firestoreService = FirestoreService();
+
 
   String? _validateEmail(String? value) {
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
@@ -32,10 +42,14 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-              email: _controllerEmail.text.trim(),
-              password: _controllerPassword.text.trim())
-          .then((value) => Navigator.pushNamedAndRemoveUntil(
-              context, '/home_page', (route) => false));
+          email: _controllerEmail.text.trim(),
+          password: _controllerPassword.text.trim())
+          .then((value) async {
+          String? fcm_token = await FirebaseMessaging.instance.getToken();
+          await _firestoreService.addUser( FirebaseAuth.instance.currentUser!.uid, fcm_token!);
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/home_page', (route) => false);
+      });
     } on FirebaseAuthException catch (e) {
       Fluttertoast.showToast(
           msg: e.message.toString(), gravity: ToastGravity.SNACKBAR);
@@ -45,41 +59,49 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: AppColors.primary,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-            Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Login",
-                    style: TextStyle(color: Colors.white, fontSize: 40),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Welcome Back",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(
-                        MediaQuery.of(context).size.width * 0.1),
-                    topRight: Radius.circular(
-                        MediaQuery.of(context).size.width * 0.1),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            color: AppColors.primary,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                Padding(
+                  padding:
+                  EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Login",
+                        style: TextStyle(color: Colors.white, fontSize: 40),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Welcome Back",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ],
                   ),
                 ),
-                child: SingleChildScrollView(
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(
+                          MediaQuery.of(context).size.width * 0.1),
+                      topRight: Radius.circular(
+                          MediaQuery.of(context).size.width * 0.1),
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(165, 201, 255, 1.0),
+                        blurRadius: 20,
+                        offset: Offset(0, 10),
+                      ),
+                    ],
+                  ),
                   child: Padding(
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.05),
@@ -161,11 +183,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
+
+

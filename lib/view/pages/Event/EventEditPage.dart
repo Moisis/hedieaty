@@ -89,6 +89,7 @@ class _EditEventPageState extends State<EditEventPage> {
         EventName: _eventNameController.text,
         EventDate: _eventDateController.text,
         EventLocation: _eventLocationController.text,
+        EventImageUrl: widget.event.EventImageUrl,
         EventDescription: _eventDescriptionController.text,
         UserId: widget.event.UserId,
       );

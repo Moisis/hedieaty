@@ -10,6 +10,7 @@ class EventEntity extends Event{
     required super.EventName,
     required super.EventDate,
     required super.EventLocation,
+    required super.EventImageUrl,
     required super.EventDescription,
     required super.UserId,
     this.UserName
