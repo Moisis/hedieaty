@@ -16,12 +16,12 @@ import '../../../data/database/remote/firebase_user_dao.dart';
 import '../../../data/repos/event_repository_impl.dart';
 import '../../../data/repos/gift_repository_impl.dart';
 import '../../../data/repos/user_repository_impl.dart';
-import '../../../domain/entities/gift_entity.dart';
+
 import '../../../domain/usecases/event/add_event.dart';
 import '../../../domain/usecases/event/get_events.dart';
 import '../../../domain/usecases/event/sync_events.dart';
-import '../../../domain/usecases/gifts/get_gifts_event.dart';
-import '../../../domain/usecases/gifts/sync_gifts.dart';
+import '../../../domain/usecases/gifts/deleteGiftsEvent.dart';
+
 import '../../../domain/usecases/user/getUserAuthId.dart';
 import '../../../domain/usecases/user/get_users.dart';
 import '../../../domain/usecases/user/sync_users.dart';
@@ -34,7 +34,7 @@ import 'package:hedieaty/utils/navigationHelper.dart';
 
 import '../gift/EventListDetailsPage.dart';
 import 'EventEditPage.dart';
-import 'GetStreamEvent.dart';
+import '../../../domain/usecases/event/GetStreamEvent.dart';
 
 class Eventlistpage extends StatefulWidget {
   const Eventlistpage({super.key});
@@ -58,6 +58,8 @@ class _EventlistpageState extends State<Eventlistpage> {
 
   late AddEvent addEventUseCase;
 
+  late DeleteGiftsEvent deleteGiftsEventUseCase;
+
   late GetStreamEvent getStreamEvent;
   late Stream<List<EventEntity>> eventsStream;
   late StreamSubscription<List<EventEntity>>? _eventSubscription;
@@ -72,27 +74,26 @@ class _EventlistpageState extends State<Eventlistpage> {
 
   List<EventEntity> filterEvents(int index, List<EventEntity> events) {
     final now = DateTime.now();
-
     if (index == 0) {
+      // Show ongoing events
       return events.where((event) {
         final eventDate = DateTime.tryParse(event.EventDate);
         if (eventDate == null) return false;
 
         // Get the current date without time (midnight) and compare
         final today = DateTime(now.year, now.month, now.day);
-        final eventDay =
-            DateTime(eventDate.year, eventDate.month, eventDate.day);
+        final eventDay = DateTime(eventDate.year, eventDate.month, eventDate.day);
 
         return eventDay == today;
       }).toList();
     } else if (index == 1) {
-      // Show upcoming events (EventDate in the future)
+      // Show upcoming events
       return events.where((event) {
         final eventDate = DateTime.tryParse(event.EventDate);
         return eventDate != null && eventDate.isAfter(now);
       }).toList();
     } else if (index == 2) {
-      // Show past events (EventDate strictly before today)
+      // Show past events
       return events.where((event) {
         final eventDate = DateTime.tryParse(event.EventDate);
         if (eventDate == null) return false;
@@ -100,8 +101,7 @@ class _EventlistpageState extends State<Eventlistpage> {
         // Get today's date without the time part
         final today = DateTime(now.year, now.month, now.day);
 
-        return eventDate
-            .isBefore(today); // Check if the event date is before today
+        return eventDate.isBefore(today);
       }).toList();
     } else {
       return events.where((event) {
@@ -119,22 +119,22 @@ class _EventlistpageState extends State<Eventlistpage> {
 
   Future<void> _intializeData() async {
     try {
-      final sqliteEventSource = SQLiteEventDataSource();
-      final firebaseEventSource = FirebaseEventDataSource();
-
-      final sqliteDataSource = SQLiteUserDataSource();
-      final firebaseDataSource = FirebaseUserDataSource();
-      final firebaseAuthDataSource = FirebaseAuthDataSource();
 
       final userRepository = UserRepositoryImpl(
-        sqliteDataSource: sqliteDataSource,
-        firebaseDataSource: firebaseDataSource,
-        firebaseAuthDataSource: firebaseAuthDataSource,
+        sqliteDataSource:  SQLiteUserDataSource(),
+        firebaseDataSource: FirebaseUserDataSource(),
+        firebaseAuthDataSource: FirebaseAuthDataSource(),
       );
 
       final eventRepository = EventRepositoryImpl(
-        sqliteDataSource: sqliteEventSource,
-        firebaseDataSource: firebaseEventSource,
+        sqliteDataSource: SQLiteEventDataSource(),
+        firebaseDataSource:FirebaseEventDataSource(),
+      );
+
+
+      final giftRepository = GiftRepositoryImpl(
+        sqliteDataSource: SQLiteGiftDataSource(),
+        firebaseDataSource: FirebaseGiftDataSource(),
       );
 
       syncEventsUseCase = SyncEvents(eventRepository);
@@ -142,6 +142,10 @@ class _EventlistpageState extends State<Eventlistpage> {
       addEventUseCase = AddEvent(eventRepository);
       deleteEventUseCase = DeleteEvent(eventRepository);
       getStreamEvent = GetStreamEvent(eventRepository);
+
+      deleteEventUseCase = DeleteEvent(eventRepository);
+
+      deleteGiftsEventUseCase = DeleteGiftsEvent(giftRepository);
 
       getUsersUseCase = GetUsers(userRepository);
       syncUsersUseCase = SyncUsers(userRepository);
@@ -381,11 +385,16 @@ class _EventlistpageState extends State<Eventlistpage> {
                       }
                     },
                     onDelete: () async {
-                      await deleteEventUseCase(event.EventId);
+                      Future.wait(
+                        [
+                          deleteEventUseCase(event.EventId),
+                          deleteGiftsEventUseCase(event.EventId),
+                        ],
+                      );
                       await _intializeData();
                     },
                     onTap: () async {
-                      final isViewed = await Navigator.push(
+                       await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => EventDetails(event: event),

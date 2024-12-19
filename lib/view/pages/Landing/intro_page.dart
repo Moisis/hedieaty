@@ -2,6 +2,7 @@ import 'package:animated_introduction/animated_introduction.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/AppColors.dart';
+import '../auth/RegisterPage.dart';
 
 
 final List<SingleIntroScreen> pages = [
@@ -33,8 +34,24 @@ class IntroPage extends StatelessWidget {
       footerBgColor: Color(0xff78CAEB),
       doneWidget: const Text('Get Started !' , style: AppColors.textPrimary_h1 ,),
       onDone: () {
-        /// TODO: Go to desire page like login or home
-        Navigator.pushReplacementNamed(context, '/home_page');
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => RegisterPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+          ),
+        );
+
       },
     );
   }

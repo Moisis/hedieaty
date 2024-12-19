@@ -58,21 +58,16 @@ class _GiftDetailsPageState extends State<GiftDetailsPage> {
 
   void _intializedGift() {
     try {
-      final sqlitegiftDataSource = SQLiteGiftDataSource();
-      final firebasegiftDataSource = FirebaseGiftDataSource();
 
       final giftRepository = GiftRepositoryImpl(
-        sqliteDataSource: sqlitegiftDataSource,
-        firebaseDataSource: firebasegiftDataSource,
+        sqliteDataSource: SQLiteGiftDataSource(),
+        firebaseDataSource: FirebaseGiftDataSource(),
       );
 
-      final sqliteDataSource = SQLiteUserDataSource();
-      final firebaseDataSource = FirebaseUserDataSource();
-      final firebaseAuthDataSource = FirebaseAuthDataSource();
       final userRepository = UserRepositoryImpl(
-        sqliteDataSource: sqliteDataSource,
-        firebaseDataSource: firebaseDataSource,
-        firebaseAuthDataSource: firebaseAuthDataSource,
+        sqliteDataSource: SQLiteUserDataSource(),
+        firebaseDataSource: FirebaseUserDataSource(),
+        firebaseAuthDataSource: FirebaseAuthDataSource(),
       );
 
       getUserById = GetUserById(userRepository);
@@ -170,10 +165,17 @@ class _GiftDetailsPageState extends State<GiftDetailsPage> {
   Future<void> _unpledgeGift() async {
     final userAuthId = await getUserAuthId.call();
 
-    if (widget.gift.GiftStatus != userAuthId && widget.event.UserId != userAuthId) {
+
+    if (widget.event.UserId != userAuthId){
+      if (widget.gift.GiftStatus != userAuthId){
+        _showError();
+        return;
+      }
+    }else{
       _showError();
       return;
     }
+
     final updatedGift = GiftEntity(
       GiftId: widget.gift.GiftId,
       GiftName: widget.gift.GiftName,

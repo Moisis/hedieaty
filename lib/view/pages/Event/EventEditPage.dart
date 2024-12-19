@@ -50,26 +50,19 @@ class _EditEventPageState extends State<EditEventPage> {
     _eventLocationController.text = widget.event.EventLocation;
     _eventDescriptionController.text = widget.event.EventDescription;
 
-    // final sqliteDataSource = SQLiteUserDataSource();
-    // final firebaseDataSource = FirebaseUserDataSource();
-    final firebaseAuthDataSource = FirebaseAuthDataSource();
 
-
-    final sqliteEventSource = SQLiteEventDataSource();
-    final firebaseEventSource = FirebaseEventDataSource();
 
     final userRepository = UserRepositoryImpl(
-    //   sqliteDataSource: sqliteDataSource,
-    //   firebaseDataSource: firebaseDataSource,
-      firebaseAuthDataSource: firebaseAuthDataSource,
+
+      firebaseAuthDataSource: FirebaseAuthDataSource(),
     );
 
     getUserAuthIdUseCase = GetUserAuthId(userRepository);
 
 
     final eventRepository = EventRepositoryImpl(
-      sqliteDataSource: sqliteEventSource,
-      firebaseDataSource: firebaseEventSource,
+      sqliteDataSource: SQLiteEventDataSource(),
+      firebaseDataSource: FirebaseEventDataSource(),
     );
 
     updateEventUseCase = UpdateEvent(eventRepository);

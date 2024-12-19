@@ -1,21 +1,18 @@
-import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hedieaty/domain/entities/user_entity.dart';
 import 'package:hedieaty/domain/usecases/user/Logout_user.dart';
 import 'package:hedieaty/domain/usecases/user/getUserAuthId.dart';
-import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
+
 import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 
-import '../../data/database/local/sqlite_user_dao.dart';
-import '../../data/database/remote/firebase_auth.dart';
-import '../../data/database/remote/firebase_user_dao.dart';
-import '../../data/repos/user_repository_impl.dart';
-import '../../domain/usecases/user/getUserbyId.dart';
-import '../../utils/notification/FCM_Firebase.dart';
-import '../../utils/notification/notification_helper.dart';
-import '../components/widgets/nav/BottomNavBar.dart';
+import '../../../data/database/local/sqlite_user_dao.dart';
+import '../../../data/database/remote/firebase_auth.dart';
+import '../../../data/database/remote/firebase_user_dao.dart';
+import '../../../data/repos/user_repository_impl.dart';
+import '../../../domain/usecases/user/getUserbyId.dart';
+
+import '../../components/widgets/nav/BottomNavBar.dart';
 
 
 
@@ -87,9 +84,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
 
-  final FirestoreService _firestoreService = FirestoreService();
-  String? fcm_token = '';
-  NotificationService _notificationService = NotificationService();
 
   @override
   Widget build(BuildContext context) {
@@ -104,10 +98,11 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                // CircleAvatar(
-                //   radius: 40,
-                //   backgroundImage: NetworkImage(friend.profileImageUrl),
-                // ),
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: NetworkImage(
+                      'https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png'),
+                ),
                 SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -133,28 +128,27 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Divider(),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Account Information'),
-            subtitle: Text('Change your account information'),
-            trailing: Icon(Icons.arrow_forward_ios_rounded),
-            onTap: () async {
-
-
-              var userMap = await _firestoreService.getFcm2(user.UserId);
-              fcm_token = userMap;
-              print(fcm_token);
-              if (fcm_token != null) {
-                Future.wait(
-                  [_notificationService.sendNotification(fcm_token!, 'Account Information', 'Change your account information')]
-                ) ;
-              } else {
-                print('FCM token is null');
-              }
-
-            },
-          ),
-          Divider(),
+          // ListTile(
+          //   leading: Icon(Icons.person),
+          //   title: Text('Account Information'),
+          //   subtitle: Text('Change your account information'),
+          //   trailing: Icon(Icons.arrow_forward_ios_rounded),
+          //   onTap: () async {
+          //
+          //     var userMap = await _firestoreService.getFcm2(user.UserId);
+          //     fcm_token = userMap;
+          //     print(fcm_token);
+          //     if (fcm_token != null) {
+          //       Future.wait(
+          //         [_notificationService.sendNotification(fcm_token!, 'Account Information', 'Change your account information')]
+          //       ) ;
+          //     } else {
+          //       print('FCM token is null');
+          //     }
+          //
+          //   },
+          // ),
+          // Divider(),
 
           ListTile(
             leading: Icon(Icons.event),
@@ -169,7 +163,9 @@ class _ProfilePageState extends State<ProfilePage> {
             title: Text('Friends'),
             subtitle: Text('Manage friends'),
             trailing: Icon(Icons.arrow_forward_ios_rounded),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, '/manageFriends');
+            },
           ),
           Divider(),
           ListTile(

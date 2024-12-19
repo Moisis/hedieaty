@@ -95,140 +95,26 @@ class _EventCreationPageState extends State<EventCreationPage> {
 
   void _intialize() async {
 
-    final sqliteDataSource = SQLiteUserDataSource();
-    final firebaseDataSource = FirebaseUserDataSource();
-    final firebaseAuthDataSource = FirebaseAuthDataSource();
-
-    final sqliteEventSource = SQLiteEventDataSource();
-    final firebaseEventSource = FirebaseEventDataSource();
-
-
     final userRepository = UserRepositoryImpl(
-      sqliteDataSource: sqliteDataSource,
-      firebaseDataSource: firebaseDataSource,
-      firebaseAuthDataSource: firebaseAuthDataSource,
+      sqliteDataSource:  SQLiteUserDataSource(),
+      firebaseDataSource: FirebaseUserDataSource(),
+      firebaseAuthDataSource: FirebaseAuthDataSource(),
     );
 
     final eventRepository = EventRepositoryImpl(
-      sqliteDataSource: sqliteEventSource,
-      firebaseDataSource: firebaseEventSource,
+      sqliteDataSource: SQLiteEventDataSource(),
+      firebaseDataSource: FirebaseEventDataSource(),
     );
     syncEventsUseCase = SyncEvents(eventRepository);
-    // getEventsUseCase = GetEvents(eventRepository);
+
     addEventUseCase = AddEvent(eventRepository);
-    //
-    // getUsersUseCase = GetUsers(userRepository);
-    // syncUsersUseCase = SyncUsers(userRepository);
-    // getUserByPhoneUseCase = GetUserByPhone(userRepository);
+
     getUserAuthIdUseCase = GetUserAuthId(userRepository);
 
     UserAuthId = await getUserAuthIdUseCase.call();
 
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: CustomAppBar(
-  //       title: 'Create Event',
-  //       showBackButton: true,
-  //     ),
-  //     body: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Form(
-  //         key: _formKey,
-  //         child: SingleChildScrollView(
-  //           child: Column(
-  //             children: [
-  //               Card(
-  //                 margin: EdgeInsets.symmetric(vertical: 8.0),
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.all(16.0),
-  //                   child: Column(
-  //                     children: [
-  //                       TextFormField(
-  //                         controller: _eventNameController,
-  //                         decoration: InputDecoration(labelText: 'Event Name'),
-  //                         validator: (value) {
-  //                           if (value == null || value.isEmpty) {
-  //                             return 'Event Name is required';
-  //                           }
-  //                           return null;
-  //                         },
-  //                       ),
-  //                       TextFormField(
-  //                         controller: _eventDateController,
-  //                         decoration: InputDecoration(labelText: 'Event Date'),
-  //                         onTap: () async {
-  //                           FocusScope.of(context).requestFocus(FocusNode());
-  //                           final selectedDate = await showDatePicker(
-  //                             context: context,
-  //                             initialDate: DateTime.now(),
-  //                             firstDate: DateTime(2000),
-  //                             lastDate: DateTime(2100),
-  //                           );
-  //                           if (selectedDate != null) {
-  //                             _eventDateController.text =
-  //                                 selectedDate.toIso8601String().split('T')[0];
-  //                           }
-  //
-  //                         },
-  //                         validator: (value) {
-  //                           if (value == null || value.isEmpty) {
-  //                             return 'Event Date is required';
-  //                           }
-  //                           return null;
-  //                         },
-  //                       ),
-  //                       TextFormField(
-  //                         controller: _eventLocationController,
-  //                         decoration:
-  //                             InputDecoration(labelText: 'Event Location'),
-  //                       ),
-  //                       TextFormField(
-  //                         controller: _eventDescriptionController,
-  //                         decoration:
-  //                             InputDecoration(labelText: 'Event Description'),
-  //                         maxLines: 3,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 20),
-  //
-  //               Row(
-  //                 children: [
-  //                   IC_button(
-  //                     title: 'Add Event ',
-  //                     icon: Icon(Icons.edit_calendar , color: AppColors.white,),
-  //                     onPress: _createEvent ,
-  //                     color:AppColors.secondary,
-  //                     fontsize: 14,
-  //                     width: 150,
-  //                     height: 70,
-  //                   ),
-  //                   SizedBox(width: 50),
-  //                   IC_button(
-  //                     title: 'Cancel ',
-  //                     icon: Icon(Icons.cancel , color: AppColors.white,),
-  //                     onPress: (){
-  //                       Navigator.pop(context);
-  //                     } ,
-  //                     color:Colors.red,
-  //                     fontsize: 14,
-  //                     width: 150,
-  //                     height: 70,
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

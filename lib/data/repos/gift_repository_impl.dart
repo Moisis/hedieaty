@@ -147,6 +147,26 @@ class GiftRepositoryImpl implements GiftRepository {
 
   }
 
+  @override
+  Future<List<GiftEntity>?> getPledgedGifts(String userid) async {
+    final gifts = await sqliteDataSource.getPledgedGifts(userid);
+    return gifts.map((gift) => GiftEntity(
+        GiftId: gift.GiftId,
+        GiftName: gift.GiftName,
+        GiftDescription: gift.GiftDescription,
+        GiftPrice: gift.GiftPrice,
+        GiftCat: gift.GiftCat,
+        GiftStatus: gift.GiftStatus,
+        GiftEventId: gift.GiftEventId
+    )).toList();
+  }
+
+  @override
+  Future<void> deleteGiftsEvent(String Eventid) async {
+    await sqliteDataSource.deleteGiftsEvent(Eventid);
+    await firebaseDataSource.deleteGiftsEvent(Eventid);
+
+  }
 
 
 

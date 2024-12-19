@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -8,7 +7,6 @@ import 'package:hedieaty/utils/AppColors.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 
 import '../../../utils/notification/FCM_Firebase.dart';
-import '../../../utils/notification/notification_helper.dart';
 
 class LoginPage extends StatefulWidget {
   @override

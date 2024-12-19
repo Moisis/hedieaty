@@ -100,14 +100,7 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   void _subscribeToGifts() {
-    // giftsStream = getGiftsStream.call(widget.event.EventId);
-    //
-    // _giftsSubscription = giftsStream.listen((updatedGifts) {
-    //   print('Gifts updated: $updatedGifts');
-    //   setState(() {
-    //     gifts = updatedGifts;
-    //   });
-    // });
+
     giftsStream = getGiftsStream.call(widget.event.EventId);
 
     _giftsSubscription = giftsStream.listen((updatedGifts) {
@@ -161,14 +154,19 @@ class _EventDetailsState extends State<EventDetails> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextField(
-                    controller: giftNameController,
-                    decoration: InputDecoration(
-                      labelText: 'Gift Name',
-                      prefixIcon: Icon(Icons.card_giftcard),
-                      border: OutlineInputBorder(),
-                    ),
+                  // TextField(
+                  //   controller: giftNameController,
+                  //   decoration: InputDecoration(
+                  //     labelText: 'Gift Name',
+                  //     prefixIcon: Icon(Icons.card_giftcard),
+                  //     border: OutlineInputBorder(),
+                  //   ),
+                  // ),
+                  CircleAvatar(
+                    child: Icon(Icons.card_giftcard, color: Colors.white),
+                    backgroundColor: Theme.of(context).primaryColor,
                   ),
+
                   SizedBox(height: 16),
                   TextField(
                     controller: giftDescriptionController,
@@ -521,9 +519,9 @@ class _EventDetailsState extends State<EventDetails> {
                       color: gift.GiftStatus == 'Available' ?  Colors.white: Colors.green[50],
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
-                        leading: const Icon(
-                          Icons.card_giftcard,
-                          color: Colors.pink,
+                        leading: CircleAvatar(
+                          child: Icon(Icons.card_giftcard, color: Colors.white),
+                          backgroundColor: Theme.of(context).primaryColor,
                         ),
                         title: Text(
                           gift.GiftName,

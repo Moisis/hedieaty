@@ -9,8 +9,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hedieaty/view/pages/Event/EventCreationPage.dart';
-import 'package:hedieaty/view/pages/Event/testevent.dart';
-import 'package:hedieaty/view/pages/SettingsPage.dart';
+import 'package:hedieaty/view/pages/Profile/ProfileManageFriends.dart';
+import 'package:hedieaty/view/pages/Profile/SettingsPage.dart';
 
 // Style
 import 'package:hedieaty/utils/AppColors.dart';
@@ -31,9 +31,9 @@ import 'utils/notification/reciever.dart';
 import 'package:hedieaty/view/pages/HomePage.dart';
 
 
-import 'package:hedieaty/view/pages/ProfilePage.dart';
+import 'package:hedieaty/view/pages/Profile/ProfilePage.dart';
 import 'package:hedieaty/view/pages/Event/EventListPage.dart';
-import 'package:hedieaty/view/pages/gift/MyPledgedGiftsPage.dart';
+import 'package:hedieaty/view/pages/Profile/MyPledgedGiftsPage.dart';
 
 import 'firebase_options.dart';
 
@@ -86,34 +86,19 @@ class MyApp extends StatelessWidget {
           textTheme: ButtonTextTheme.primary,
         ),
       ),
-      // Todo uncomment screen home :  SplashScreen(),
-      // home :  SplashScreen(),
-      // initialRoute:  '/splash_page',
-      // initialRoute:  '/home_page',
       initialRoute: '/splash_page',
-      // initialRoute: '/register',
-      // initialRoute: '/Eventlistpage',
-
-
       routes: {
         // Into Screen
         '/splash_page': (context) =>   SplashScreen(),
-        '/intro_page': (context) =>   IntroPage(),
+        '/onboarding': (context) =>   IntroPage(),
 
         // Auth Screen
         '/login': (context) =>  LoginPage(),
         '/register': (context) =>  RegisterPage(),
 
 
-        // '/user': (context) =>  UserScreen(),
-
         // Pages
         '/home_page': (context) =>  Homepage(),
-        // '/GiftList': (context) =>  EventDetails(),
-
-        // '/profile_page': (context) =>  ProfileScreen(),
-
-        // '/notification_page': (context) =>  NotificationsPage(),
 
         //Event
         '/Eventlistpage' : (context) =>  Eventlistpage(),
@@ -124,10 +109,7 @@ class MyApp extends StatelessWidget {
         '/settings_page' : (context) =>  SettingsPage(),
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
         '/profile_page': (context) =>  ProfilePage(),
-        // '/info_page': (context) => const InfoPage(),
-        // '/rules_page': (context) =>  CopyrightPage(),
-        // '/stats_page': (context) => const StatsPage(),
-
+        '/manageFriends': (context) =>  ProfileManageFriends(),
 
       },
     );

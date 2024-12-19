@@ -2,7 +2,6 @@
 
 // lib/components/CustomAppBar.dart
 
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import '../../../../utils/AppColors.dart';
 

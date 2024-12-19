@@ -1,20 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hedieaty/data/database/local/sqlite_event_dao.dart';
 import 'package:hedieaty/data/database/remote/firebase_event_dao.dart';
-import 'package:hedieaty/domain/entities/event_entity.dart';
+
 import 'package:hedieaty/domain/entities/friend_entity.dart';
-import 'package:hedieaty/domain/repos_head/event_repository.dart';
+
 import 'package:hedieaty/domain/usecases/event/add_event.dart';
 import 'package:hedieaty/domain/usecases/event/sync_events.dart';
 import 'package:hedieaty/domain/usecases/friend/getFriends.dart';
 import 'package:hedieaty/domain/usecases/friend/sync_Friends.dart';
 import 'package:hedieaty/domain/usecases/user/getUserAuthId.dart';
-import 'package:hedieaty/domain/usecases/user/getUserbyId.dart';
+
 import 'package:hedieaty/utils/AppColors.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
 
 import '../../data/database/local/sqlite_friend_dao.dart';
 import '../../data/database/local/sqlite_user_dao.dart';
@@ -24,16 +23,17 @@ import '../../data/database/remote/firebase_user_dao.dart';
 import '../../data/repos/event_repository_impl.dart';
 import '../../data/repos/friend_repository_impl.dart';
 import '../../data/repos/user_repository_impl.dart';
-import '../../domain/repos_head/user_repository.dart';
+
 import '../../domain/usecases/event/get_events.dart';
 import '../../domain/usecases/friend/addFriend.dart';
 import '../../domain/usecases/user/getUserbyPhone.dart';
 import '../../domain/usecases/user/get_users.dart';
 import '../../domain/usecases/user/sync_users.dart';
 
-import '../../domain/entities/user_entity.dart';
 
-import '../components/widgets/buttons/Circular_small_Button.dart';
+
+import '../../utils/notification/FCM_Firebase.dart';
+import '../../utils/notification/notification_helper.dart';
 import '../components/widgets/buttons/IconButton.dart';
 import '../components/widgets/nav/BottomNavBar.dart';
 import '../components/widgets/FriendList.dart';
@@ -57,12 +57,14 @@ class _HomepageState extends State<Homepage> {
   late int _index = 1;
   bool isLoading = true;
   List<FriendEntity> contacts = [];
-  // List<FriendEntity> Friends = [];
+  final ScrollController _scrollController = ScrollController();
+
+
 
   String connectionStatus = 'unknown';
   String UserAuthId = '';
 
-  final ScrollController _scrollController = ScrollController();
+
   final TextEditingController _controllerPhone = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -88,35 +90,33 @@ class _HomepageState extends State<Homepage> {
     _initialize();
   }
 
+  final FirestoreService _firestoreService = FirestoreService();
+  String? fcm_token = '';
+  NotificationService _notificationService = NotificationService();
+
+
   Future<void> _initialize() async {
     try {
       setState(() {
         isLoading = true;
       });
-      final sqliteDataSource = SQLiteUserDataSource();
-      final firebaseDataSource = FirebaseUserDataSource();
-      final firebaseAuthDataSource = FirebaseAuthDataSource();
 
-      final sqliteEventSource = SQLiteEventDataSource();
-      final firebaseEventSource = FirebaseEventDataSource();
-
-      final sqliteFriendSource = SQLiteFriendDataSource();
-      final firebaseFriendSource = FirebaseFriendDataSource();
 
       final userRepository = UserRepositoryImpl(
-        sqliteDataSource: sqliteDataSource,
-        firebaseDataSource: firebaseDataSource,
-        firebaseAuthDataSource: firebaseAuthDataSource,
+        sqliteDataSource: SQLiteUserDataSource(),
+        firebaseDataSource: FirebaseUserDataSource(),
+        firebaseAuthDataSource: FirebaseAuthDataSource(),
       );
 
+
       final eventRepository = EventRepositoryImpl(
-        sqliteDataSource: sqliteEventSource,
-        firebaseDataSource: firebaseEventSource,
+        sqliteDataSource: SQLiteEventDataSource(),
+        firebaseDataSource: FirebaseEventDataSource(),
       );
 
       final friendRepository = FriendRepositoryImpl(
-        sqliteDataSource: sqliteFriendSource,
-        firebaseDataSource: firebaseFriendSource,
+        sqliteDataSource: SQLiteFriendDataSource(),
+        firebaseDataSource: FirebaseFriendDataSource(),
       );
 
       syncEventsUseCase = SyncEvents(eventRepository);
@@ -133,8 +133,7 @@ class _HomepageState extends State<Homepage> {
       addFriendUseCase = AddFriend(friendRepository);
       syncFriendsUseCase = SyncFriends(friendRepository);
 
-      print('Syncing contacts');
-      print(FirebaseAuth.instance.currentUser!.uid);
+
 
       await _refreshContacts();
       setState(() {
@@ -172,12 +171,19 @@ class _HomepageState extends State<Homepage> {
 
       await addFriendUseCase.call(tempFriend);
 
-
+      var userMap = await _firestoreService.getFcm2(foundFriend.UserId);
+      _notificationService.sendNotification(
+          userMap!,
+          'Friend Added',
+          '${foundFriend.UserName} is waiting for you!'
+      );
       Navigator.pop(context);
       Fluttertoast.showToast(
         msg: "Friend added successfully!",
         gravity: ToastGravity.SNACKBAR,
       );
+
+
 
       await _refreshContacts();
       setState(() {
@@ -226,6 +232,7 @@ class _HomepageState extends State<Homepage> {
                       title: 'Add Friend',
                       onPress: () {
                         _addFriend(_controllerPhone.text);
+
                       },
                       icon: const Icon(
                         Icons.person_add,
@@ -283,9 +290,7 @@ class _HomepageState extends State<Homepage> {
   Future<void> _refreshContacts() async {
     print('Refresh:');
     try {
-
       UserAuthId = await getUserAuthIdUseCase.call();
-      print('UserAuthId: $UserAuthId');
       await syncUsersUseCase.call();
       await syncEventsUseCase.call();
       await syncFriendsUseCase.call();
@@ -295,12 +300,9 @@ class _HomepageState extends State<Homepage> {
       final newEvents = await getEventsUseCase.call();
       final newFriends = await getFriendsUseCase.call(UserAuthId);
 
-
-
       // Update user event counts
       for (var user in newContacts) {
-        user.UserEventsNo =
-            newEvents.where((event) => event.UserId == user.UserId).length;
+        user.UserEventsNo = newEvents.where((event) => event.UserId == user.UserId && (DateTime.tryParse(event.EventDate)!.isBefore(DateTime.now()) )).length;
       }
 
       for (FriendEntity friend in newFriends) {
