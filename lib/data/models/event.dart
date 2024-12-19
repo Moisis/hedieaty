@@ -9,6 +9,7 @@ class Event   {
   final String EventName;
   final String EventDate;
   final String EventLocation;
+  final String EventImageUrl;
   final String EventDescription;
   final String UserId;
 
@@ -17,6 +18,7 @@ class Event   {
     required this.EventName,
     required this.EventDate,
     required this.EventLocation,
+    required this.EventImageUrl,
     required this.EventDescription,
     required this.UserId,
   });
@@ -27,6 +29,7 @@ class Event   {
       EventName: json['EventName'],
       EventDate : json['EventDate'],
       EventLocation: json['EventLocation'],
+      EventImageUrl: json['EventImageUrl'],
       EventDescription: json['EventDescription'],
       UserId: json['UserId'],
     );
@@ -38,6 +41,7 @@ class Event   {
       'EventName': EventName,
       'EventDate': EventDate,
       'EventLocation': EventLocation,
+      'EventImageUrl': EventImageUrl,
       'EventDescription': EventDescription,
       'UserId': UserId,
     };

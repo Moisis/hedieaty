@@ -2,8 +2,6 @@ import '../../data/models/gift.dart';
 
 class GiftEntity  extends Gift {
 
-
-
   GiftEntity({
     required super.GiftId,
     required super.GiftName,

@@ -25,6 +25,7 @@ class EventRepositoryImpl implements EventRepository {
       EventName: event.EventName,
       EventDate: event.EventDate,
       EventLocation: event.EventLocation,
+      EventImageUrl: event.EventImageUrl,
       EventDescription: event.EventDescription,
       UserId : event.UserId
     );
@@ -62,6 +63,7 @@ class EventRepositoryImpl implements EventRepository {
         EventName: event.EventName,
         EventDate: event.EventDate,
         EventLocation: event.EventLocation,
+        EventImageUrl: event.EventImageUrl,
         EventDescription: event.EventDescription,
         UserId: event.UserId
     )).toList();
@@ -89,6 +91,7 @@ class EventRepositoryImpl implements EventRepository {
       EventName: event.EventName,
       EventDate: event.EventDate,
       EventLocation: event.EventLocation,
+      EventImageUrl: event.EventImageUrl,
       EventDescription: event.EventDescription,
       UserId: event.UserId
     );
@@ -108,6 +111,7 @@ class EventRepositoryImpl implements EventRepository {
         EventName: event.EventName,
         EventDate: event.EventDate,
         EventLocation: event.EventLocation,
+        EventImageUrl: event.EventImageUrl,
         EventDescription: event.EventDescription,
         UserId: event.UserId
     )).toList());

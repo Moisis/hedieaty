@@ -119,8 +119,6 @@ class _FriendPageState extends State<FriendPage> {
 
   List<EventEntity> filterEvents(int index, List<EventEntity> events) {
 
-
-
     final now = DateTime.now();
 
     if (index == 0) {

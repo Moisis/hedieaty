@@ -5,7 +5,7 @@ class Eventcard extends StatelessWidget {
   final EventEntity event;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
-  final VoidCallback? onTap ;
+  final VoidCallback? onTap;
 
   const Eventcard({super.key, required this.event, this.onEdit, this.onDelete, this.onTap});
 
@@ -24,6 +24,33 @@ class Eventcard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Event Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: event.EventImageUrl != null
+                    ? Image.network(
+                  event.EventImageUrl!,
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/default_event.png', // Default image
+                      width: double.infinity,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                )
+                    : Image.asset(
+                  'assets/default_event.png', // Default image if no URL
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 12),
+
               // Event Name
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +70,7 @@ class Eventcard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-      
+
               // Event Date and Location
               Row(
                 children: [
@@ -66,7 +93,7 @@ class Eventcard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-      
+
               // Event Author
               Row(
                 children: [
@@ -78,19 +105,9 @@ class Eventcard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-      
-              // Event Description
-              Text(
-                event.EventDescription,
-                style: const TextStyle(fontSize: 16, height: 1.4),
-                textAlign: TextAlign.justify,
-              ),
-              const SizedBox(height: 16),
-      
               // Action Buttons
-              event.UserName == 'Me'?
-              Row(
+              event.UserName == 'Me'
+                  ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (onEdit != null)
@@ -102,7 +119,6 @@ class Eventcard extends StatelessWidget {
                         foregroundColor: Theme.of(context).primaryColor,
                       ),
                     ),
-      
                   if (onDelete != null)
                     TextButton.icon(
                       onPressed: onDelete,
@@ -113,7 +129,8 @@ class Eventcard extends StatelessWidget {
                       ),
                     ),
                 ],
-              ) : const SizedBox.shrink(),
+              )
+                  : const SizedBox.shrink(),
             ],
           ),
         ),

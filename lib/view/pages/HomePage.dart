@@ -261,6 +261,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
+  //todo check if this is needed
   Future<void> _checkConnectionStatus() async {
     try {
       final ConnectivityResult result =
@@ -404,7 +405,7 @@ class _HomepageState extends State<Homepage> {
           Icons.person_add,
           color: Colors.white,
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.secondary,
       ),
     );
   }
