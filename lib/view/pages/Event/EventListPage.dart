@@ -36,14 +36,14 @@ import '../gift/EventListDetailsPage.dart';
 import 'EventEditPage.dart';
 import '../../../domain/usecases/event/GetStreamEvent.dart';
 
-class Eventlistpage extends StatefulWidget {
-  const Eventlistpage({super.key});
+class EventListPage extends StatefulWidget {
+  const EventListPage({super.key});
 
   @override
-  State<Eventlistpage> createState() => _EventlistpageState();
+  State<EventListPage> createState() => _EventListPageState();
 }
 
-class _EventlistpageState extends State<Eventlistpage> {
+class _EventListPageState extends State<EventListPage> {
   List<EventEntity> filteredEvents = [];
   late var _index = 0;
   var _selectedStatus = 0;

@@ -29,6 +29,7 @@ class IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedIntroduction(
+      key : const ValueKey('intro_page'),
       slides: pages,
       indicatorType: IndicatorType.circle,
       footerBgColor: Color(0xff78CAEB),

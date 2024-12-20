@@ -81,23 +81,21 @@ class _SplashScreenState extends State<SplashScreen> {
     } finally {
       // Clean up resources, if necessary
       FlutterNativeSplash.remove();
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-      if (isLoggedIn) {
-        Navigator.pushReplacementNamed(context, '/home_page');
-      } else {
-        if (prefs.getBool('isFirstTime') == false) {
-        } else {
-          prefs.setBool('isFirstTime', false);
-          Navigator.pushReplacementNamed(context, '/onboarding');
-        }
+      prefs.getBool('isFirstTime') ?? prefs.setBool('isFirstTime', true);
+      if (prefs.getBool('isFirstTime')  == true) {
+        prefs.setBool('isFirstTime', false);
+        Navigator.pushReplacementNamed(context, '/onboarding');
       }
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
+      key : const ValueKey('intro_page2'),
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

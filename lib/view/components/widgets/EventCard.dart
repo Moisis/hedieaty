@@ -29,25 +29,25 @@ class Eventcard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 child: event.EventImageUrl != null
                     ? Image.network(
-                  event.EventImageUrl!,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/default_event.png', // Default image
-                      width: double.infinity,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    );
-                  },
-                )
+                        event.EventImageUrl!,
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/default_event.png', // Default image
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
                     : Image.asset(
-                  'assets/default_event.png', // Default image if no URL
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
+                        'assets/default_event.png', // Default image if no URL
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
               ),
               const SizedBox(height: 12),
 
@@ -55,7 +55,8 @@ class Eventcard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.event, color: Theme.of(context).primaryColor, size: 28),
+                  Icon(Icons.event,
+                      color: Theme.of(context).primaryColor, size: 28),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -108,28 +109,28 @@ class Eventcard extends StatelessWidget {
               // Action Buttons
               event.UserName == 'Me'
                   ? Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (onEdit != null)
-                    TextButton.icon(
-                      onPressed: onEdit,
-                      icon: const Icon(Icons.edit, size: 16),
-                      label: const Text('Edit'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  if (onDelete != null)
-                    TextButton.icon(
-                      onPressed: onDelete,
-                      icon: const Icon(Icons.delete, size: 16),
-                      label: const Text('Delete'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.redAccent,
-                      ),
-                    ),
-                ],
-              )
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (onEdit != null)
+                          TextButton.icon(
+                            onPressed: onEdit,
+                            icon: const Icon(Icons.edit, size: 16),
+                            label: const Text('Edit'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        if (onDelete != null)
+                          TextButton.icon(
+                            onPressed: onDelete,
+                            icon: const Icon(Icons.delete, size: 16),
+                            label: const Text('Delete'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.redAccent,
+                            ),
+                          ),
+                      ],
+                    )
                   : const SizedBox.shrink(),
             ],
           ),

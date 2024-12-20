@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  Future<void> _login() async {
+  Future<void> login() async {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Login",
+                        "Sign In",
                         style: TextStyle(color: Colors.white, fontSize: 40),
                       ),
                       SizedBox(height: 10),
@@ -126,6 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    key: const ValueKey("email"),
                                     controller: _controllerEmail,
                                     decoration: const InputDecoration(
                                       labelText: "Email",
@@ -140,6 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    key: const ValueKey("password"),
                                     controller: _controllerPassword,
                                     obscureText: true,
                                     decoration: const InputDecoration(
@@ -156,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 40),
                         Custom_button(
                           title: 'Login',
-                          onPress: _login,
+                          onPress: login,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

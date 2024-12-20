@@ -37,7 +37,6 @@ class SQLiteBarcodeDataSource {
       print(" Gift Parsed     ${maps.first}");
       return Gift.fromJson(maps.first);
 
-
     }
     return null; // Return null if no match is found
   }

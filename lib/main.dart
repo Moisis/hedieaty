@@ -37,24 +37,27 @@ import 'package:hedieaty/view/pages/Profile/MyPledgedGiftsPage.dart';
 
 import 'firebase_options.dart';
 
-// Future<void> initializeFirebase()  async {
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   FirebaseDatabase.instance.setPersistenceEnabled(true);
-// }
+
+
+Future<void> intializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
+  await NotificationServiceRec.instance.initialize();
+}
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  FirebaseDatabase.instance.setPersistenceEnabled  // await initializeFirebase();
-    (true);
-  await NotificationServiceRec.instance.initialize();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  // FirebaseDatabase.instance.setPersistenceEnabled(true);
+  // await NotificationServiceRec.instance.initialize();
+  //
 
-
+   await intializeFirebase();
 
   runApp(MyApp());
 }
@@ -87,24 +90,19 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: '/splash_page',
+      // initialRoute: '/login',
       routes: {
         // Into Screen
         '/splash_page': (context) =>   SplashScreen(),
         '/onboarding': (context) =>   IntroPage(),
-
         // Auth Screen
         '/login': (context) =>  LoginPage(),
         '/register': (context) =>  RegisterPage(),
-
-
         // Pages
-        '/home_page': (context) =>  Homepage(),
-
+        '/home_page': (context) =>  HomePage(),
         //Event
-        '/Eventlistpage' : (context) =>  Eventlistpage(),
+        '/Eventlistpage' : (context) =>  EventListPage(),
         '/EventCreatePage' : (context) =>  EventCreationPage(),
-
-
         //Profile
         '/settings_page' : (context) =>  SettingsPage(),
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
