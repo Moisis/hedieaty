@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       Fluttertoast.showToast(
-        msg: "Error adding friend $e",
+        msg: "Error adding friend",
         gravity: ToastGravity.SNACKBAR,
       );
     }

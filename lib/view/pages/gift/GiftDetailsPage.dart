@@ -535,7 +535,7 @@ class _GiftDetailsPageState extends State<GiftDetailsPage> {
                       SizedBox(height: 10),
 
                       // Edit and Delete Buttons (if the user is not the one who created the event)
-                      widget.event.UserId != getUserAuthId.call()
+                      widget.event.UserId == getUserAuthId.call()
                           ? Column(
                               children: [
                                 IC_button(

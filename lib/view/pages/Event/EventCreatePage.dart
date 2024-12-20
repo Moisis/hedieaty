@@ -178,7 +178,6 @@ class _EventCreationPageState extends State<EventCreationPage> {
                           controller: _eventDescriptionController,
                           decoration:
                           InputDecoration(labelText: 'Event Description'),
-                          maxLines: 3,
                         ),
                         const SizedBox(height: 16),
                         Text('Select an Event Image', style: TextStyle(fontSize: 16)),
@@ -222,7 +221,7 @@ class _EventCreationPageState extends State<EventCreationPage> {
                 Row(
                   children: [
                     IC_button(
-                      title: 'Add Event ',
+                      title: 'Add Event',
                       icon: Icon(Icons.edit_calendar, color: AppColors.white),
                       onPress: _createEvent,
                       color: AppColors.secondary,

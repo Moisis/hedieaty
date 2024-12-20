@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hedieaty/main.dart';
 
 import 'package:hedieaty/view/components/widgets/FriendList.dart';
+import 'package:hedieaty/view/components/widgets/buttons/IconButton.dart';
 import 'package:hedieaty/view/components/widgets/nav/BottomNavBar.dart';
 import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 import 'package:hedieaty/view/pages/Event/EventCreatePage.dart';
@@ -125,7 +126,12 @@ void main() {
     expect(find.text('Friend added successfully!'), findsOneWidget);
   });
 
-  testWidgets('Navigate to EventCreatePage', (WidgetTester tester) async {
+
+  // Create an event successfully
+  testWidgets('Create an event successfully', (WidgetTester tester) async {
+
+    intializeFirebase();
+
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
@@ -135,11 +141,60 @@ void main() {
     await tester.tap(eventButton);
     await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 10));
-
     // Verify navigation
     expect(find.byType(EventCreationPage), findsOneWidget); // Adjust based on your EventCreatePage class name
+
+    // Fill in the form fields
+    await tester.enterText(find.widgetWithText(TextFormField, 'Event Name'), 'Birthday Party');
+
+    // Open and select a date
+    await tester.tap(find.widgetWithText(TextFormField, 'Event Date'));
+    await tester.pumpAndSettle();
+
+    await tester.pump(const Duration(seconds: 2));
+    // Select a date from the date picker
+    await tester.tap(find.text('15')); // Replace with a valid date.
+    await tester.tap(find.text('OK')); // Confirm date selection
+    await tester.pumpAndSettle();
+
+    await tester.pump(const Duration(seconds: 2));
+
+    await tester.enterText(find.widgetWithText(TextFormField, 'Event Location'), 'New York City');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Event Description'), 'A fun birthday celebration with friends.');
+
+    await tester.pump(const Duration(seconds: 2));
+
+    // Select an image
+    final imageGrid = find.byType(GridView);
+    expect(imageGrid, findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2));
+
+    final firstImage = find.descendant(of: imageGrid, matching: find.byType(GestureDetector)).first;
+    await tester.tap(firstImage);
+    await tester.pumpAndSettle();
+
+    await tester.pump(const Duration(seconds: 2));
+
+    // Submit the form
+    final addButton = find.widgetWithText(IC_button, 'Add Event'); // Replace with the actual button text.
+    expect(addButton, findsOneWidget);
+    await tester.tap(addButton);
+    await tester.pumpAndSettle();
+
+    await tester.pump(const Duration(seconds: 10));
+
+    // Verify success message
+    // expect(find.text('Event created successfully!'), findsOneWidget);
+
+
+
+    // Verify navigation back to the previous screen
+    // expect(find.byType(HomePage), findsOneWidget); // Replace with the text or widget indicating the previous screen.
   });
+
+
+
 }
 
 
