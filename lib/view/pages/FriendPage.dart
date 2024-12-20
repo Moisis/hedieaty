@@ -98,6 +98,14 @@ class _FriendPageState extends State<FriendPage> {
 
       final newEvents = await getEventsbyUserId.call(widget.friend.FriendId);
 
+      final users = await getUsersUseCase.call();
+
+      for (EventEntity event in newEvents) {
+          final user = users.firstWhere((user) => user.UserId == event.UserId);
+          event.UserName = user.UserName;
+
+      }
+
       setState(() {
         events = newEvents;
         isLoading = false;
@@ -185,12 +193,24 @@ class _FriendPageState extends State<FriendPage> {
                       children: [
                         Hero(
                           tag: widget.friend.UserPhone ?? 'Unknown Phone',
-                          child: CircleAvatar(
-                            radius: 40,
-                            backgroundImage: AssetImage(
-                              'assets/images/default_profile.png',
+                          child: ClipOval(
+                            child: Image.network(
+                              'https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png',
+                              fit: BoxFit.cover,
+                              width: 70,
+                              height: 70,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Provide a fallback image if the network image fails to load
+                                return Image.asset(
+                                  'assets/images/default_profile.png', // Ensure you have this asset in your project
+                                  fit: BoxFit.cover,
+                                  width: 50,
+                                  height: 50,
+                                );
+                              },
                             ),
                           ),
+
                         ),
                         SizedBox(width: 16),
                         Expanded(
@@ -221,8 +241,8 @@ class _FriendPageState extends State<FriendPage> {
                   ),
 
                   // Events Section
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 8.0),
                     child: Text(
                       'Events',
@@ -257,7 +277,6 @@ class _FriendPageState extends State<FriendPage> {
                       ),
                     ],
                   ),
-
                   filteredEvents.isEmpty
                       ? Center(
                           child: Padding(
@@ -289,15 +308,14 @@ class _FriendPageState extends State<FriendPage> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                  '${event.EventDate} at ${event.EventLocation}',
+                                  '${event.EventDate} at ${event.EventLocation} ',
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.grey[600]),
                                 ),
                                 trailing: Icon(Icons.arrow_forward_ios,
                                     size: 16, color: Colors.grey),
                                 onTap: () async {
-                                  // Event detail navigation logic
-                                  final isViewed = await Navigator.push(
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hedieaty/view/components/widgets/buttons/CustomButton.dart';
@@ -11,6 +12,7 @@ import '../../../domain/entities/user_entity.dart';
 import '../../../domain/repos_head/user_repository.dart';
 import '../../../domain/usecases/user/add_user.dart';
 import '../../../utils/AppColors.dart';
+import '../../../utils/notification/FCM_Firebase.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -20,15 +22,16 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   late AddUser addUserUseCase;
 
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
-  final TextEditingController _controllerConfirmPassword = TextEditingController();
+  final TextEditingController _controllerConfirmPassword =
+      TextEditingController();
 
+  final FirestoreService _firestoreService = FirestoreService();
 
   @override
   void initState() {
@@ -47,13 +50,16 @@ class _RegisterPageState extends State<RegisterPage> {
     sqliteDataSource.init();
   }
 
-
   Future<void> register() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-          email: _controllerEmail.text.trim(),
-          password: _controllerPassword.text.trim());
+              email: _controllerEmail.text.trim(),
+              password: _controllerPassword.text.trim());
+
+      String? fcm_token = await FirebaseMessaging.instance.getToken();
+      await _firestoreService.addUser(
+          FirebaseAuth.instance.currentUser!.uid, fcm_token!);
 
       // Get the User ID
       String uid = userCredential.user?.uid ?? '';
@@ -66,6 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
         UserPass: _controllerPassword.text.trim(),
         UserPhone: _controllerPhone.value.text.trim(),
         UserEventsNo: 0,
+        UserPrefs: '',
       );
 
       addUserUseCase.call(userData);
@@ -78,9 +85,6 @@ class _RegisterPageState extends State<RegisterPage> {
           msg: e.message.toString(), gravity: ToastGravity.SNACKBAR);
     }
   }
-
-
-
 
   final _formKey = GlobalKey<FormState>();
   String? _errorMessage;
@@ -102,11 +106,12 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _errorMessage = null;
       });
-      Fluttertoast.showToast(msg: "Registration completed successfully!" , gravity: ToastGravity.SNACKBAR);
+      Fluttertoast.showToast(
+          msg: "Registration completed successfully!",
+          gravity: ToastGravity.SNACKBAR);
     } else {
       setState(() {
         _errorMessage = "Please fix the errors above.";
-
       });
     }
   }
@@ -126,10 +131,10 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-
-
   String? _validatePhone(String? value) {
-    if (value == null || value.length != 10 || !RegExp(r'^\d{10}$').hasMatch(value)) {
+    if (value == null ||
+        value.length != 10 ||
+        !RegExp(r'^\d{10}$').hasMatch(value)) {
       return "Phone number must be exactly 10 digits";
     }
     return null;
@@ -145,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _validateConfirmPassword(String? value) {
     if (value == null || value.length < 6) {
       return "Password must be at least 6 characters long";
-    }else if (value != _controllerPassword.text){
+    } else if (value != _controllerPassword.text) {
       return "Passwords do not match";
     }
     return null;
@@ -163,7 +168,8 @@ class _RegisterPageState extends State<RegisterPage> {
               children: <Widget>[
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -182,8 +188,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.1),
-                      topRight: Radius.circular(MediaQuery.of(context).size.width * 0.1),
+                      topLeft: Radius.circular(
+                          MediaQuery.of(context).size.width * 0.1),
+                      topRight: Radius.circular(
+                          MediaQuery.of(context).size.width * 0.1),
                     ),
                     boxShadow: const [
                       BoxShadow(
@@ -194,7 +202,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.05),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -228,7 +237,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                 ),
-
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: Padding(
@@ -243,12 +251,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                 ),
-
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child:  TextFormField(
+                                    child: TextFormField(
                                       controller: _controllerPhone,
                                       keyboardType: TextInputType.phone,
                                       decoration: const InputDecoration(
@@ -301,7 +308,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               style: const TextStyle(color: Colors.red),
                             ),
                           // Buttons
-                          Custom_button(
+                          Custombutton(
                             onPress: _validateAndSubmit,
                             title: "Register",
                           ),
@@ -337,7 +344,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-
   // @override
   // void dispose() {
   //   _resetForm();
@@ -348,5 +354,3 @@ class _RegisterPageState extends State<RegisterPage> {
   //   super.dispose();
   // }
 }
-
-

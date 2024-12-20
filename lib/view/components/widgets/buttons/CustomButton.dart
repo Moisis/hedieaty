@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hedieaty/utils/AppColors.dart';
 
-class Custom_button extends StatelessWidget {
+class Custombutton extends StatelessWidget {
 
-  Custom_button( {required this.title, required this.onPress});
+  Custombutton( {required this.title, required this.onPress});
 
   final String title ;
   final VoidCallback onPress;
@@ -12,7 +12,6 @@ class Custom_button extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // width: double.infinity,
-      key: const ValueKey("Login"),
       height: MediaQuery.of(context).size.height * 0.07,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(

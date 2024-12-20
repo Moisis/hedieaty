@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hedieaty/view/components/widgets/nav/CustomAppBar.dart';
 
 
 import '../../../data/database/local/sqlite_event_dao.dart';
@@ -106,7 +107,10 @@ class _EditEventPageState extends State<EditEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Event')),
+      appBar: CustomAppBar(
+        title: 'Edit Event',
+        showBackButton: true,
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: 16.0,

@@ -4,14 +4,7 @@ import '../../models/gift.dart';
 class FirebaseGiftDataSource {
   final DatabaseReference dbRef = FirebaseDatabase.instance.ref('Gifts');
 
-  // Stream<List<Gift>> getGiftsStream() {
-  //   return dbRef.onValue.map((event) {
-  //     final data = event.snapshot.value as Map<dynamic, dynamic>;
-  //     return data.entries
-  //         .map((entry) => Gift.fromJson(Map<String, dynamic>.from(entry.value)))
-  //         .toList();
-  //   });
-  // }
+
 
   Stream<List<Gift>> getGiftsStream() {
     return dbRef.onValue.map((event) {

@@ -42,13 +42,9 @@ class _ProfilePageState extends State<ProfilePage> {
       final sqliteDataSource = SQLiteUserDataSource();
       final firebaseDataSource = FirebaseUserDataSource();
 
-      // final sqliteEventSource = SQLiteEventDataSource();
-      // final firebaseEventSource = FirebaseEventDataSource();
-      //
+
       final firebaseAuthDataSource = FirebaseAuthDataSource();
-      //
-      // final sqliteFriendSource = SQLiteFriendDataSource();
-      // final firebaseFriendSource = FirebaseFriendDataSource();
+
 
       final userRepository = UserRepositoryImpl(
         sqliteDataSource: sqliteDataSource,
@@ -98,10 +94,20 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: NetworkImage(
-                      'https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png'),
+                ClipOval(
+                  child: Image.network(
+                    'https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png',
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: MediaQuery.of(context).size.width * 0.2,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Provide a fallback image if the network image fails to load
+                      return Image.asset(
+                        'assets/images/default_profile.png', // Ensure you have this asset in your project
+
+                      );
+                    },
+                  ),
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -128,36 +134,19 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Divider(),
-          // ListTile(
-          //   leading: Icon(Icons.person),
-          //   title: Text('Account Information'),
-          //   subtitle: Text('Change your account information'),
-          //   trailing: Icon(Icons.arrow_forward_ios_rounded),
-          //   onTap: () async {
-          //
-          //     var userMap = await _firestoreService.getFcm2(user.UserId);
-          //     fcm_token = userMap;
-          //     print(fcm_token);
-          //     if (fcm_token != null) {
-          //       Future.wait(
-          //         [_notificationService.sendNotification(fcm_token!, 'Account Information', 'Change your account information')]
-          //       ) ;
-          //     } else {
-          //       print('FCM token is null');
-          //     }
-          //
-          //   },
-          // ),
-          // Divider(),
-
           ListTile(
-            leading: Icon(Icons.event),
-            title: Text('Events'),
-            subtitle: Text('Manage events'),
+            leading: Icon(Icons.person),
+            title: Text('Account Information'),
+            subtitle: Text('Change your account information'),
             trailing: Icon(Icons.arrow_forward_ios_rounded),
-            onTap: () {},
+            onTap: () async {
+              final isdone = await Navigator.pushNamed(context, '/accountInfo');
+              if (isdone == true) _initialize();
+            },
           ),
           Divider(),
+
+
           ListTile(
             leading: Icon(Icons.supervisor_account_sharp),
             title: Text('Friends'),

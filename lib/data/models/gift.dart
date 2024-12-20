@@ -2,10 +2,10 @@
 class Gift {
 
   final String GiftId;
-  final String GiftName;
-  final String GiftDescription;
+  late final String GiftName;
+  late final String GiftDescription;
   final String GiftCat;
-  final double  GiftPrice;
+  late final double  GiftPrice;
   final String GiftStatus;
   final String GiftEventId;
 

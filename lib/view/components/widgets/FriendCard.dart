@@ -30,31 +30,21 @@ class FriendCard extends StatelessWidget {
           backgroundColor: Colors.grey.shade200, // Placeholder background color
           child: Hero(
             tag: fr.UserPhone ?? 'Unknown Phone',
-            // child: ClipOval(
-            //   child: Image.network(
-            //     fr.UserId,
-            //     fit: BoxFit.cover,
-            //     width: 50,
-            //     height: 50,
-            //     errorBuilder: (context, error, stackTrace) {
-            //       // Provide a fallback image if the network image fails to load
-            //       return Image.asset(
-            //         'assets/images/default_profile.png', // Ensure you have this asset in your project
-            //         fit: BoxFit.cover,
-            //         width: 50,
-            //         height: 50,
-            //       );
-            //     },
-            //   ),
-            // ),
-
             child: ClipOval(
-              child:  Image.asset(
+              child: Image.network(
+                  'https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png',
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+                errorBuilder: (context, error, stackTrace) {
+                  // Provide a fallback image if the network image fails to load
+                  return Image.asset(
                     'assets/images/default_profile.png', // Ensure you have this asset in your project
                     fit: BoxFit.cover,
                     width: 50,
                     height: 50,
-
+                  );
+                },
               ),
             ),
           ),
@@ -90,7 +80,6 @@ class FriendCard extends StatelessWidget {
             padding: EdgeInsets.all(10),
             elevation: 0,
           ),
-
 
         ) ,
 

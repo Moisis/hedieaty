@@ -80,21 +80,39 @@ class FriendRepositoryImpl implements FriendRepository {
   }
 
 
+  // @override
+  // Future<List<FriendEntity>> getFriendsById(String id) async {
+  //   final friends = await sqliteDataSource.getFriends(id);
+  //
+  //   for (var friend in friends!) {
+  //     print("Friend: ${friend.UserId}, ${friend.FriendId}");
+  //   }
+  //
+  //   return friends
+  //       .map((friend) => FriendEntity(
+  //     UserId: friend.UserId,
+  //     FriendId: friend.FriendId,
+  //   ))
+  //       .toList();
+  // }
   @override
   Future<List<FriendEntity>> getFriendsById(String id) async {
-
     final friends = await sqliteDataSource.getFriends(id);
 
-    for (var friend in friends!) {
+    if (friends == null) {
+      return []; // Return an empty list if no friends are found
+    }
+
+    for (var friend in friends) {
       print("Friend: ${friend.UserId}, ${friend.FriendId}");
     }
 
-
     return friends
         .map((friend) => FriendEntity(
-              UserId: friend.UserId,
-              FriendId: friend.FriendId,
-            ))
+      UserId: friend.UserId,
+      FriendId: friend.FriendId,
+    ))
         .toList();
   }
+
 }

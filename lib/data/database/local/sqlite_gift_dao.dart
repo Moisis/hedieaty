@@ -34,8 +34,7 @@ class SQLiteGiftDataSource {
   Future<void> updateGift(Gift gift) async {
     print('updateGift');
     await _ensureInitialized();
-    await db.update(
-        'Gifts', gift.toJson(), where: 'GiftId = ?', whereArgs: [gift.GiftId]);
+    await db.update('Gifts', gift.toJson(), where: 'GiftId = ?', whereArgs: [gift.GiftId]);
   }
 
   Future<void> deleteGift(String id) async {

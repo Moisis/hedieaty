@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:hedieaty/view/pages/Event/EventCreationPage.dart';
+import 'package:hedieaty/view/pages/Event/EventCreatePage.dart';
 import 'package:hedieaty/view/pages/Profile/ProfileManageFriends.dart';
 import 'package:hedieaty/view/pages/Profile/SettingsPage.dart';
 
@@ -18,6 +18,7 @@ import 'package:hedieaty/utils/AppColors.dart';
 //Landing
  import 'package:hedieaty/view/pages/Landing/SplashScreen.dart';
  import 'package:hedieaty/view/pages/Landing/intro_page.dart';
+import 'package:hedieaty/view/pages/Profile/UpdateProfilePage.dart';
 
 //Auth
 
@@ -50,15 +51,7 @@ Future<void> intializeFirebase() async {
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  // FirebaseDatabase.instance.setPersistenceEnabled(true);
-  // await NotificationServiceRec.instance.initialize();
-  //
-
-   await intializeFirebase();
-
+  await intializeFirebase();
   runApp(MyApp());
 }
 
@@ -67,8 +60,6 @@ class MyApp extends StatelessWidget {
   // const MyApp({super.key});
   const MyApp({super.key});
   // This widget is the root of your application.
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +99,7 @@ class MyApp extends StatelessWidget {
         '/pledgedGifts': (context) =>  PledgedGiftsPage(),
         '/profile_page': (context) =>  ProfilePage(),
         '/manageFriends': (context) =>  ProfileManageFriends(),
+        '/accountInfo' : (context) =>  UpdateProfilePage(),
 
       },
     );

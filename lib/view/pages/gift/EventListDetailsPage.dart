@@ -102,7 +102,6 @@ class _EventDetailsState extends State<EventDetails> {
   void _subscribeToGifts() {
 
     giftsStream = getGiftsStream.call(widget.event.EventId);
-
     _giftsSubscription = giftsStream.listen((updatedGifts) {
       print('Gifts updated: $updatedGifts');
       if (mounted) {
@@ -137,140 +136,139 @@ class _EventDetailsState extends State<EventDetails> {
     final GiftEntity? added = await showDialog<GiftEntity>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
-          ),
-          title: Text(
-            'Add Gift',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // TextField(
-                  //   controller: giftNameController,
-                  //   decoration: InputDecoration(
-                  //     labelText: 'Gift Name',
-                  //     prefixIcon: Icon(Icons.card_giftcard),
-                  //     border: OutlineInputBorder(),
-                  //   ),
-                  // ),
-                  CircleAvatar(
-                    child: Icon(Icons.card_giftcard, color: Colors.white),
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: giftDescriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'Gift Description',
-                      prefixIcon: Icon(Icons.description),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: giftPriceController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'Gift Price',
-                      prefixIcon: Icon(Icons.attach_money),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: selectedCategory,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedCategory = newValue;
-                      });
-                    },
-                    items: categories
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      labelText: 'Gift Category',
-                      prefixIcon: Icon(Icons.category),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ],
+        return Builder(
+          builder: (BuildContext newContext) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
               ),
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.spaceEvenly,
-          actions: [
-            Row(
-              children: [
-                Expanded(
-                  child: IC_button(
-                    title: 'Add Gift',
-                    onPress: () {
-                      if (giftNameController.text.isNotEmpty &&
-                          giftPriceController.text.isNotEmpty) {
-                        final gift = GiftEntity(
-                          GiftId: randomAlphaNumeric(
-                              DateTime.now().millisecondsSinceEpoch % 100),
-                          GiftName: giftNameController.text,
-                          GiftDescription: giftDescriptionController.text,
-                          GiftPrice:
+              title: Text(
+                'Add Gift',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: giftNameController,
+                        decoration: InputDecoration(
+                          labelText: 'Gift Name',
+                          prefixIcon: Icon(Icons.card_giftcard),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        controller: giftDescriptionController,
+                        decoration: InputDecoration(
+                          labelText: 'Gift Description',
+                          prefixIcon: Icon(Icons.description),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        controller: giftPriceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Gift Price',
+                          prefixIcon: Icon(Icons.attach_money),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: selectedCategory,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedCategory = newValue;
+                          });
+                        },
+                        items: categories
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                          labelText: 'Gift Category',
+                          prefixIcon: Icon(Icons.category),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actions: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: IC_button(
+                        title: 'Add Gift',
+                        onPress: () {
+                          if (giftNameController.text.isNotEmpty &&
+                              giftPriceController.text.isNotEmpty) {
+                            final gift = GiftEntity(
+                              GiftId: randomAlphaNumeric(
+                                  DateTime.now().millisecondsSinceEpoch % 100),
+                              GiftName: giftNameController.text,
+                              GiftDescription: giftDescriptionController.text,
+                              GiftPrice:
                               double.tryParse(giftPriceController.text) ?? 0.0,
-                          GiftCat: selectedCategory ?? 'Other',
-                          GiftStatus: 'Available',
-                          GiftEventId: widget.event.EventId,
-                        );
-                        Navigator.pop(context, gift);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content:
+                              GiftCat: selectedCategory ?? 'Other',
+                              GiftStatus: 'Available',
+                              GiftEventId: widget.event.EventId,
+                            );
+                            Navigator.pop(newContext, gift);
+                          } else {
+                            ScaffoldMessenger.of(newContext).showSnackBar(
+                              SnackBar(
+                                  content:
                                   Text('Gift Name and Price are mandatory')),
-                        );
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.card_giftcard,
-                      color: Colors.white,
+                            );
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.card_giftcard,
+                          color: Colors.white,
+                        ),
+                        color: Colors.green,
+                        fontsize: 14,
+                        width: 150,
+                        height: 50,
+                      ),
                     ),
-                    color: Colors.green,
-                    fontsize: 14,
-                    width: 150,
-                    height: 50,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Expanded(
-                  child: IC_button(
-                    title: 'Cancel',
-                    onPress: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.cancel,
-                      color: Colors.white,
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: IC_button(
+                        title: 'Cancel',
+                        onPress: () {
+                          Navigator.pop(newContext);
+                        },
+                        icon: const Icon(
+                          Icons.cancel,
+                          color: Colors.white,
+                        ),
+                        color: Colors.redAccent,
+                        fontsize: 14,
+                        width: 150,
+                        height: 50,
+                      ),
                     ),
-                    color: Colors.redAccent,
-                    fontsize: 14,
-                    width: 150,
-                    height: 50,
-                  ),
-                ),
+                  ],
+                )
               ],
-            )
-          ],
+            );
+          },
         );
       },
     );

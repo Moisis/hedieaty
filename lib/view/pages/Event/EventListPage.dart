@@ -4,22 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:hedieaty/domain/entities/event_entity.dart';
 import 'package:hedieaty/domain/usecases/event/delete_event.dart';
 import 'package:hedieaty/utils/AppColors.dart';
-import 'package:hedieaty/view/pages/Event/EventCreationPage.dart';
+import 'package:hedieaty/view/pages/Event/EventCreatePage.dart';
 
 import '../../../data/database/local/sqlite_event_dao.dart';
+import '../../../data/database/local/sqlite_friend_dao.dart';
 import '../../../data/database/local/sqlite_gift_dao.dart';
 import '../../../data/database/local/sqlite_user_dao.dart';
 import '../../../data/database/remote/firebase_auth.dart';
 import '../../../data/database/remote/firebase_event_dao.dart';
+import '../../../data/database/remote/firebase_friend_dao.dart';
 import '../../../data/database/remote/firebase_gift_dao.dart';
 import '../../../data/database/remote/firebase_user_dao.dart';
 import '../../../data/repos/event_repository_impl.dart';
+import '../../../data/repos/friend_repository_impl.dart';
 import '../../../data/repos/gift_repository_impl.dart';
 import '../../../data/repos/user_repository_impl.dart';
 
 import '../../../domain/usecases/event/add_event.dart';
 import '../../../domain/usecases/event/get_events.dart';
 import '../../../domain/usecases/event/sync_events.dart';
+import '../../../domain/usecases/friend/getFriends.dart';
+import '../../../domain/usecases/friend/sync_Friends.dart';
 import '../../../domain/usecases/gifts/deleteGiftsEvent.dart';
 
 import '../../../domain/usecases/user/getUserAuthId.dart';
@@ -65,6 +70,9 @@ class _EventListPageState extends State<EventListPage> {
   late StreamSubscription<List<EventEntity>>? _eventSubscription;
   List<EventEntity> events = [];
 
+  late GetFriends getFriendsUseCase;
+  late SyncFriends syncFriendsUseCase;
+
   void _onStatusChange(int index) {
     setState(() {
       _selectedStatus = index;
@@ -82,7 +90,8 @@ class _EventListPageState extends State<EventListPage> {
 
         // Get the current date without time (midnight) and compare
         final today = DateTime(now.year, now.month, now.day);
-        final eventDay = DateTime(eventDate.year, eventDate.month, eventDate.day);
+        final eventDay =
+            DateTime(eventDate.year, eventDate.month, eventDate.day);
 
         return eventDay == today;
       }).toList();
@@ -119,22 +128,25 @@ class _EventListPageState extends State<EventListPage> {
 
   Future<void> _intializeData() async {
     try {
-
       final userRepository = UserRepositoryImpl(
-        sqliteDataSource:  SQLiteUserDataSource(),
+        sqliteDataSource: SQLiteUserDataSource(),
         firebaseDataSource: FirebaseUserDataSource(),
         firebaseAuthDataSource: FirebaseAuthDataSource(),
       );
 
       final eventRepository = EventRepositoryImpl(
         sqliteDataSource: SQLiteEventDataSource(),
-        firebaseDataSource:FirebaseEventDataSource(),
+        firebaseDataSource: FirebaseEventDataSource(),
       );
-
 
       final giftRepository = GiftRepositoryImpl(
         sqliteDataSource: SQLiteGiftDataSource(),
         firebaseDataSource: FirebaseGiftDataSource(),
+      );
+
+      final friendRepository = FriendRepositoryImpl(
+        sqliteDataSource: SQLiteFriendDataSource(),
+        firebaseDataSource: FirebaseFriendDataSource(),
       );
 
       syncEventsUseCase = SyncEvents(eventRepository);
@@ -146,6 +158,9 @@ class _EventListPageState extends State<EventListPage> {
       deleteEventUseCase = DeleteEvent(eventRepository);
 
       deleteGiftsEventUseCase = DeleteGiftsEvent(giftRepository);
+
+      getFriendsUseCase = GetFriends(friendRepository);
+      syncFriendsUseCase = SyncFriends(friendRepository);
 
       getUsersUseCase = GetUsers(userRepository);
       syncUsersUseCase = SyncUsers(userRepository);
@@ -360,53 +375,60 @@ class _EventListPageState extends State<EventListPage> {
             ),
           ),
 
-
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-              child: ListView.builder(
-                itemCount: filteredEvents.length,
-                itemBuilder: (context, index) {
-                  final event = filteredEvents[index];
-
-                  return Eventcard(
-                    event: event,
-                    onEdit: () async {
-                      final isUpdated = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditEventPage(event: event),
+              child: filteredEvents.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No Events',
+                        style: TextStyle(
+                          fontSize: 18.0,
                         ),
-                      );
-                      if (isUpdated == true) {
-                        print('Event Updated');
-                        await _intializeData();
-                        _onStatusChange(_selectedStatus);
-                      }
-                    },
-                    onDelete: () async {
-                      Future.wait(
-                        [
-                          deleteEventUseCase(event.EventId),
-                          deleteGiftsEventUseCase(event.EventId),
-                        ],
-                      );
-                      await _intializeData();
-                    },
-                    onTap: () async {
-                       await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EventDetails(event: event),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = filteredEvents[index];
+                        return Eventcard(
+                          event: event,
+                          onEdit: () async {
+                            final isUpdated = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditEventPage(event: event),
+                              ),
+                            );
+                            if (isUpdated == true) {
+                              print('Event Updated');
+                              await _intializeData();
+                              _onStatusChange(_selectedStatus);
+                            }
+                          },
+                          onDelete: () async {
+                            Future.wait(
+                              [
+                                deleteEventUseCase(event.EventId),
+                                deleteGiftsEventUseCase(event.EventId),
+                              ],
+                            );
+                            await _intializeData();
+                          },
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EventDetails(event: event),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
             ),
           )
-
         ],
       ),
       bottomNavigationBar: Bottomnavbar(
@@ -441,4 +463,3 @@ class _EventListPageState extends State<EventListPage> {
     );
   }
 }
-

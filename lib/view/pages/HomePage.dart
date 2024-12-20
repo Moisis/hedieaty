@@ -268,25 +268,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //todo check if this is needed
-  Future<void> _checkConnectionStatus() async {
-    try {
-      final ConnectivityResult result =
-          (await Connectivity().checkConnectivity()) as ConnectivityResult;
-      if (!mounted) return;
-      setState(() {
-        connectionStatus =
-            result == ConnectivityResult.none ? 'none' : 'connected';
-      });
-    } catch (e) {
-      // Log the error or handle it as needed
-      if (!mounted) return;
-      setState(() {
-        connectionStatus = 'error';
-      });
-    }
-  }
-
   Future<void> _refreshContacts() async {
     print('Refresh:');
     try {
@@ -302,12 +283,11 @@ class _HomePageState extends State<HomePage> {
 
       // Update user event counts
       for (var user in newContacts) {
-        user.UserEventsNo = newEvents.where((event) => event.UserId == user.UserId && (DateTime.tryParse(event.EventDate)!.isBefore(DateTime.now()) )).length;
+        user.UserEventsNo = newEvents.where((event) => event.UserId == user.UserId ).length;
       }
 
       for (FriendEntity friend in newFriends) {
-        final user =
-        newContacts.firstWhere((user) => user.UserId == friend.FriendId);
+        final user = newContacts.firstWhere((user) => user.UserId == friend.FriendId);
         friend.UserName = user.UserName;
         friend.UserEmail = user.UserEmail;
         friend.UserPhone = user.UserPhone;
@@ -391,6 +371,7 @@ class _HomePageState extends State<HomePage> {
               ),
       ),
       bottomNavigationBar: Bottomnavbar(
+        key: ValueKey('CustomBottomBar'),
         currentIndex: _index,
         onIndexChanged: (index) {
           setState(() {

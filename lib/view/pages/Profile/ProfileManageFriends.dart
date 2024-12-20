@@ -31,8 +31,6 @@ class ProfileManageFriends extends StatefulWidget {
 }
 
 class _ProfileManageFriendsState extends State<ProfileManageFriends> {
-
-
   String UserAuthId = '';
 
   bool isLoading = true;
@@ -47,11 +45,10 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
   late GetUsers getUsersUseCase;
   late SyncUsers syncUsersUseCase;
 
-
   late SyncEvents syncEventsUseCase;
   late GetEvents getEventsUseCase;
   // late AddEvent addEventUseCase;
-  late GetUserAuthId  getUserAuthIdUseCase;
+  late GetUserAuthId getUserAuthIdUseCase;
 
   late GetFriends getFriendsUseCase;
   // late AddFriend addFriendUseCase;
@@ -69,13 +66,11 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
         isLoading = true;
       });
 
-
       final userRepository = UserRepositoryImpl(
         sqliteDataSource: SQLiteUserDataSource(),
         firebaseDataSource: FirebaseUserDataSource(),
         firebaseAuthDataSource: FirebaseAuthDataSource(),
       );
-
 
       final eventRepository = EventRepositoryImpl(
         sqliteDataSource: SQLiteEventDataSource(),
@@ -94,11 +89,8 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
       syncUsersUseCase = SyncUsers(userRepository);
       getUserAuthIdUseCase = GetUserAuthId(userRepository);
 
-
       getFriendsUseCase = GetFriends(friendRepository);
       syncFriendsUseCase = SyncFriends(friendRepository);
-
-
 
       await _refreshContacts();
       setState(() {
@@ -108,7 +100,6 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
       debugPrint('Error during initialization: $e');
     }
   }
-
 
   Future<void> _refreshContacts() async {
     print('Refresh:');
@@ -125,12 +116,16 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
 
       // Update user event counts
       for (var user in newContacts) {
-        user.UserEventsNo = newEvents.where((event) => event.UserId == user.UserId && (DateTime.tryParse(event.EventDate)!.isBefore(DateTime.now()) )).length;
+        user.UserEventsNo = newEvents
+            .where((event) =>
+                event.UserId == user.UserId &&
+                (DateTime.tryParse(event.EventDate)!.isBefore(DateTime.now())))
+            .length;
       }
 
       for (FriendEntity friend in newFriends) {
         final user =
-        newContacts.firstWhere((user) => user.UserId == friend.FriendId);
+            newContacts.firstWhere((user) => user.UserId == friend.FriendId);
         friend.UserName = user.UserName;
         friend.UserEmail = user.UserEmail;
         friend.UserPhone = user.UserPhone;
@@ -147,7 +142,6 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
       debugPrint('Error refreshing contacts: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -176,27 +170,35 @@ class _ProfileManageFriendsState extends State<ProfileManageFriends> {
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: AnimationLimiter(
-                  child: FriendList(
-                    friends: contacts,
-                    searchQuery: searchText,
+            : contacts.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Friends',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  )
+                : SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: AnimationLimiter(
+                            child: FriendList(
+                              friends: contacts,
+                              searchQuery: searchText,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
-
-
     );
   }
 }

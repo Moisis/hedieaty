@@ -5,15 +5,6 @@ class UserEntity extends UserModel {
   int? UserEventsNo ;
 
 
-  // UserEntity({
-  //   required this.UserId,
-  //   required this.UserName,
-  //   required this.UserEmail,
-  //   required this.UserPass,
-  //   this.UserPrefs,
-  //   required this.UserPhone,
-  //   this.UserEventsNo
-  // });
 
   UserEntity({
     required super.UserId,
